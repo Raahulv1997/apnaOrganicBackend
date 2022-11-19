@@ -1,62 +1,252 @@
 const connection = require('../db')
 
-function products_search(req, res) {
+ function products_search(req, res) {
+  var ressend=''
   var condition_flag = true;
   console.log("in product");
   //console.log(req.query.keydk)
-  var greeting = req.body
-  console.log( greeting)
+  var catobj = req.body.product_search
+  console.log( catobj)
 var pg = req.query
 console.log(pg)
 
 
   var newstr = 'SELECT * from products_view WHERE '
-  var catobj = greeting[0]
+  //var catobj = greeting[0]
   var onjkayarrry =Object.keys(catobj)
   var onjvaluarrry =Object.values(catobj)
-  console.log(onjkayarrry)
-  console.log(onjvaluarrry)
+  // console.log(onjkayarrry)
+  // console.log(onjvaluarrry)
   
   for(var i=0;i<=onjkayarrry.length-1;i++){
 
     if(onjvaluarrry[i]!=''){
        condition_flag = false;
+      //  console.log("check_condition_")
+      //  console.log(onjkayarrry.length-1+ "__" +i)
       if(onjkayarrry.length-1 == i){
-        newstr += onjkayarrry[i]+ '=' + '"' + onjvaluarrry[i] + '"' 
+        newstr += ' '+onjkayarrry[i]+ '=' + '"' + onjvaluarrry[i] + '"' 
       }else{
-        newstr += onjkayarrry[i]+ '=' + '"' + onjvaluarrry[i]+'"'+'___'
+        newstr += ' '+onjkayarrry[i]+ '=' + '"' + onjvaluarrry[i]+'"'+'___'
       }
     }
     
   } 
   if(condition_flag){
-    connection.query('SELECT * FROM `products_view` WHERE 1',(err,result)=>{
-      if(err){
-        console.log("/_products_error"+err)
-        res.send(err)
-      }else{
-        console.log(result)
-        res.send(result)
-        //res.json(result)
-      }
-    });
+
+    console.log("_______________ressend-1_______________")
+
+    var newqry = 'SELECT * FROM `products_view` WHERE 1 '+' '+'LIMIT'
+    console.log('newqry-------------------------------------------------')
+    console.log(newqry)
+    var numRows;
+    var queryPagination;
+    var numPerPage = 10
+    var page = parseInt(pg.page,pg.per_page) || 0;
+    var numPages;
+    var skip = page * numPerPage;
+    // Here we compute the LIMIT parameter for MySQL query
+    var limit = skip + ',' + numPerPage;
+      
+    connection.query('SELECT count(*) as numRows FROM products_view',(err,results)=>{
+          if(err){
+            console.log("/category_error"+err)
+            console.log(err)
+            //return err
+          }else{
+            numRows = results[0].numRows;
+            numPages = Math.ceil(numRows / numPerPage);
+            console.log('number of pages:', numPages);
+            //console.log(''+newqry+' '+limit+'')
+            connection.query(''+newqry+' '+limit+'',(err,results)=>{
+              if(err){
+                console.log(err)
+                res.send(err)
+              }else{
+               // console.log(results)
+                var responsePayload = {
+                  results: results
+                };
+                if (page < numPages) {
+                  responsePayload.pagination = {
+                    current: page,
+                    perPage: numPerPage,
+                    previous: page > 0 ? page - 1 : undefined,
+                    next: page < numPages - 1 ? page + 1 : undefined
+                  }
+                }
+                else responsePayload.pagination = {
+                  err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
+                }
+                console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
+                console.log(responsePayload);
+                res.send(responsePayload)
+              }
+            })
+            
+          }
+        })
+    
+    // connection.query('SELECT * FROM `products_view` WHERE 1 ',(err,result)=>{
+    //   if(err){
+    //     console.log("/_products_error"+err)
+    //     res.send(err)
+    //   }else{
+    //     console.log(result)
+    //     res.send(result)
+    //     //res.json(result)
+    //   }
+    // })
   }else{
-    var qry = newstr.replace(/___/g,' AND ')
-    console.log(typeof qry)
-    console.log(qry)
-    connection.query(qry,(err,result)=>{
-      if(err){
-        console.log("/_products_error"+err)
-        res.send(err)
-      }else{
-        console.log(result)
-        res.send(result)
-        //res.json(result)
-      }
-    });
+    var qry = newstr.replace(/___/g,' AND')
+var lastCharOfHello=qry.slice(-4);//d
+// console.log("lastCharOfHello=========================")
+// console.log('f'+lastCharOfHello+'f')
+
+if(lastCharOfHello == " AND"){
+var qry = qry.substring(0, qry.lastIndexOf(" "));
+  // console.log("and available___"+qry)
+
+}else{
+  console.log("no avia")
+}
+
+
+    // console.log(typeof qry)
+    // console.log(qry)
+
+     console.log("_______________ressend-2_______________")
+
+     var newqry = qry+' '+'LIMIT'
+     console.log('newqry-------------------------------------------------')
+     console.log(newqry)
+     var numRows;
+     var queryPagination;
+     var numPerPage = 10
+     var page = parseInt(pg.page,pg.per_page) || 0;
+     var numPages;
+     var skip = page * numPerPage;
+     // Here we compute the LIMIT parameter for MySQL query
+     var limit = skip + ',' + numPerPage;
+       
+     connection.query('SELECT count(*) as numRows FROM products_view',(err,results)=>{
+           if(err){
+             console.log("/category_error"+err)
+             console.log(err)
+             //return err
+           }else{
+             numRows = results[0].numRows;
+             numPages = Math.ceil(numRows / numPerPage);
+             console.log('number of pages:', numPages);
+             //console.log(''+newqry+' '+limit+'')
+             connection.query(''+newqry+' '+limit+'',(err,results)=>{
+               if(err){
+                 console.log(err)
+                 console.log(err)
+                 res.send(err)
+               }else{
+                // console.log(results)
+                 var responsePayload = {
+                   results: results
+                 };
+                 if (page < numPages) {
+                   responsePayload.pagination = {
+                     current: page,
+                     perPage: numPerPage,
+                     previous: page > 0 ? page - 1 : undefined,
+                     next: page < numPages - 1 ? page + 1 : undefined
+                   }
+                 }
+                 else responsePayload.pagination = {
+                   err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
+                 }
+                 console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
+                 console.log(responsePayload);
+                 res.send(responsePayload)
+               }
+             })
+             
+           }
+         }) 
+
+
+
+
+    // connection.query(qry,(err,result)=>{
+    //   if(err){
+    //     console.log("/_products_error"+err)
+    //     res.send(err)
+    //   }else{
+    //     console.log(result)
+    //     res.send(result)
+    //     //res.json(result)
+    //   }
+    // });
   }
   
 }
+
+function product_pagination(qry,pg){
+  var newqry = qry+' '+'LIMIT'
+  console.log('newqry-------------------------------------------------')
+  console.log(newqry)
+  var numRows;
+  var queryPagination;
+  var numPerPage = 10
+  var page = parseInt(pg.page,pg.per_page) || 0;
+  var numPages;
+  var skip = page * numPerPage;
+  // Here we compute the LIMIT parameter for MySQL query
+  var limit = skip + ',' + numPerPage;
+    
+  connection.query('SELECT count(*) as numRows FROM products_view',(err,results)=>{
+        if(err){
+          console.log("/category_error"+err)
+          console.log(err)
+          //return err
+        }else{
+          numRows = results[0].numRows;
+          numPages = Math.ceil(numRows / numPerPage);
+          console.log('number of pages:', numPages);
+          //console.log(''+newqry+' '+limit+'')
+          connection.query(''+newqry+' '+limit+'',(err,results)=>{
+            if(err){
+              console.log("/category_error"+err)
+              console.log(err)
+              return err
+            }else{
+             // console.log(results)
+              var responsePayload = {
+                results: results
+              };
+              if (page < numPages) {
+                responsePayload.pagination = {
+                  current: page,
+                  perPage: numPerPage,
+                  previous: page > 0 ? page - 1 : undefined,
+                  next: page < numPages - 1 ? page + 1 : undefined
+                }
+              }
+              else responsePayload.pagination = {
+                err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
+              }
+              console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
+              console.log(responsePayload);
+              return responsePayload
+            }
+          })
+          
+        }
+      }) 
+}
+
+
+
+
+
+
+
+
 
 
 function productpost(req, res) {
