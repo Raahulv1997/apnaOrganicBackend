@@ -9,6 +9,6 @@ function product(req,res){
           console.log(rows)
           res.send(rows)   
         }
-      })
+      })  
 }
 module.exports =  {product};
