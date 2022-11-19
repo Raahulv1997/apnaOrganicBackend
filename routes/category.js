@@ -7,7 +7,7 @@ function category(req,res){
           console.log("/category_error"+err)
           res.send(err)
         }else{
-          console.log(rows)
+          console.log(rows) 
           res.send(rows)
         }
       }) 
