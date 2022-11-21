@@ -19,12 +19,15 @@ function signup(req, res) {
           console.log(useremail);
           res.send({"message":"User Already Exist. Please Login"})
         } else {
-          console.log("send otp")
-            try {
-              const resp = await Auth(edata, "apnaorganicstore");
-              console.log(resp);
-              // res.json({"message":"Sent Otp On Your Email"})
-              connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+resp.mail+'","'+resp.OTP+'")', (err, rows, fields) => {
+          console.log("send________otp")
+
+          function generateOTP() {
+            var digits = '0123456789';
+            let OTP = '';
+            for (let o = 0; o < 6; o++ ) {
+                OTP += digits[Math.floor(Math.random() * 10)];
+            }
+              connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
                 if (err) {
                   console.log("/_otp_error" + err);
                   res.send(err)
@@ -33,9 +36,26 @@ function signup(req, res) {
                   res.send(rows);
                 }
               })
-              } catch (error) {
-              console.log(error);
-            }
+            return OTP
+        }
+         console.log(generateOTP()) 
+            // try {
+            //   console.log(edata)
+            //   const resp = await Auth(edata, "apnaorganicstore");
+            //   console.log(resp);
+            //   // res.json({"message":"Sent Otp On Your Email"})
+            //   connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+resp.mail+'","'+resp.OTP+'")', (err, rows, fields) => {
+            //     if (err) {
+            //       console.log("/_otp_error" + err);
+            //       res.send(err)
+            //     } else {
+            //       console.log(rows);
+            //       res.send(rows);
+            //     }
+            //   })
+            //   } catch (error) {
+            //   console.log(error);
+            // }
         }
 
       }

@@ -1,24 +1,34 @@
 const connection = require('../db')
 
  function products_search(req, res) {
-  var ressend=''
   var condition_flag = true;
   console.log("in product");
   //console.log(req.query.keydk)
   var catobj = req.body.product_search
+  var srch = catobj.search
+
   console.log( catobj)
 var pg = req.query
 console.log(pg)
+console.log(srch)
+var newstr = 'SELECT * from products_view WHERE '
+if(srch != ''){
+console.log("trueeeee")
+newstr +='(`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%") AND '
+}else{
+  console.log("falseeee")
 
+}
+console.log(newstr)
 
-  var newstr = 'SELECT * from products_view WHERE '
+  
   //var catobj = greeting[0]
   var onjkayarrry =Object.keys(catobj)
   var onjvaluarrry =Object.values(catobj)
   // console.log(onjkayarrry)
   // console.log(onjvaluarrry)
   
-  for(var i=0;i<=onjkayarrry.length-1;i++){
+  for(var i=1;i<=onjkayarrry.length-1;i++){
 
     if(onjvaluarrry[i]!=''){
        condition_flag = false;
@@ -36,7 +46,7 @@ console.log(pg)
 
     console.log("_______________ressend-1_______________")
 
-    var newqry = 'SELECT * FROM `products_view` WHERE 1 '+' '+'LIMIT'
+    var newqry = 'SELECT * FROM `products_view` WHERE `product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" '+' '+'LIMIT'
     console.log('newqry-------------------------------------------------')
     console.log(newqry)
     var numRows;
