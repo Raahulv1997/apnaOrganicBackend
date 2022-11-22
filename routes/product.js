@@ -251,14 +251,6 @@ function product_pagination(qry,pg){
 }
 
 
-
-
-
-
-
-
-
-
 function productpost(req, res) {
   console.log("---post---product--")
   var postdata = req.body

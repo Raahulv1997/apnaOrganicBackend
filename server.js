@@ -3,6 +3,7 @@ const express = require("express");
 const {category} = require("./routes/category.js")
 const {products_search,productpost} = require("./routes/product.js")
 const {signup,otp_verify,user_register} = require("./routes/auth.js")
+const {add_to_cart,cart} = require("./routes/cart.js")
 
 
 const cors = require("cors");
@@ -29,6 +30,15 @@ app.post("/products",productpost)
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
 app.post("/user_register",user_register)
+
+//----------------cart--------------------
+app.post("/add_to_cart",add_to_cart)
+app.get("/cart",cart)
+
+
+
+
+
 
 //----------------app--listen--------------
 const PORT = 5000;
