@@ -33,7 +33,7 @@ function signup(req, res) {
                   res.send(err)
                 } else {
                   console.log(rows);
-                  res.send(rows);
+                  res.send(OTP);
                 }
               })
             return OTP
@@ -71,7 +71,9 @@ console.log(req.body)
   var email_otp = req.body.email
   var otp_ver = req.body.otp
   var cheked_email = regex.test(email_otp);
-
+  console.log("--------------------------otp_verify--------------------------")
+  console.log(email_otp)
+  console.log(otp_ver)
   if(cheked_email){
     console.log("email_true")
     connection.query("SELECT * FROM `users_otp` WHERE email = '" + email_otp + "'",async (err, rows, fields) => {

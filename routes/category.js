@@ -27,9 +27,9 @@ if(req.query.category == 'all'){
 
 function add_category(req,res){
   console.log("add_category")
-  var {parent_id,leval,all_parent_id,new_category} = req.body
+  var {parent_id,level,all_parent_id,new_category} = req.body
   //res.send(req.body)
-connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`is_active`) VALUES ('+parent_id+',"'+all_parent_id+'",'+ parseInt(leval+1) +',"'+new_category+'",'+0+')',(err,rows,fields)=>{
+connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`is_active`) VALUES ('+parent_id+',"'+all_parent_id+'",'+ parseInt(level+1) +',"'+new_category+'",'+0+')',(err,rows,fields)=>{
   if(err){
     console.log("/category_error"+err)
     res.send(err)
@@ -44,9 +44,9 @@ connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`ca
 function update_category(req,res){
 
   console.log(req.body)
-  var {id,parent_id,leval,all_parent_id,new_category} = req.body
+  var {id,parent_id,level,all_parent_id,new_category} = req.body
 
-  connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`is_active`) VALUES ("'+parent_id+'","'+all_parent_id+'",'+ parseInt(leval+1) +',"'+new_category+'",'+0+')',(err,rows,fields)=>{
+  connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`is_active`) VALUES ("'+parent_id+'","'+all_parent_id+'",'+ parseInt(level+1) +',"'+new_category+'",'+0+')',(err,rows,fields)=>{
     if(err){
       console.log("/category_error"+err)
       res.send(err)
