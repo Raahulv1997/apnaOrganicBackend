@@ -1,7 +1,7 @@
 const connection = require('./db')
 const express = require("express");
 const {category,add_category,update_category} = require("./routes/category.js")
-const {products_search,productpost} = require("./routes/product.js")
+const {products_search,productpost,products_update} = require("./routes/product.js")
 const {signup,otp_verify,user_register} = require("./routes/auth.js")
 const {add_to_cart,cart} = require("./routes/cart.js")
 
@@ -27,6 +27,7 @@ app.put("/update_category",update_category)
 //----------------products---routes----------------------
 app.post("/products_search",products_search)
 app.post("/products",productpost)
+app.put("/products_update",products_update)
 
 //----------------sign-up---routes----------------------
 app.post("/sign_up",signup)

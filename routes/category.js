@@ -42,7 +42,7 @@ connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`ca
 
 
 function update_category(req,res){
-  console.log("ssssssssssssssssss")
+
   console.log(req.body)
   var {id,parent_id,leval,all_parent_id,new_category} = req.body
 
