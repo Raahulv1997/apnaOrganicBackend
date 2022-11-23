@@ -1,6 +1,6 @@
 const connection = require('./db')
 const express = require("express");
-const {category} = require("./routes/category.js")
+const {category,add_category} = require("./routes/category.js")
 const {products_search,productpost} = require("./routes/product.js")
 const {signup,otp_verify,user_register} = require("./routes/auth.js")
 const {add_to_cart,cart} = require("./routes/cart.js")
@@ -21,6 +21,7 @@ app.use(express.json());
 
 //----------------category----routes------------------------
 app.get("/category", category)
+app.post("/add_category",add_category)
 
 //----------------products---routes----------------------
 app.post("/products_search",products_search)
