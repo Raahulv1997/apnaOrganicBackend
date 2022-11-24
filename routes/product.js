@@ -89,7 +89,7 @@ console.log(newstr)
                   err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
                 }
                 console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
-                console.log(responsePayload);
+                //console.log(responsePayload);
                 res.send(responsePayload)
               }
             })
@@ -152,7 +152,6 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
              connection.query(''+newqry+' '+limit+'',(err,results)=>{
                if(err){
                  console.log(err)
-                 console.log(err)
                  res.send(err)
                }else{
                 // console.log(results)
@@ -171,7 +170,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
                    err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
                  }
                  console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
-                 console.log(responsePayload);
+                 //console.log(responsePayload);
                  res.send(responsePayload)
                }
              })
