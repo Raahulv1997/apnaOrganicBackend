@@ -21,20 +21,21 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({extended: true,}));
+// app.use(bodyParser.urlencoded({extended: true,}));
 
 
-var storageC = multer.diskStorage({
+var storage = multer.diskStorage({
   destination: (req, file, callBack) => {
-      callBack(null, './public/catgory_images')     // './public/images/' directory name where save the file
+      callBack(null, './public/catgory_images/')     // './public/images/' directory name where save the file
   },
   filename: (req, file, callBack) => {  
       callBack(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
   }
 })
 
-var uploadC = multer({
-  dest:'./public/catgory_images'
+var upload = multer({
+  storage: storage
+  // dest:'./public/catgory_images'
 })
 // var storageP = multer.diskStorage({
 //   destination: (req, file, callBack) => {
@@ -54,7 +55,7 @@ var uploadC = multer({
 
 //----------------category----routes------------------------
 app.get("/category", category)
-app.post("/add_category",uploadC.single('image'),add_category)
+app.post("/add_category",upload.single('image'),add_category)
 app.put("/update_category",update_category)
 
 //----------------products---routes----------------------

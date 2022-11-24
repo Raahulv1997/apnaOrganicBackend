@@ -31,8 +31,7 @@ if(req.query.category == 'all'){
 
 function add_category(req,res){
 console.log("add_category")
-console.log(req.file)
-var image = req.file.path;
+var image = "public/catgory_images/"+req.file.filename;
 console.log(image)
   var {parent_id,level,all_parent_id,new_category} = req.body
   console.log(req.body)
