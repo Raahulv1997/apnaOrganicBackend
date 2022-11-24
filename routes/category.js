@@ -1,4 +1,8 @@
-const connection = require('../db')
+const connection = require('../db');
+const path  = require('path');
+
+
+
 
 function category(req,res){
   // console.log(typeof req.query.category)
@@ -26,19 +30,22 @@ if(req.query.category == 'all'){
 
 
 function add_category(req,res){
-  console.log("add_category")
-  var {parent_id,level,all_parent_id,new_category} = req.body
-  //res.send(req.body)
-connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`is_active`) VALUES ('+parent_id+',"'+all_parent_id+'",'+ parseInt(level+1) +',"'+new_category+'",'+0+')',(err,rows,fields)=>{
-  if(err){
-    console.log("/category_error"+err)
-    res.send(err)
-  }else{
-    console.log(rows)
-    res.send(rows)
-  }
-}) 
-}//UPDATE `category` SET `category_name`="mamu" WHERE id=33 
+console.log("add_category")
+console.log(req.file)
+var image = req.file.path;
+console.log(image)
+//   var {parent_id,level,all_parent_id,new_category} = req.body
+//   console.log(req.body)
+// connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`image`,`is_active`) VALUES ('+parent_id+',"'+all_parent_id+'",'+parseInt(level+1)+',"'+new_category+'","'+image+'",'+0+')',(err,rows,fields)=>{
+//   if(err){
+//     console.log("/category_error"+err)
+//     res.send(err)
+//   }else{
+//     console.log(rows)
+//     res.send(rows)
+//   }
+// }) 
+}
 
 
 function update_category(req,res){

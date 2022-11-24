@@ -226,7 +226,7 @@ function productpost(req, res) {
   })
 }
 
-function products_update(req,res){
+function products_varient_update(req,res){
   var {varient_id,product_id,colors,size,mrp,product_price,sale_price,discount,wholesale_sales_tax,manufacturers_sales_tax,retails_sales_tax,gst,value_added_tax,manufacturing_date,expire_date,special_offer,featured_product,unit,quantity}=req.body
   console.log(req.body)
   connection.query('UPDATE products_pricing SET colors="'+colors+'",size="'+size+'",mrp='+mrp+',product_price='+product_price+',sale_price='+sale_price+',discount='+discount+',wholesale_sales_tax='+wholesale_sales_tax+',manufacturers_sales_tax='+manufacturers_sales_tax+',retails_sales_tax='+retails_sales_tax+',gst='+gst+',value_added_tax='+value_added_tax+',manufacturing_date="'+manufacturing_date+'",expire_date="'+expire_date+'",special_offer='+special_offer+',featured_product="'+featured_product+'",unit="'+unit+'",quantity='+quantity+' WHERE id='+varient_id+' AND product_id='+product_id+'', (err, rows, fields) => {
@@ -240,4 +240,20 @@ function products_update(req,res){
   })
 }
 
-module.exports = { products_search, productpost,products_update };
+function products_update(req,res){
+  var {id,product_title_name,product_slug,store_name,product_description,product_type,category,parent_category,seo_tag,other_introduction,add_custom_input,is_active}=req.body
+  console.log(req.body)
+  
+  connection.query('UPDATE `products` SET `product_title_name`="'+product_title_name+'",`product_slug`="'+product_slug+'",`store_name`="'+store_name+'",`product_description`="'+product_description+'",`product_type`="'+product_type+'",`category`='+category+',`parent_category`="'+parent_category+'",`seo_tag`="'+seo_tag+'",`other_introduction`="'+other_introduction+'",`add_custom_input`="'+add_custom_input+'",`is_active`='+is_active+' WHERE `id`='+id+'', (err, rows, fields) => {
+    if (err) {
+      console.log("/products_update" + err)
+      res.send(err)
+    } else {
+      console.log("successfully_updated_data_on_products_table")
+      res.send(rows)
+    }
+  })
+}
+
+
+module.exports = { products_search, productpost,products_varient_update,products_update};
