@@ -38,7 +38,7 @@ connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`ca
     res.send(rows)
   }
 }) 
-}//UPDATE `category` SET `category_name`="mamu" WHERE id=33
+}//UPDATE `category` SET `category_name`="mamu" WHERE id=33 
 
 
 function update_category(req,res){
