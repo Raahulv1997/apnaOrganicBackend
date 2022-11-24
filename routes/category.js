@@ -1,28 +1,42 @@
-const connection = require('../db')
+const connection = require('../db');
+const path  = require('path');
+
+
+
 
 function category(req,res){
-  console.log("+==================================++++============++=====+++=")
-    connection.query('SELECT * FROM category',(err,rows,fields)=>{
-        if(err){
-          console.log("/category_error"+err)
-          res.send(err)
-        }else{
-          console.log(rows)
-          res.send(rows)
-        }
-      }) 
+  // console.log(typeof req.query.category)
+  //res.send(req.query.category)
+if(req.query.category == 'all'){
+  connection.query('SELECT * FROM category WHERE 1  ',(err,rows,fields)=>{
+    if(err){
+      res.send(err)
+    }else{
+      res.send(rows)
+    }
+  })
+}else{
+  connection.query('SELECT * FROM category WHERE parent_id ='+req.query.category+' ',(err,rows,fields)=>{
+    if(err){
+      console.log("/category_error"+err)
+      res.send(err)
+    }else{
+      //console.log(rows)
+      res.send(rows)
+    }
+  }) 
+}
 }
 
 
-
-
 function add_category(req,res){
-  console.log("add_category")
-  //res.send(req.body)
+console.log("add_category")
+console.log(req.file)
+var image = req.file.path;
+console.log(image)
+  var {parent_id,level,all_parent_id,new_category} = req.body
   console.log(req.body)
-  var {parent_id,all_parent_id,lavel,main_category,is_active} = req.body
-// INSERT INTO `category`(`parent_id`,`all_parent_id`,`lavel`,`main_category`) VALUES (31,"31,33",3,"Samsung")
-connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`lavel`,`main_category`,`is_active`) VALUES ("'+ parent_id +'","'+ all_parent_id +'","'+ lavel +'","'+ main_category +'",'+ is_active +'") ',(err,rows,fields)=>{
+connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`image`,`is_active`) VALUES ('+parent_id+',"'+all_parent_id+'",'+parseInt(level+1)+',"'+new_category+'","'+image+'",'+0+')',(err,rows,fields)=>{
   if(err){
     console.log("/category_error"+err)
     res.send(err)
@@ -34,9 +48,23 @@ connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`lavel`,`ma
 }
 
 
+function update_category(req,res){
+
+  console.log(req.body)
+  var {id,parent_id,level,all_parent_id,new_category} = req.body
+
+  connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`is_active`) VALUES ("'+parent_id+'","'+all_parent_id+'",'+ parseInt(level+1) +',"'+new_category+'",'+0+')',(err,rows,fields)=>{
+    if(err){
+      console.log("/category_error"+err)
+      res.send(err)
+    }else{
+      res.send(rows)
+    }
+  }) 
+}
+
+// UPDATE `category` SET `parent_id`='"'+parent_id+'"',`all_parent_id`='"'+all_parent_id+'"',`level`='"'+parent_id+'"',`category_name`='"'+new_category+'"',`image`='"'+null+'"',`is_active`= '"'+0+'"'
+// WHERE `id`=
 
 
-
-
-
-module.exports =  {category,add_category}
+module.exports =  {category,add_category,update_category}

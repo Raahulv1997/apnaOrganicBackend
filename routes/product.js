@@ -178,10 +178,6 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
              
            }
          }) 
-
-
-
-
     // connection.query(qry,(err,result)=>{
     //   if(err){
     //     console.log("/_products_error"+err)
@@ -193,61 +189,6 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
     //   }
     // });
   }
-  
-}
-
-function product_pagination(qry,pg){
-  var newqry = qry+' '+'LIMIT'
-  console.log('newqry-------------------------------------------------')
-  console.log(newqry)
-  var numRows;
-  var queryPagination;
-  var numPerPage = 10
-  var page = parseInt(pg.page,pg.per_page) || 0;
-  var numPages;
-  var skip = page * numPerPage;
-  // Here we compute the LIMIT parameter for MySQL query
-  var limit = skip + ',' + numPerPage;
-    
-  connection.query('SELECT count(*) as numRows FROM products_view',(err,results)=>{
-        if(err){
-          console.log("/category_error"+err)
-          console.log(err)
-          //return err
-        }else{
-          numRows = results[0].numRows;
-          numPages = Math.ceil(numRows / numPerPage);
-          console.log('number of pages:', numPages);
-          //console.log(''+newqry+' '+limit+'')
-          connection.query(''+newqry+' '+limit+'',(err,results)=>{
-            if(err){
-              console.log("/category_error"+err)
-              console.log(err)
-              return err
-            }else{
-             // console.log(results)
-              var responsePayload = {
-                results: results
-              };
-              if (page < numPages) {
-                responsePayload.pagination = {
-                  current: page,
-                  perPage: numPerPage,
-                  previous: page > 0 ? page - 1 : undefined,
-                  next: page < numPages - 1 ? page + 1 : undefined
-                }
-              }
-              else responsePayload.pagination = {
-                err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
-              }
-              console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
-              console.log(responsePayload);
-              return responsePayload
-            }
-          })
-          
-        }
-      }) 
 }
 
 
@@ -286,4 +227,34 @@ function productpost(req, res) {
   })
 }
 
-module.exports = { products_search, productpost };
+function products_varient_update(req,res){
+  var {varient_id,product_id,colors,size,mrp,product_price,sale_price,discount,wholesale_sales_tax,manufacturers_sales_tax,retails_sales_tax,gst,value_added_tax,manufacturing_date,expire_date,special_offer,featured_product,unit,quantity}=req.body
+  console.log(req.body)
+  connection.query('UPDATE products_pricing SET colors="'+colors+'",size="'+size+'",mrp='+mrp+',product_price='+product_price+',sale_price='+sale_price+',discount='+discount+',wholesale_sales_tax='+wholesale_sales_tax+',manufacturers_sales_tax='+manufacturers_sales_tax+',retails_sales_tax='+retails_sales_tax+',gst='+gst+',value_added_tax='+value_added_tax+',manufacturing_date="'+manufacturing_date+'",expire_date="'+expire_date+'",special_offer='+special_offer+',featured_product="'+featured_product+'",unit="'+unit+'",quantity='+quantity+' WHERE id='+varient_id+' AND product_id='+product_id+'', (err, rows, fields) => {
+    if (err) {
+      console.log("/products_update" + err)
+      res.send(err)
+    } else {
+      console.log("successfully_updated_data_on_price_table")
+      res.send(rows)
+    }
+  })
+}
+
+function products_update(req,res){
+  var {id,product_title_name,product_slug,store_name,product_description,product_type,category,parent_category,seo_tag,other_introduction,add_custom_input,is_active}=req.body
+  console.log(req.body)
+  
+  connection.query('UPDATE `products` SET `product_title_name`="'+product_title_name+'",`product_slug`="'+product_slug+'",`store_name`="'+store_name+'",`product_description`="'+product_description+'",`product_type`="'+product_type+'",`category`='+category+',`parent_category`="'+parent_category+'",`seo_tag`="'+seo_tag+'",`other_introduction`="'+other_introduction+'",`add_custom_input`="'+add_custom_input+'",`is_active`='+is_active+' WHERE `id`='+id+'', (err, rows, fields) => {
+    if (err) {
+      console.log("/products_update" + err)
+      res.send(err)
+    } else {
+      console.log("successfully_updated_data_on_products_table")
+      res.send(rows)
+    }
+  })
+}
+
+
+module.exports = { products_search, productpost,products_varient_update,products_update};
