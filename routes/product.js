@@ -177,16 +177,6 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
              
            }
          }) 
-    // connection.query(qry,(err,result)=>{
-    //   if(err){
-    //     console.log("/_products_error"+err)
-    //     res.send(err)
-    //   }else{
-    //     console.log(result)
-    //     res.send(result)
-    //     //res.json(result)
-    //   }
-    // });
   }
 }
 
@@ -214,7 +204,7 @@ function productpost(req, res) {
       product_catagory.forEach((item, index) => {
         console.log(index)
 
-        connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"'+ item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","'+	item.unit_quantity+'",'+ item.quantity +',"'+item.product_status+'")', (err, rows, fields) => {
+        connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"'+ item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","'+	item.unit_quantity+'",'+ item.quantity +',"'+item.product_status+'")', (err, rows, fields) => {
           if (err) {
             console.log("/_products_post_error" + err)
             res.send(err)
@@ -229,10 +219,10 @@ function productpost(req, res) {
 }
 
 function products_varient_update(req,res){
-  var {varient_id,product_id,colors,size,mrp,product_price,sale_price,discount,manufacturing_date,expire_date,special_offer,featured_product,unit,quantity,product_status,unit_quantity}=req.body
+  var {id,product_id,colors,size,mrp,product_price,sale_price,discount,manufacturing_date,expire_date,special_offer,featured_product,unit,quantity,product_status,unit_quantity}=req.body
   console.log(req.body)
   console.log(colors)
-  connection.query('UPDATE products_pricing SET colors="'+colors+'",size="'+size+'",mrp='+mrp+',product_price='+product_price+',sale_price='+sale_price+',discount='+discount+',manufacturing_date="'+manufacturing_date+'",expire_date="'+expire_date+'",special_offer='+special_offer+',featured_product='+featured_product+',unit="'+unit+'",unit_quantity="'+unit_quantity+'",status="'+product_status+'",quantity='+quantity+'  WHERE id='+varient_id+' AND product_id='+product_id+'', (err, rows, fields) => {
+  connection.query('UPDATE products_pricing SET colors="'+colors+'",size="'+size+'",mrp='+mrp+',product_price='+product_price+',sale_price='+sale_price+',discount='+discount+',manufacturing_date="'+manufacturing_date+'",expire_date="'+expire_date+'",special_offer='+special_offer+',featured_product='+featured_product+',unit="'+unit+'",unit_quantity="'+unit_quantity+'",product_status="'+product_status+'",quantity='+quantity+'  WHERE id='+id+' AND product_id='+product_id+'', (err, rows, fields) => {
     if (err) {
       console.log("/products_update" + err)
       res.send(err)
@@ -262,10 +252,10 @@ function products_update(req,res){
 function products_delete(req,res){
   console.log("-----------products_delete------------")
 
- var {varient_id,product_id,is_delete}=req.body
+ var {id,product_id,is_delete}=req.body
   console.log(req.body)
   if(is_delete == '0'){
-    connection.query('UPDATE products_pricing SET is_delete= "'+is_delete+'" WHERE id='+varient_id+' AND product_id='+product_id+'', (err, rows, fields) => {
+    connection.query('UPDATE products_pricing SET is_delete= "'+is_delete+'" WHERE id='+id+' AND product_id='+product_id+'', (err, rows, fields) => {
       if (err) {
         console.log(err)
         res.send(err)
@@ -277,5 +267,70 @@ function products_delete(req,res){
   }
 }
 
+function products_varient_add(req,res){
+  var {product_id,colors,size,mrp,product_price,sale_price,discount,manufacturing_date,expire_date,special_offer,featured_product,unit,quantity,product_status,unit_quantity}=req.body
+  console.log(req.body)
+  console.log(colors)
+  if(product_id !=''){
+    connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES ('+product_id+',"'+colors+'","'+size+'",'+mrp+','+product_price+','+sale_price+','+discount+',"'+manufacturing_date+'","'+expire_date+'",'+special_offer+','+featured_product+',"'+unit+'",'+unit_quantity+','+quantity+','+product_status+')', (err, rows, fields) => {
+      if (err) {
+        console.log("/products_update" + err)
+        res.send(err)
+      } else {
+        console.log("successfully_add_data_on_price_table")
+        res.send(rows)
+      }
+    })
+  }else{
+    console.log("-----------varient_id----------")
+  }
 
-module.exports = { products_search, productpost,products_varient_update,products_update,products_delete};
+}
+
+function products_pricing(req,res){
+
+  if(req.query.id == 'all'){
+    connection.query('SELECT * FROM products_pricing WHERE 1  ',(err,rows,fields)=>{
+      if(err){
+        res.send(err)
+      }else{
+        res.send(rows)
+      }
+    })
+  }else{
+    connection.query('SELECT * FROM products_pricing WHERE id ='+req.query.id+' AND product_id ='+req.query.product_id+' ',(err,rows,fields)=>{
+      if(err){
+        console.log("/product_error"+err)
+        res.send(err)
+      }else{
+        //console.log(rows)
+        res.send(rows)
+      }
+    }) 
+  }
+
+}
+
+function product(req,res){
+  if(req.query.id == 'all'){
+    connection.query('SELECT * FROM products WHERE 1  ',(err,rows,fields)=>{
+      if(err){
+        res.send(err)
+      }else{
+        res.send(rows)
+      }
+    })
+  }else{
+    connection.query('SELECT * FROM products WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
+      if(err){
+        console.log("/product_error"+err)
+        res.send(err)
+      }else{
+        //console.log(rows)
+        res.send(rows)
+      }
+    }) 
+  }
+}
+
+module.exports = { products_search, productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product};

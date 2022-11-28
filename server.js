@@ -7,10 +7,11 @@ const app = express();
 const bodyParser = require("body-parser");
 
 const {category,add_category,update_category,delete_category,search_category} = require("./routes/category.js")
-const {products_search,productpost,products_varient_update,products_update,products_delete} = require("./routes/product.js")
+const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
 const {signup,otp_verify,user_register} = require("./routes/auth.js")
 const {add_to_cart,cart} = require("./routes/cart.js")
-const {admin_login} = require("./routes/admin.js")
+const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search} = require("./routes/admin.js")
+const {orders} = require("./routes/orders.js")
 
 
 
@@ -67,7 +68,9 @@ app.post("/products",productpost)
 app.put("/products_varient_update",products_varient_update)
 app.put("/products_update",products_update)
 app.put("/products_delete",products_delete)
-
+app.post("/products_varient_add",products_varient_add)
+app.get("/product",product)
+app.get("/products_pricing",products_pricing)
 //---------------user-sign-up---routes----------------------
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
@@ -79,6 +82,16 @@ app.get("/cart",cart)
 
 //_________________admin_login______________
 app.post("/admin_login", admin_login)
+app.put("/update_password",update_password)
+app.put ("/admin_forgot_password",admin_forgot_password)
+app.put("/update_admin",update_admin)
+app.post("/add_admin",add_admin)
+app.post("/admin_search",admin_search)
+
+//________________order__________
+app.post("/orders",orders)
+
+
 
 //_________________special_and_fetures__product___
 
