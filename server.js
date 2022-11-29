@@ -10,8 +10,8 @@ const {category,add_category,update_category,delete_category,search_category} = 
 const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
 const {signup,otp_verify,user_register} = require("./routes/auth.js")
 const {add_to_cart,cart} = require("./routes/cart.js")
-const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search} = require("./routes/admin.js")
-const {orders} = require("./routes/orders.js")
+const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin} = require("./routes/admin.js")
+const {orders,orders_list} = require("./routes/orders.js")
 
 
 
@@ -81,6 +81,7 @@ app.post("/add_to_cart",add_to_cart)
 app.get("/cart",cart)
 
 //_________________admin_login______________
+app.get("/admin", admin)
 app.post("/admin_login", admin_login)
 app.put("/update_password",update_password)
 app.put ("/admin_forgot_password",admin_forgot_password)
@@ -90,6 +91,7 @@ app.post("/admin_search",admin_search)
 
 //________________order__________
 app.post("/orders",orders)
+app.post("/orders_list",orders_list)
 
 
 
