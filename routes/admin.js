@@ -180,7 +180,6 @@ function admin_search(req,res){
     }
 }
 
-
 function admin(req,res){
   if(req.query.id == 'all'){
     connection.query('SELECT * FROM admin_login_details WHERE 1  ',(err,rows,fields)=>{
@@ -203,5 +202,4 @@ function admin(req,res){
   }
 }
 
-
-module.exports = {admin,admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search};
+module.exports = {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin};

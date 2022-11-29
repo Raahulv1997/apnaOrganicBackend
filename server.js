@@ -11,7 +11,8 @@ const {products_search,productpost,products_varient_update,products_update,produ
 const {signup,otp_verify,user_register} = require("./routes/auth.js")
 const {add_to_cart,cart} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin} = require("./routes/admin.js")
-const {orders,orders_list} = require("./routes/orders.js")
+const {orders,order_deteils,orders_list} = require("./routes/orders.js")
+const {invoice_search,invoice_data} = require("./routes/invoce")
 
 
 
@@ -84,28 +85,41 @@ app.get("/cart",cart)
 app.get("/admin", admin)
 app.post("/admin_login", admin_login)
 app.put("/update_password",update_password)
-app.put ("/admin_forgot_password",admin_forgot_password)
+app.put ("/admin_forget_password",admin_forgot_password)
 app.put("/update_admin",update_admin)
 app.post("/add_admin",add_admin)
 app.post("/admin_search",admin_search)
-
+app.get("/admin", admin)
 //________________order__________
 app.post("/orders",orders)
+//app.post("/orders",order_search)
+app.get("/order_deteils",order_deteils)
 app.post("/orders_list",orders_list)
 
+//__________Invoice__________
+app.post("/invoice_search",invoice_search)
+app.post("/invoice_data",invoice_data)
 
 
-//_________________special_and_fetures__product___
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //___________________invalid_url_error______________
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
-
-
-
-
 
 //----------------app--listen--------------
 const PORT = 5000;
