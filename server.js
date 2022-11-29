@@ -11,7 +11,8 @@ const {products_search,productpost,products_varient_update,products_update,produ
 const {signup,otp_verify,user_register} = require("./routes/auth.js")
 const {add_to_cart,cart} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin} = require("./routes/admin.js")
-const {orders,order_deteils,orders_list} = require("./routes/orders.js")
+const {orders,order_deteils,orders_list,order_status_change} = require("./routes/orders.js")
+const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
 
 
 
@@ -62,7 +63,7 @@ app.put("/update_category",update_category)
 app.put("/delete_category",delete_category) 
 app.post("/search_category",search_category)
 
-//----------------products---routes----------------------
+//_______________products---routes___________________
 app.post("/products_search",products_search)
 app.post("/products",productpost)
 app.put("/products_varient_update",products_varient_update)
@@ -71,16 +72,16 @@ app.put("/products_delete",products_delete)
 app.post("/products_varient_add",products_varient_add)
 app.get("/product",product)
 app.get("/products_pricing",products_pricing)
-//---------------user-sign-up---routes----------------------
+//________________user-sign-up_______________________
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
 app.post("/user_register",user_register)
 
-//----------------cart--------------------
+//_____________________cart__________________________
 app.post("/add_to_cart",add_to_cart)
 app.get("/cart",cart)
 
-//_________________admin_login______________
+//_________________admin_login_______________________
 app.post("/admin_login", admin_login)
 app.put("/update_password",update_password)
 app.put ("/admin_forget_password",admin_forgot_password)
@@ -88,18 +89,22 @@ app.put("/update_admin",update_admin)
 app.post("/add_admin",add_admin)
 app.post("/admin_search",admin_search)
 app.get("/admin", admin)
-//________________order__________
+//________________order______________________________
 app.post("/orders",orders)
 //app.post("/orders",order_search)
 app.get("/order_deteils",order_deteils)
 app.post("/orders_list",orders_list)
+app.put("/order_status_change",order_status_change)
 
-
+//_______________invoice_list________________________
+app.get("/invoice_list",invoice_list)
+app.post("/invoice_search",invoice_search)
+app.get("/invoice_details",invoice_details)
 
 //_________________special_and_fetures__product___
 
 
-//___________________invalid_url_error______________
+//___________________invalid_url_error_______________
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
