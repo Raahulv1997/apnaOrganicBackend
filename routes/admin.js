@@ -180,6 +180,26 @@ function admin_search(req,res){
     }
 }
 
+function admin(req,res){
+  if(req.query.id == 'all'){
+    connection.query('SELECT * FROM admin_login_details WHERE 1  ',(err,rows,fields)=>{
+      if(err){
+        res.send(err)
+      }else{
+        res.send(rows)
+      }
+    })
+  }else{
+    connection.query('SELECT * FROM admin_login_details WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
+      if(err){
+        console.log("/category_error"+err)
+        res.send(err)
+      }else{
+        //console.log(rows)
+        res.send(rows)
+      }
+    }) 
+  }
+}
 
-
-module.exports = {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search};
+module.exports = {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin};
