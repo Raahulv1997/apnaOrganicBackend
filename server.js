@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 
 const {category,add_category,update_category,delete_category,search_category} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
-const {signup,otp_verify,user_register} = require("./routes/auth.js")
+const {signup,otp_verify,user_register,user_details} = require("./routes/auth.js")
 const {add_to_cart,cart} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin} = require("./routes/admin.js")
 const {orders,order_deteils,orders_list,order_status_change} = require("./routes/orders.js")
@@ -76,6 +76,7 @@ app.get("/products_pricing",products_pricing)
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
 app.post("/user_register",user_register)
+app.get("/user_details",user_details)
 
 //_____________________cart__________________________
 app.post("/add_to_cart",add_to_cart)
