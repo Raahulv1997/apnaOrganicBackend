@@ -13,6 +13,7 @@ const {add_to_cart,cart} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin} = require("./routes/admin.js")
 const {orders,order_deteils,orders_list,order_status_change} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
+const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 
 
 
@@ -40,20 +41,27 @@ var upload = multer({
   storage: storage
   // dest:'./public/catgory_images'
 })
-// var storageP = multer.diskStorage({
-//   destination: (req, file, callBack) => {
-//       callBack(null, './public/catgory_images/')     // './public/images/' directory name where save the file
-//   },
-//   filename: (req, file, callBack) => {
-//     console.log(file.fieldname)
-//       callBack(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-//   }
-// })
 
-// var uploadP = multer({
-//   storageP: storageP
-// })
+//_______________________________________________________________________________________________________________
 
+    const imageStorage = multer.diskStorage({
+  
+        destination: './public/bulk_upload_xls', // Destination to store image 
+        
+        filename: (req, file, cb) => {
+            cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname))
+            // file.fieldname is name of the field (image), path.extname get the uploaded file extension
+        }
+      });
+      
+      const imageUpload = multer({
+        storage: imageStorage,
+        limits: {
+            fileSize: 1000000   // 1000000 Bytes = 1 MB
+        }
+      }) 
+      
+// module.exports={imageUpload}
 
 
 //----------------category----routes------------------------
@@ -101,6 +109,11 @@ app.put("/order_status_change",order_status_change)
 app.get("/invoice_list",invoice_list)
 app.post("/invoice_search",invoice_search)
 app.get("/invoice_details",invoice_details)
+
+
+
+//__________________bulk_upload___________________
+app.post("/product_bulk_uploads",imageUpload.single('bulk_xls'),product_bulk_uploads)
 
 //_________________special_and_fetures__product___
 
