@@ -202,4 +202,53 @@ function admin(req,res){
   }
 }
 
-module.exports = {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin};
+function vendor_status_change(req,res){
+  console.log(req.body.id)
+  connection.query('UPDATE `vendor` SET `status`= "'+req.body.status_change+'" WHERE `id` = '+req.body.id+'',(err,rows,fields)=>{
+    if(err){
+      console.log("/vendor_update_error"+err)
+      res.send(err)
+    }else{
+      if(rows!=''){
+        res.send(rows)
+        console.log("succesfully updated vendor status")
+      }else{
+        console.log("not update vendor status")
+        res.send("not update vendor status")
+      }
+    }
+  })
+  }
+
+function vendor_availability(req,res){
+  // console.log(req.body.id)
+  connection.query('UPDATE `vendor` SET `availability`= "'+req.body.availability_change+'" WHERE `id` = '+req.body.id+'',(err,rows,fields)=>{
+    if(err){
+      console.log("/vendor_update_error"+err)
+      res.send(err)
+    }else{
+      if(rows!=''){
+        res.send(rows)
+        console.log("succesfully updated vendor availability")
+      }else{
+        console.log("not update vendor availability")
+        res.send("not update vendor availability")
+      }
+    }
+  }) 
+}
+
+function vendor_requests(req,res){
+
+  connection.query('SELECT * FROM vendor WHERE status ="pending" ',(err,rows,fields)=>{
+    if(err){
+      console.log("/vendor_error"+err)
+      res.send(err)
+    }else{
+      //console.log(rows)
+      res.send(rows)
+    }
+  }) 
+
+}
+module.exports = {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests};
