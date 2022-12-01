@@ -37,7 +37,6 @@ const fs = require('fs');
                 file.Sheets[file.SheetNames[0]]);
 
             var add_custom_input1 = JSON.stringify(temp[0].add_custom_input)
-            res.send(temp)
             var x = 0;
             function go(){
               console.log("gg"+x)
@@ -89,9 +88,9 @@ const fs = require('fs');
               }
 
     if (x++ < temp.length-1){
-      setTimeout(go, 500);
+      setTimeout(go, 300);
   }else{
-    console.log("successfully added all data")
+    res.send("succesfully added "+x+" products")
   }
 }
 //)
