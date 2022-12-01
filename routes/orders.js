@@ -1,6 +1,7 @@
 const { parse } = require('path');
 const connection = require('../db')
 var max_invoice_no1=0
+
 async function orders(req,res){
 var order_count = 0;
 
