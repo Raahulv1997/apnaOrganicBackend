@@ -136,7 +136,12 @@ function vendor_register(req,res){
       res.send(err)
     }else{
       console.log(rows)
-      res.send({"message":"Create vendor Profile"})
+      if(rows!=''){
+        res.send({"message":"Create vendor Profile"})
+      }else{
+        res.send({"message":"bhiya pele sign up kr lo yr"})
+      }
+      
   
     }
   })
