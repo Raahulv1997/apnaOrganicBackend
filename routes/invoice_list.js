@@ -2,7 +2,7 @@ const connection = require('../db')
 
 
 function invoice_list(req,res){
-    console.log(req.query.id)
+    //console.log(req.query.id)
 
     connection.query('SELECT * FROM `orders` WHERE 1',async (err,rslt)=>{
         if(err){
@@ -10,7 +10,7 @@ function invoice_list(req,res){
         res.send(err)
         }else{
              if(rslt!=''){
-                console.log(rslt)
+                //console.log(rslt)
                 res.send(rslt)
              }else{
                 res.send("not search")
@@ -35,7 +35,7 @@ function invoice_list(req,res){
 }
 
 function invoice_search (req,res){
-    console.log(req.body)
+    //console.log(req.body)
     var {search,from_date,to_date}=req.body
     if(search =='' && from_date == '' && to_date == ''){
     connection.query('SELECT * FROM `orders` WHERE  1',(err,rows,fields)=>{
@@ -90,7 +90,7 @@ function invoice_details(req,res){
         res.send(err)
         }else{
             if(rslt!=""){
-             console.log(rslt)
+            // console.log(rslt)
             res.send(rslt)
             }else{
                 res.send("wrong_id")

@@ -264,6 +264,8 @@ function products_delete(req,res){
         res.send(rows)
       }
     })
+  }else{
+    res.send("not deleted product")
   }
 }
 

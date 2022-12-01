@@ -133,9 +133,26 @@ console.log(name+lastname+email+ password+phone_no+ gender+date_of_birth+address
 })
 
 }
+function user_details(req,res){
+console.log(req.query)
+connection.query("SELECT `user_id`, `first_name`, `last_name`, `email`, `phone_no`, `gender`, `date_of_birth`, `address`, `address2` FROM `users` WHERE `user_id` = "+req.query.user_id+"",async (err, rows, fields) => {
+  if(err){
+    console.log("error"+err)
+    res.send(err)
+  }else{
+    if(rows!=''){
+      console.log(rows)
+      res.send(rows)
+    }else{
+      res.send("invalid user id")
+    }
+    
 
+  }
+})
+}
 
-module.exports = {signup,otp_verify,user_register }
+module.exports = {signup,otp_verify,user_register,user_details }
 
 
 

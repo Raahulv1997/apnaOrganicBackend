@@ -8,12 +8,13 @@ const bodyParser = require("body-parser");
 
 const {category,add_category,update_category,delete_category,search_category} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
-const {signup,otp_verify,user_register} = require("./routes/auth.js")
+const {signup,otp_verify,user_register,user_details} = require("./routes/auth.js")
 const {add_to_cart,cart} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests} = require("./routes/admin.js")
 const {orders,order_deteils,orders_list,order_status_change} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
 const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
+const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 
 
 
@@ -41,20 +42,27 @@ var upload = multer({
   storage: storage
   // dest:'./public/catgory_images'
 })
-// var storageP = multer.diskStorage({
-//   destination: (req, file, callBack) => {
-//       callBack(null, './public/catgory_images/')     // './public/images/' directory name where save the file
-//   },
-//   filename: (req, file, callBack) => {
-//     console.log(file.fieldname)
-//       callBack(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-//   }
-// })
 
-// var uploadP = multer({
-//   storageP: storageP
-// })
+//_______________________________________________________________________________________________________________
 
+    const imageStorage = multer.diskStorage({
+  
+        destination: './public/bulk_upload_xls', // Destination to store image 
+        
+        filename: (req, file, cb) => {
+            cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname))
+            // file.fieldname is name of the field (image), path.extname get the uploaded file extension
+        }
+      });
+      
+      const imageUpload = multer({
+        storage: imageStorage,
+        limits: {
+            fileSize: 1000000   // 1000000 Bytes = 1 MB
+        }
+      }) 
+      
+// module.exports={imageUpload}
 
 
 //----------------category----routes------------------------
@@ -77,6 +85,7 @@ app.get("/products_pricing",products_pricing)
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
 app.post("/user_register",user_register)
+app.get("/user_details",user_details)
 
 //_____________________cart__________________________
 app.post("/add_to_cart",add_to_cart)
@@ -122,6 +131,12 @@ app.put("/vendor_update",vendor_update)
 
 
 
+
+
+//__________________bulk_upload___________________
+app.post("/product_bulk_uploads",imageUpload.single('bulk_xls'),product_bulk_uploads)
+
+//_________________special_and_fetures__product___
 
 
 //___________________invalid_url_error_______________
