@@ -14,6 +14,7 @@ const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,
 const {orders,order_deteils,orders_list,order_status_change} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
 const {vendors,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
+// const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
 const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
 const {review_rating,review_approved,review_list} = require("./routes/review")
