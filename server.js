@@ -17,7 +17,8 @@ const {vendors,vendor_register,vendor_list,vendor_update} = require("./routes/ve
 // const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
 const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
-const {review_rating,review_approved,review_list} = require("./routes/review")
+const {review_rating,review_approved,review_list,review_detaile} = require("./routes/review")
+const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
 
 
 
@@ -141,7 +142,13 @@ app.put("/coupons_delete",coupons_delete)
 app.post("/review_rating",review_rating)
 app.put("/review_approved",review_approved)
 app.post("/review_list",review_list)
-
+app.get("/review_detaile",review_detaile)
+ 
+//_______________cammplain-&-support___________
+app.post("/add_complaint",add_complaint)
+app.get("/complaint_details",complaint_details)
+app.put("/complaint_update",complaint_update)
+app.post("/complaint_search",complaint_search)
 
 
 

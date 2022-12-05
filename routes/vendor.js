@@ -125,9 +125,9 @@ function vendors(req,res){
 
 
 function vendor_register(req,res){
- var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,shop_logo,status,documents,document_name,availability}=req.body;
+ var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,shop_logo,status,multiple_document_upload,document_name,availability}=req.body;
  console.log(req.body)
- var documents1 = JSON.stringify(documents)
+ var documents1 = JSON.stringify(multiple_document_upload)
  var document_name1 = JSON.stringify(document_name)
 
    connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `multiple_document_upload`, `document_name`, `availability`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+shop_logo+"','"+status+"','"+documents1+"','"+document_name1+"','"+availability+"')",async (err, rows, fields) => {
@@ -198,9 +198,9 @@ function vendor_list(req,res){
 }
 
 function vendor_update(req,res){
-    var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,shop_logo,status,documents,document_name,availability}=req.body;
+    var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,shop_logo,status,multiple_document_upload,document_name,availability}=req.body;
     console.log(req.body)
-    var documents1 = JSON.stringify(documents)
+    var documents1 = JSON.stringify(multiple_document_upload)
     var document_name1 = JSON.stringify(document_name)
    
       connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+shop_logo+"',`status`='"+status+"',`multiple_document_upload`='"+documents1+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"' WHERE id='"+id+"'",async (err, rows, fields) => {

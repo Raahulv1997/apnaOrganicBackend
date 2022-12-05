@@ -47,9 +47,7 @@ connection.query('INSERT INTO `orders` (`id`,`user_id`,`vendor_id`,`total_quanti
 
           });
           setTimeout(()=>{res.send("order_count_"+order_count+"")},800)
-          
       }
-      
   }
 })
   
@@ -66,20 +64,41 @@ console.log(max_invoice_no1)
 function order_deteils(req,res){
 //console.log("order_deteils")
 // console.log(req.body.id)
-//console.log(req.query.id)
+console.log(req.query.id)
 
-connection.query('SELECT * FROM `orders_view` WHERE `order_id` ='+req.query.id+'',(err,rslt)=>{
-    if(err){
-    console.log(err)
-    res.send(err)
-    }else{
-        if(rslt!=""){
-         //console.log(rslt)
-        res.send(rslt)
-        }else{
-            res.send("wrong_id")
-        }
-    }
+connection.query('SELECT * FROM `orders` WHERE `id` ='+req.query.id+'',(err,rslt)=>{
+  if(err){
+  console.log(err)
+  res.send(err)
+  }else{
+      if(rslt!=""){
+        console.log(rslt)
+        //res.send(rslt)
+         obj = JSON.parse(JSON.stringify(rslt[0]))
+           o_id = JSON.parse(JSON.stringify(rslt[0].id))
+        console.log(o_id)
+
+        connection.query("SELECT * FROM `order_products` WHERE `order_id` = '"+o_id+"'",(err,rows,fields)=>{
+          if(err){
+            console.log(err)
+            res.send(err)
+          }else{
+            if(rows!=''){
+              obj["product_types"] = JSON.parse(JSON.stringify(rows))
+            console.log(obj)
+            res.send(obj)
+            }else{
+              res.send("error")
+            }
+            
+            //rows!=''?res.send(rows):res.send("error")
+            
+          }
+        }) 
+      }else{
+          res.send("wrong_id")
+      }
+  }
 })
 
 }

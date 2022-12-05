@@ -85,7 +85,22 @@ connection.query('SELECT * FROM `review` WHERE 1',(err,rows,fields)=>{
 }      
 }
 
+function review_detaile(req,res){
+console.log(req.query)
+connection.query("SELECT * FROM `review` WHERE `id` ="+req.query.id+"",(err,rows,fields)=>{
+  if(err){
+    console.log(err)
+    res.send(err)
+  }else{
+    if(rows!=''){
+      res.send(rows)
+    }else{
+      res.send("error")
+    }
+    
+  }
+})
+}
 
 
-
-module.exports={review_rating,review_approved,review_list}
+module.exports={review_rating,review_approved,review_list,review_detaile}

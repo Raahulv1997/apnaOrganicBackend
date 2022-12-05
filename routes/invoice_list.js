@@ -83,15 +83,38 @@ function invoice_search (req,res){
 
 
 function invoice_details(req,res){
+  var o_id ;
+  var obj ;
     console.log(req.query.invoice_no)
-    connection.query('SELECT * FROM `orders_view` WHERE `invoice_no` ='+req.query.invoice_no+'',(err,rslt)=>{
+    connection.query('SELECT * FROM `orders` WHERE `invoice_no` ='+req.query.invoice_no+'',(err,rslt)=>{
         if(err){
         console.log(err)
         res.send(err)
         }else{
             if(rslt!=""){
-            // console.log(rslt)
-            res.send(rslt)
+              console.log(rslt)
+              //res.send(rslt)
+               obj = JSON.parse(JSON.stringify(rslt[0]))
+                 o_id = JSON.parse(JSON.stringify(rslt[0].id))
+              console.log(o_id)
+
+              connection.query("SELECT * FROM `order_products` WHERE `order_id` = '"+o_id+"'",(err,rows,fields)=>{
+                if(err){
+                  console.log(err)
+                  res.send(err)
+                }else{
+                  if(rows!=''){
+                    obj["product_types"] = JSON.parse(JSON.stringify(rows))
+                  console.log(obj)
+                  res.send(obj)
+                  }else{
+                    res.send("error")
+                  }
+                  
+                  //rows!=''?res.send(rows):res.send("error")
+                  
+                }
+              }) 
             }else{
                 res.send("wrong_id")
             }
