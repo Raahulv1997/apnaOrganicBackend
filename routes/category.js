@@ -9,17 +9,17 @@ if(req.query.category == 'all'){
     if(err){
       res.send(err)
     }else{
-      res.send(rows)
+      res.status(200).send(rows)
     }
   })
 }else{
   connection.query('SELECT * FROM category WHERE parent_id ='+req.query.category+' ',(err,rows,fields)=>{
     if(err){
       console.log("/category_error"+err)
-      res.send(err)
+      res.status(500).send(err)
     }else{
       //console.log(rows)
-      res.send(rows)
+      res.status(200).send(rows)
     }
   }) 
 }
@@ -41,10 +41,10 @@ if(req.file == undefined || req.file == '' ){
 connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`category_type`,`image`,`is_active`) VALUES ('+parent_id+',"'+all_parent_id+'",'+parseInt(level+1)+',"'+new_category+'","'+category_type+'","'+image+'",'+0+')',(err,rows,fields)=>{
   if(err){
     console.log("/category_error"+err)
-    res.send(err)
+    res.status(500).send(err)
   }else{
     console.log(rows)
-    res.send(rows)
+    res.status(201).send(rows)
   }
 }) 
 }
@@ -57,9 +57,9 @@ function update_category(req,res){
   connection.query('UPDATE `category` SET `parent_id`="'+parent_id+'",`all_parent_id`="'+all_parent_id+'",`level`="'+level+'",`category_name`="'+new_category+'",`is_active`= "'+0+'" WHERE `id`= "'+id+'"',(err,rows,fields)=>{
     if(err){
       console.log("/category_error"+err)
-      res.send(err)
+      res.status(500).send(err)
     }else{
-      res.send(rows)
+      res.status(200).send(rows)
     }
   }) 
 }
@@ -72,14 +72,14 @@ if(is_active =='0'){
   connection.query('UPDATE `category` SET `is_active`= "'+is_active+'" WHERE `id`= '+id+' AND `level`='+level+'',(err,rows,fields)=>{
     if(err){
       console.log(err)
-      res.send(err)
+      res.status(500).send(err)
     }else{
       connection.query('UPDATE `category` SET `is_active`= "'+is_active+'" WHERE `parent_id`= '+id+'',(err,rows,fields)=>{
         if(err){
           console.log(err)
-          res.send(err)
+          res.status(500).send(err)
         }else{
-          res.send(rows)
+          res.status(202).send(rows)
           console.log("deactivated category")
         }
       })
@@ -112,9 +112,9 @@ console.log(stringsearch)
 connection.query(''+stringsearch+'',(err,rows,fields)=>{
   if(err){
     console.log("/category_error"+err)
-    res.send(err)
+    res.status(502).send(err)
   }else{
-    res.send(rows)
+    res.status(200).send(rows)
   }
 })
 }

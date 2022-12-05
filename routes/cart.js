@@ -8,9 +8,9 @@ var {user_id,product_id,price,discount,quantity,is_active} = req.body
     connection.query('INSERT INTO `cart`(`user_id`, `product_id`, `price`, `discount`, `quantity`, `is_active`) VALUES ('+user_id+','+product_id+','+price+','+discount+','+quantity+','+is_active+')', (err, rows, fields) => {
         if (err) {
           console.log(err)
-          res.send(err)
+          res.status(500).send(err)
         } else {
-            res.send(rows)
+            res.status(200).send(rows)
             console.log(rows) 
         }})
 
@@ -22,15 +22,11 @@ function cart(req,res){
     connection.query('SELECT * FROM `cart` WHERE user_id='+req.query.user_id+'', (err, rows, fields) => {
         if (err) {
           console.log(err)
-          res.send(err)
+          res.status(500).send(err)
         } else {
-            res.send(rows)
+            res.status(200).send(rows)
             console.log(rows) 
         }})   
 }
-
-["jj,jkdf" , "hdfch,jffj"]
-
-data = [{"header":"yy","decription":"yy"},{"vv":"yy"},{"vv":"yy"}]
 
 module.exports = { add_to_cart,cart };

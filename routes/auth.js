@@ -9,7 +9,7 @@ function signup(req, res) {
     connection.query("SELECT * FROM `users` WHERE email = '" + edata + "'",async (err, rows, fields) => {
       if (err) {
         console.log("/signup_error" + err)
-        res.send(err)
+        res.status(500).send(err)
       } else {
         if (rows != '') {
           console.log(rows);
@@ -17,7 +17,7 @@ function signup(req, res) {
           var umail = JSON.parse(JSON.stringify(rows));
           var useremail = umail[0].email;
           console.log(useremail);
-          res.send({"message":"User Already Exist. Please Login"})
+          res.status(200).send({"message":"User Already Exist. Please Login"})
         } else {
           console.log("send________otp")
 
@@ -30,10 +30,10 @@ function signup(req, res) {
               connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
                 if (err) {
                   console.log("/_otp_error" + err);
-                  res.send(err)
+                  res.status(500).send(err)
                 } else {
                   console.log(rows);
-                  res.send(OTP);
+                  res.status(200).send(OTP);
                 }
               })
             return OTP
@@ -93,19 +93,20 @@ console.log(req.body)
             connection.query("INSERT INTO `users`( `email`) VALUES ('"+email_otp+"')",async (err, rows, fields) => {
               if(err){
                 console.log("error"+err)
+                res.status(500).send(err)
               }else{
                 console.log(rows)
-                res.send(rows)
+                res.status(202).send(rows)
 
               }
             })
             
           }else{
-            res.send({"message":"otp does not match"})
+            res.status(500).send({"message":"otp does not match"})
           }
          
         }else{
-          res.send({"message":"email does not match"})
+          res.status(500).send({"message":"email does not match"})
         }
       }
     })
@@ -124,10 +125,10 @@ console.log(name+lastname+email+ password+phone_no+ gender+date_of_birth+address
  connection.query("UPDATE `users` SET `first_name`='"+name+"',`last_name`='"+lastname+"',`password`='"+password+"',`phone_no`='"+phone_no+"',`gender`='"+gender+"',`date_of_birth`= '"+date_of_birth+"',`address`='"+address+"',`address2`='"+address2+"' WHERE email='"+email+"'",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
-    res.send(err)
+    res.status(500).send(err)
   }else{
     console.log(rows)
-    res.send({"message":"updated user profile"})
+    res.status(202).send({"message":"updated user profile"})
 
   }
 })
@@ -138,13 +139,13 @@ console.log(req.query)
 connection.query("SELECT `user_id`, `first_name`, `last_name`, `email`, `phone_no`, `gender`, `date_of_birth`, `address`, `address2` FROM `users` WHERE `user_id` = "+req.query.user_id+"",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
-    res.send(err)
+    res.status(500).send(err)
   }else{
     if(rows!=''){
       console.log(rows)
-      res.send(rows)
+      res.status(200).send(rows)
     }else{
-      res.send("invalid user id")
+      res.status(401).send("invalid user id")
     }
     
 

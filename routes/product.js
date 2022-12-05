@@ -20,20 +20,14 @@ newstr +='(`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE 
 
 }
 console.log(newstr)
-
-  
-  //var catobj = greeting[0]
   var onjkayarrry =Object.keys(catobj)
   var onjvaluarrry =Object.values(catobj)
-  // console.log(onjkayarrry)
-  // console.log(onjvaluarrry)
-  
+
   for(var i=1;i<=onjkayarrry.length-1;i++){
 
     if(onjvaluarrry[i]!=''){
        condition_flag = false;
-      //  console.log("check_condition_")
-      //  console.log(onjkayarrry.length-1+ "__" +i)
+
       if(onjkayarrry.length-1 == i){
         newstr += ' '+onjkayarrry[i]+ '=' + '"' + onjvaluarrry[i] + '"' 
       }else{
@@ -47,7 +41,6 @@ console.log(newstr)
     console.log("_______________ressend-1_______________")
 
     var newqry = 'SELECT * FROM `products_view` WHERE `product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" '+' '+'LIMIT'
-    console.log('newqry-------------------------------------------------')
     console.log(newqry)
     var numRows;
     var queryPagination;
@@ -71,7 +64,7 @@ console.log(newstr)
             connection.query(''+newqry+' '+limit+'',(err,results)=>{
               if(err){
                 console.log(err)
-                res.send(err)
+                res.status(502).send(err)
               }else{
                // console.log(results)
                 var responsePayload = {
@@ -90,28 +83,15 @@ console.log(newstr)
                 }
                 console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
                 //console.log(responsePayload);
-                res.send(responsePayload)
+                res.status(200).send(responsePayload)
               }
             })
             
           }
         })
-    
-    // connection.query('SELECT * FROM `products_view` WHERE 1 ',(err,result)=>{
-    //   if(err){
-    //     console.log("/_products_error"+err)
-    //     res.send(err)
-    //   }else{
-    //     console.log(result)
-    //     res.send(result)
-    //     //res.json(result)
-    //   }
-    // })
   }else{
     var qry = newstr.replace(/___/g,' AND')
 var lastCharOfHello=qry.slice(-4);//d
-// console.log("lastCharOfHello=========================")
-// console.log('f'+lastCharOfHello+'f')
 
 if(lastCharOfHello == " AND"){
 var qry = qry.substring(0, qry.lastIndexOf(" "));
@@ -131,7 +111,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
      console.log('newqry-------------------------------------------------')
      console.log(newqry)
      var numRows;
-     var queryPagination;
+
      var numPerPage = 10
      var page = parseInt(pg.page,pg.per_page) || 0;
      var numPages;
@@ -152,7 +132,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
              connection.query(''+newqry+' '+limit+'',(err,results)=>{
                if(err){
                  console.log(err)
-                 res.send(err)
+                 res.status(502).send(err)
                }else{
                 // console.log(results)
                  var responsePayload = {
@@ -171,7 +151,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
                  }
                  console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
                  //console.log(responsePayload);
-                 res.send(responsePayload)
+                 res.status(200).send(responsePayload)
                }
              })
              
@@ -194,12 +174,12 @@ function productpost(req, res) {
   connection.query("INSERT INTO `products`(`product_title_name`, `product_slug`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `seo_tag`, `other_introduction`, `add_custom_input`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `gst`, `value_added_tax`, `variety`) VALUES ('" + product_title_name + "','" + product_slug + "','" + store_name + "','" + product_description + "','" + product_type + "','"+brand+"','" + category + "','" + parent_category + "','" + seo_tag + "','" + other_introduction + "','"+ add_custom_input1 + "','"+wholesale_sales_tax+"','"+manufacturers_sales_tax+"','"+retails_sales_tax+"','"+gst+"','"+value_added_tax+"',"+variety+")", (err, rows, fields) => {
     if (err) {
       console.log("/_products_post_error" + err)
-      res.send(err)
+      res.status(500).send(err)
     } else {
       
       var p_id = JSON.parse(rows.insertId)
       console.log("p_id______"+p_id)
-      res.send({"message":"succesfully added data on new_product table"})
+      res.status(201).send({"message":"succesfully added data on new_product table"})
       console.log("successfully_add_data_on_new_products")
       product_catagory.forEach((item, index) => {
         console.log(index)
@@ -207,7 +187,7 @@ function productpost(req, res) {
         connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"'+ item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","'+	item.unit_quantity+'",'+ item.quantity +',"'+item.product_status+'")', (err, rows, fields) => {
           if (err) {
             console.log("/_products_post_error" + err)
-            res.send(err)
+            res.status(500).send(err)
           } else {
             console.log("successfully_added_data_on_price_table")
 
@@ -225,10 +205,10 @@ function products_varient_update(req,res){
   connection.query('UPDATE products_pricing SET colors="'+colors+'",size="'+size+'",mrp='+mrp+',product_price='+product_price+',sale_price='+sale_price+',discount='+discount+',manufacturing_date="'+manufacturing_date+'",expire_date="'+expire_date+'",special_offer='+special_offer+',featured_product='+featured_product+',unit="'+unit+'",unit_quantity="'+unit_quantity+'",product_status="'+product_status+'",quantity='+quantity+'  WHERE id='+id+' AND product_id='+product_id+'', (err, rows, fields) => {
     if (err) {
       console.log("/products_update" + err)
-      res.send(err)
+      res.status(500).send(err)
     } else {
       console.log("successfully_updated_data_on_price_table")
-      res.send(rows)
+      res.status(202).send(rows)
     }
   })
 }
@@ -241,10 +221,10 @@ function products_update(req,res){
   connection.query("UPDATE `products` SET `product_title_name`='"+product_title_name+"',`product_slug`='"+product_slug+"',`brand`='"+brand+"',`store_name`='"+store_name+"',`product_description`='"+product_description+"',`product_type`='"+product_type+"',`category`="+category+",`parent_category`='"+parent_category+"',`seo_tag`='"+seo_tag+"',`variety`="+variety+",`other_introduction`='"+other_introduction+"',`add_custom_input`='"+add_custom_input1+"',`wholesale_sales_tax`='"+wholesale_sales_tax+"',`manufacturers_sales_tax`='"+manufacturers_sales_tax+"',`retails_sales_tax`='"+retails_sales_tax+"',`gst`='"+gst+"',`value_added_tax`='"+value_added_tax+"' ,`is_active`='"+is_active+"' WHERE `id`="+id+"", (err, rows, fields) => {
     if (err) {
       console.log("/products_update" + err)
-      res.send(err)
+      res.status(500).send(err)
     } else {
       console.log("successfully_updated_data_on_products_table")
-      res.send(rows)
+      res.status(202).send(rows)
     }
   })
 }
@@ -258,14 +238,14 @@ function products_delete(req,res){
     connection.query('UPDATE products_pricing SET is_delete= "'+is_delete+'" WHERE id='+id+' AND product_id='+product_id+'', (err, rows, fields) => {
       if (err) {
         console.log(err)
-        res.send(err)
+        res.status(500).send(err)
       } else {
         console.log("successfully_products_deleted")
-        res.send(rows)
+        res.status(202).send(rows)
       }
     })
   }else{
-    res.send("not deleted product")
+    res.status(500).send("not deleted product")
   }
 }
 
@@ -277,10 +257,10 @@ function products_varient_add(req,res){
     connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES ('+product_id+',"'+colors+'","'+size+'",'+mrp+','+product_price+','+sale_price+','+discount+',"'+manufacturing_date+'","'+expire_date+'",'+special_offer+','+featured_product+',"'+unit+'",'+unit_quantity+','+quantity+','+product_status+')', (err, rows, fields) => {
       if (err) {
         console.log("/products_update" + err)
-        res.send(err)
+        res.status(500).send(err)
       } else {
         console.log("successfully_add_data_on_price_table")
-        res.send(rows)
+        res.status(202).send(rows)
       }
     })
   }else{
@@ -294,19 +274,19 @@ function products_pricing(req,res){
   if(req.query.id == 'all'){
     connection.query('SELECT * FROM products_pricing WHERE 1  ',(err,rows,fields)=>{
       if(err){
-        res.send(err)
+        res.status(500).send(err)
       }else{
-        res.send(rows)
+        res.status(200).send(rows)
       }
     })
   }else{
     connection.query('SELECT * FROM products_pricing WHERE id ='+req.query.id+' AND product_id ='+req.query.product_id+' ',(err,rows,fields)=>{
       if(err){
         console.log("/product_error"+err)
-        res.send(err)
+        res.status(500).send(err)
       }else{
         //console.log(rows)
-        res.send(rows)
+        res.status(200).send(rows)
       }
     }) 
   }
@@ -317,19 +297,19 @@ function product(req,res){
   if(req.query.id == 'all'){
     connection.query('SELECT * FROM products WHERE 1  ',(err,rows,fields)=>{
       if(err){
-        res.send(err)
+        res.status(500).send(err)
       }else{
-        res.send(rows)
+        res.status(200).send(rows)
       }
     })
   }else{
     connection.query('SELECT * FROM products WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
       if(err){
         console.log("/product_error"+err)
-        res.send(err)
+        res.status(500).send(err)
       }else{
         //console.log(rows)
-        res.send(rows)
+        res.status(200).send(rows)
       }
     }) 
   }

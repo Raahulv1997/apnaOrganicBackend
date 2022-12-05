@@ -19,6 +19,8 @@ const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
 const {review_rating,review_approved,review_list,review_detaile} = require("./routes/review")
 const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
+const {user_products_search} = require("./routes/user.js")
+const {add_wishlist,remove_product_from_wishlist} = require("./routes/wishlist.js")
 
 
 
@@ -91,6 +93,11 @@ app.post("/otp_verification",otp_verify)
 app.post("/user_register",user_register)
 app.get("/user_details",user_details)
 
+app.post("/home",user_products_search)
+
+
+
+
 //_____________________cart__________________________
 app.post("/add_to_cart",add_to_cart)
 app.get("/cart",cart)
@@ -149,6 +156,12 @@ app.post("/add_complaint",add_complaint)
 app.get("/complaint_details",complaint_details)
 app.put("/complaint_update",complaint_update)
 app.post("/complaint_search",complaint_search)
+
+
+//_______________add_wishlist_______________________
+app.post("/add_product_wishlist",add_wishlist)
+app.put("/remove_product_from_wishlist",remove_product_from_wishlist)
+
 
 
 
