@@ -6,7 +6,7 @@ const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 
-const {category,add_category,update_category,delete_category,search_category} = require("./routes/category.js")
+const {category,add_category,update_category,delete_category,search_category,get_all_category} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details} = require("./routes/auth.js")
 const {add_to_cart,cart} = require("./routes/cart.js")
@@ -30,6 +30,8 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.static('public'))
+
 
 app.use(express.urlencoded({ extended: true }));
 // app.use(bodyParser.urlencoded({extended: true,}));
@@ -77,6 +79,8 @@ app.post("/add_category",upload.single('image'),add_category)
 app.put("/update_category",update_category) 
 app.put("/delete_category",delete_category) 
 app.post("/search_category",search_category)
+app.put("/get_all_category",get_all_category)
+
 
 //_______________products---routes___________________
 app.post("/products_search",products_search)
@@ -132,7 +136,8 @@ app.get("/invoice_details",invoice_details)
 app.get("/vendors",vendors)
 // app.post("/vendor_signup",vendor_signup)
 // app.post("/vendor_otp_verify",vendor_otp_verify)
-app.post("/vendor_register",vendor_register)
+// app.post("/vendor_register",vendor_register)
+app.post("/vendor_register",upload.array('image',2),vendor_register)
 app.put("/vendor_update",vendor_update)
 
 //__________________bulk_upload___________________
@@ -140,8 +145,9 @@ app.post("/product_bulk_uploads",imageUpload.single('bulk_xls'),product_bulk_upl
 
 //_________________coupons____________
 app.get("/coupon",coupon)
-app.post("/coupons_add",coupons_add)
-app.put("/coupon_update",coupon_update)
+//app.post("/coupons_add",coupons_add)
+app.post("/coupons_add",upload.single('image'),coupons_add)
+app.put("/coupon_update",upload.single('image'),coupon_update)
 app.post("/coupons_list",coupons_list)
 app.put("/coupons_delete",coupons_delete)
 

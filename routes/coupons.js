@@ -26,26 +26,53 @@ function coupon(req,res){
 
 
 
-function coupons_add(req,res){
-console.log("coupons_add")
-console.log(req.body)
-var {campaign_name,code,product_type,start_date,end_date,minimum_amount,percentage,status,image}=req.body;
+// function coupons_add(req,res){
+// console.log("coupons_add")
+// console.log(req.body)
+// var {campaign_name,code,product_type,start_date,end_date,minimum_amount,percentage,status,image}=req.body;
 
-connection.query('INSERT INTO `coupons`(`campaign_name`, `code`, `product_type`, `start_date`, `end_date`, `minimum_amount`, `percentage`, `status`,`image`) VALUES ("'+campaign_name+'","'+code+'","'+product_type+'",'+start_date+',"'+end_date+'","'+minimum_amount+'","'+percentage+'","'+status+'","'+image+'")',(err,rows,fields)=>{
-    if(err){
-      res.send(err)
-    }else{
-        console.log("Coupon Data Insert Succecsfully")
-      res.send("Coupon Data Insert Succecsfully")
-    }
-  })
-}
+// connection.query('INSERT INTO `coupons`(`campaign_name`, `code`, `product_type`, `start_date`, `end_date`, `minimum_amount`, `percentage`, `status`,`image`) VALUES ("'+campaign_name+'","'+code+'","'+product_type+'","'+start_date+'","'+end_date+'","'+minimum_amount+'","'+percentage+'","'+status+'","'+image+'")',(err,rows,fields)=>{
+//     if(err){
+//       res.send(err)
+//     }else{
+//         console.log("Coupon Data Insert Succecsfully")
+//       res.send("Coupon Data Insert Succecsfully")
+//     }
+//   })
+// }
+
+function coupons_add(req,res){
+  console.log("coupons_add")
+  console.log(req.body)
+  var {campaign_name,code,product_type,start_date,end_date,minimum_amount,percentage,status}=req.body;
+  
+  if(req.file == undefined || req.file == '' ){
+    image="no image"
+  }else{
+    var image = "public/catgory_images/"+req.file.filename;
+    console.log(image)
+  }
+  connection.query('INSERT INTO `coupons`(`campaign_name`, `code`, `product_type`, `start_date`, `end_date`, `minimum_amount`, `percentage`, `status`,`image`) VALUES ("'+campaign_name+'","'+code+'","'+product_type+'","'+start_date+'","'+end_date+'","'+minimum_amount+'","'+percentage+'","'+status+'","'+image+'")',(err,rows,fields)=>{
+      if(err){
+        res.send(err)
+      }else{
+          console.log("Coupon Data Insert Succecsfully")
+        res.send("Coupon Data Insert Succecsfully")
+      }
+    })
+  }
 
 
 
 function coupon_update(req,res){
     console.log(req.body)
-   var {campaign_name,code,product_type,start_date,end_date,minimum_amount,percentage,status,image,id}=req.body;
+   var {campaign_name,code,product_type,start_date,end_date,minimum_amount,percentage,status,id}=req.body;
+   if(req.file == undefined || req.file == '' ){
+    image="no image"
+  }else{
+    var image = "public/catgory_images/"+req.file.filename;
+    console.log(image)
+  }
    connection.query('UPDATE `coupons` SET `campaign_name`="'+campaign_name+'",`code`="'+code+'",`product_type`="'+product_type+'",`start_date`="'+start_date+'",`end_date`="'+end_date+'",`minimum_amount`="'+minimum_amount+'",`percentage`="'+percentage+'",`status`="'+status+'",`image`="'+image+'"  WHERE `id`='+id+' ',(err,rows,fields)=>{
     if(err){
       res.send(err)

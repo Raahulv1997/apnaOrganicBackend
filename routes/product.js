@@ -168,10 +168,10 @@ function productpost(req, res) {
   console.log(postdata)
   console.log(product_catagory)
 
-  var { product_title_name, product_slug, store_name, product_description, product_type, brand, category, parent_category, seo_tag, other_introduction, add_custom_input, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, gst, value_added_tax, id, variety } = postdata[0]
+  var { product_title_name, product_slug, store_name, product_description, product_type, brand, category, parent_category, seo_tag, other_introduction, add_custom_input, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, gst, value_added_tax, id, variety, vendor_id, shop} = postdata[0]
   var add_custom_input1 = JSON.stringify(add_custom_input)
   console.log(add_custom_input1)
-  connection.query("INSERT INTO `products`(`product_title_name`, `product_slug`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `seo_tag`, `other_introduction`, `add_custom_input`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `gst`, `value_added_tax`, `variety`) VALUES ('" + product_title_name + "','" + product_slug + "','" + store_name + "','" + product_description + "','" + product_type + "','"+brand+"','" + category + "','" + parent_category + "','" + seo_tag + "','" + other_introduction + "','"+ add_custom_input1 + "','"+wholesale_sales_tax+"','"+manufacturers_sales_tax+"','"+retails_sales_tax+"','"+gst+"','"+value_added_tax+"',"+variety+")", (err, rows, fields) => {
+  connection.query("INSERT INTO `products`(`product_title_name`, `product_slug`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `seo_tag`, `other_introduction`, `add_custom_input`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `gst`, `value_added_tax`, `variety`, vendor_id, `shop`) VALUES ('" + product_title_name + "','" + product_slug + "','" + store_name + "','" + product_description + "','" + product_type + "','"+brand+"','" + category + "','" + parent_category + "','" + seo_tag + "','" + other_introduction + "','"+ add_custom_input1 + "','"+wholesale_sales_tax+"','"+manufacturers_sales_tax+"','"+retails_sales_tax+"','"+gst+"','"+value_added_tax+"',"+variety+",'"+vendor_id+"', '"+shop+"')", (err, rows, fields) => {
     if (err) {
       console.log("/_products_post_error" + err)
       res.status(500).send(err)
