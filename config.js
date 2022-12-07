@@ -1,6 +1,12 @@
+require('dotenv').config();
+const HOST = process.env.HOST
+const USER = process.env.USER
+const PASSWORD = process.env.PASSWORD
+const DB = process.env.DB
+
 module.exports = {
-    HOST: "localhost",
-    USER: "we2code",
-    PASSWORD: "we2code",
-    DB: "apnaorganicstore"
+    HOST: HOST,
+    USER: USER,
+    PASSWORD: PASSWORD,
+    DB: DB
   };

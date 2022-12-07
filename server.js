@@ -5,11 +5,13 @@ const path  = require('path');
 const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
+require('dotenv').config();
+const SERVER_PORT = process.env.SERVER_PORT
 
 const {category,add_category,update_category,delete_category,search_category,get_all_category} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details} = require("./routes/auth.js")
-const {add_to_cart,cart} = require("./routes/cart.js")
+const {add_to_cart,cart, cart_update,remove_cart} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests} = require("./routes/admin.js")
 const {orders,order_deteils,orders_list,order_status_change} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
@@ -21,6 +23,8 @@ const {review_rating,review_approved,review_list,review_detaile} = require("./ro
 const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
 const {user_products_search} = require("./routes/user.js")
 const {add_wishlist,remove_product_from_wishlist} = require("./routes/wishlist.js")
+const {transaction,transaction_list,transaction_details} = require("./routes/transaction.js")
+
 
 
 
@@ -96,15 +100,14 @@ app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
 app.post("/user_register",user_register)
 app.get("/user_details",user_details)
-
 app.post("/home",user_products_search)
-
-
 
 
 //_____________________cart__________________________
 app.post("/add_to_cart",add_to_cart)
 app.get("/cart",cart)
+app.put("/remove_product_from_cart",remove_cart)
+app.put("/cart_update",cart_update)
 
 //_________________admin_login_______________________
 app.post("/admin_login", admin_login)
@@ -169,6 +172,9 @@ app.post("/add_product_wishlist",add_wishlist)
 app.put("/remove_product_from_wishlist",remove_product_from_wishlist)
 
 
+app.post("/transaction",transaction)
+app.post("/transaction_list",transaction_list)
+app.get("/transaction_details",transaction_details)
 
 
 
@@ -177,10 +183,11 @@ app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
 
-
 //----------------app--listen--------------
-const PORT = 5000;
+var PORT =0
+SERVER_PORT == undefined || SERVER_PORT =='' ? PORT = 5000: PORT = SERVER_PORT;
+
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+  console.log(`Server is running on port ${SERVER_PORT}.`);
 });
 
