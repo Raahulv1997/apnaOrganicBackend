@@ -29,4 +29,18 @@ function cart(req,res){
         }})   
 }
 
-module.exports = { add_to_cart,cart };
+function cart_update(req,res){
+  var {id,quantity} = req.body
+  console.log(req.body)
+    connection.query('UPDATE `cart` SET `quantity`='+quantity+'  WHERE id='+id+'', (err, rows, fields) => {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        } else {
+          rows!=''?res.send(rows):res.send("faild updates")
+          console.log(rows) 
+        }})   
+}
+
+
+module.exports = { add_to_cart,cart ,cart_update};

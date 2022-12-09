@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 const {category,add_category,update_category,delete_category,search_category,get_all_category} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details} = require("./routes/auth.js")
-const {add_to_cart,cart} = require("./routes/cart.js")
+const {add_to_cart,cart,cart_update} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests} = require("./routes/admin.js")
 const {orders,order_deteils,orders_list,order_status_change} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
@@ -21,6 +21,7 @@ const {review_rating,review_approved,review_list,review_detaile} = require("./ro
 const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
 const {user_products_search} = require("./routes/user.js")
 const {add_wishlist,remove_product_from_wishlist} = require("./routes/wishlist.js")
+const {transaction,transaction_list,transaction_details} = require("./routes/transaction.js")
 
 
 
@@ -105,6 +106,7 @@ app.post("/home",user_products_search)
 //_____________________cart__________________________
 app.post("/add_to_cart",add_to_cart)
 app.get("/cart",cart)
+app.put("/cart_update",cart_update)
 
 //_________________admin_login_______________________
 app.post("/admin_login", admin_login)
@@ -169,7 +171,10 @@ app.post("/add_product_wishlist",add_wishlist)
 app.put("/remove_product_from_wishlist",remove_product_from_wishlist)
 
 
-
+//_______________transaction______________________
+app.post("/transaction",transaction)
+app.post("/transaction_list",transaction_list)
+app.get("/transaction_details",transaction_details)
 
 
 //___________________invalid_url_error_______________
