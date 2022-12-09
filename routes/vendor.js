@@ -144,7 +144,8 @@ function vendors(req,res){
 function vendor_register(req,res){
   var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,status,document_name,availability}=req.body;
   console.log(req.body)
- console.log(req.files)
+  console.log(req.files)
+
   if(req.files == undefined || req.files == '' ){
    image="no image"
  }else{
@@ -154,6 +155,7 @@ function vendor_register(req,res){
   var documents1 = JSON.stringify("public/catgory_images/"+req.files[1].filename)
   var document_name1 = JSON.stringify(document_name)
   console.log(documents1)
+
  
     connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `multiple_document_upload`, `document_name`, `availability`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+image+"','"+status+"','"+documents1+"','"+document_name1+"','"+availability+"')",async (err, rows, fields) => {
      if(err){
@@ -224,12 +226,20 @@ function vendor_list(req,res){
 }
 
 function vendor_update(req,res){
-    var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,shop_logo,status,multiple_document_upload,document_name,availability}=req.body;
+    var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,status,document_name,availability}=req.body;
     console.log(req.body)
-    var documents1 = JSON.stringify(multiple_document_upload)
-    var document_name1 = JSON.stringify(document_name)
+
+    if(req.files == undefined || req.files == '' ){
+      image="no image"
+    }else{
+      var image = "public/catgory_images/"+req.files[0].filename;
+      console.log(image)
+    }
+     var documents1 = JSON.stringify("public/catgory_images/"+req.files[1].filename)
+     var document_name1 = JSON.stringify(document_name)
+     console.log(documents1)
    
-      connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+shop_logo+"',`status`='"+status+"',`multiple_document_upload`='"+documents1+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"' WHERE id='"+id+"'",async (err, rows, fields) => {
+      connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+image+"',`status`='"+status+"',`multiple_document_upload`='"+documents1+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"' WHERE id='"+id+"'",async (err, rows, fields) => {
        if(err){
          console.log("error"+err)
          res.send(err)

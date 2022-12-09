@@ -27,6 +27,7 @@ function category(req, res) {
 
 
 function add_category(req, res) {
+  var newlevel = 1
   console.log("add_category")
   console.log(req.body)
   var { parent_id, level, all_parent_id, new_category, image, category_type } = req.body
@@ -37,8 +38,14 @@ function add_category(req, res) {
     var image = "public/catgory_images/" + req.file.filename;
     console.log(image)
   }
+//if(level>1){
+   newlevel = parseInt(level) + 1
+//}else{
+   //newlevel = level
+//}
+ 
 
-  connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`category_type`,`image`,`is_active`) VALUES (' + parent_id + ',"' + all_parent_id + '",' + parseInt(level + 1) + ',"' + new_category + '","' + category_type + '","' + image + '",' + 0 + ')', (err, rows, fields) => {
+  connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`category_type`,`image`,`is_active`) VALUES (' + parent_id + ',"' + all_parent_id + '",' + newlevel + ',"' + new_category + '","' + category_type + '","' + image + '",' + 0 + ')', (err, rows, fields) => {
     if (err) {
       console.log("/category_error" + err)
       res.status(500).send(err)
@@ -49,12 +56,17 @@ function add_category(req, res) {
   })
 }
 
-
 function update_category(req, res) {
   console.log(req.body)
-  var { id, parent_id, level, all_parent_id, new_category } = req.body
+  var { id, parent_id, level, all_parent_id, new_category } = req.body;
+  if (req.file == undefined || req.file == '') {
+    image = "no image"
+  } else {
+    var image = "public/catgory_images/" + req.file.filename;
+    console.log(image)
+  }
 
-  connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '",`is_active`= "' + 0 + '" WHERE `id`= "' + id + '"', (err, rows, fields) => {
+  connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '",`image`="' +image+ '", `is_active`= "' + 0 + '" WHERE `id`= "' + id + '"', (err, rows, fields) => {
     if (err) {
       console.log("/category_error" + err)
       res.status(500).send(err)
@@ -63,7 +75,6 @@ function update_category(req, res) {
     }
   })
 }
-delete_category
 
 function delete_category(req, res) {
   console.log(req.body)
@@ -163,6 +174,17 @@ function get_all_category(req, res) {
 }
 
 
+function category_details(req,res){
+  console.log(req.query)
+  connection.query("SELECT * FROM `category` WHERE id ="+req.query.id+"", (err, rows, fields) => {
+    if (err) {
+      console.log("/category_error" + err)
+      res.status(502).send(err)
+    } else {
+      rows!=''?res.status(200).send(rows):res.status(500).send("not found category")
+    }
+  })
+  
+}
 
-
-module.exports = { category, add_category, update_category, delete_category, search_category, get_all_category}
+module.exports = { category, add_category, update_category, delete_category, search_category, get_all_category,category_details}
