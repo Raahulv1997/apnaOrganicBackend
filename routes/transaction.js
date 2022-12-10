@@ -46,15 +46,24 @@ async function payment(req,res){
       //  console.log(req.session.updateShopCart)
       console.log("success____________________________________________________________________________________success")
       console.log(charge)
-    res.send('success');
-    " c_number, cvc"
+   // res.send('success');
+    
+     var {id, amount, payment_method_details, status , source, source, source, source, receipt_url, currency, payment_method_details, payment_method_details}= charge
 
-    'source.name'
-    'source.exp_month'
-    'source.exp_year'
-    'receipt_url'
-    'amount'
-    'id'
+     console.log("___________________________++++++++++++++____________________________")
+    console.log("'"+id+"','"+req.body.order_id+"', '"+req.body.invoice_no+"', '"+amount+"', '"+payment_method_details.type+"', '"+status+"' , '"+source.name+"', '"+source.last4+"', '"+source.exp_month+"', '"+source.exp_year+"', '"+receipt_url+"', '"+currency+"', '"+payment_method_details.card.brand+"', '"+payment_method_details.card.country+"'")
+
+    
+    connection.query("INSERT INTO `transaction`(`payment_id`, `order_id`, `invoice_no`, `amount`, `method`, `status`, `name`, `c_number`, `exp_month`, `exp_year`, `receipt_url`, `currency`, `brand`, `country`) VALUES ('"+id+"','"+req.body.order_id+"', '"+req.body.invoice_no+"', '"+amount+"', '"+payment_method_details.type+"', '"+status+"' , '"+source.name+"', '"+source.last4+"', '"+source.exp_month+"', '"+source.exp_year+"', '"+receipt_url+"', '"+currency+"', '"+payment_method_details.card.brand+"', '"+payment_method_details.card.country+"')", (err, rows, fields) => {
+      if (err) {
+        console.log("/transaction_details_error" + err)
+        res.status(500).send(err)
+      } else {
+        //console.log(rows)
+        rows ==''?res.status(500).send(err):res.status(200).send(rows)
+        
+      }
+    })
 
    } 
    else

@@ -8,7 +8,7 @@ function user_products_search(req, res) {
       console.log(err)
       res.status(502).send(err)
     }else{
-     console.log(results)
+     //console.log(results)
      results!=''?res.status(200).send(results):res.status(500).send("invalid input data ")
      
     }

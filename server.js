@@ -79,17 +79,6 @@ var upload = multer({
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 // module.exports={imageUpload}
 
 
@@ -191,6 +180,7 @@ app.put("/remove_product_from_wishlist",remove_product_from_wishlist)
 
 app.post("/transaction",payment)
 app.post("/transaction_list",transaction_list)
+app.get("/transaction_details",transaction_details)
 app.get("/transaction_details",transaction_details)
 
 
