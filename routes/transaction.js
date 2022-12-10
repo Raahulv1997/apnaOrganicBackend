@@ -71,7 +71,6 @@ connection.query('SELECT * FROM `transaction` WHERE 1',(err,rows,fields)=>{
 
 
 function transaction_details(req,res){
-
     if (req.query.id == 'all') {
         connection.query('SELECT * FROM transaction WHERE 1  ', (err, rows, fields) => {
           if (err) {
@@ -80,7 +79,7 @@ function transaction_details(req,res){
             res.status(200).send(rows)
           }
         })
-      } else {
+    } else {
         connection.query('SELECT * FROM transaction WHERE id =' + req.query.id + ' ', (err, rows, fields) => {
           if (err) {
             console.log("/transaction_details_error" + err)
@@ -90,7 +89,7 @@ function transaction_details(req,res){
             res.status(200).send(rows)
           }
         })
-      }
+    }
 }
 
 

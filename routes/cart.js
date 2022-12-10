@@ -29,18 +29,33 @@ function cart(req,res){
         }})   
 }
 
-function cart_update(req,res){
-  var {id,quantity} = req.body
+function remove_cart(req,res){
   console.log(req.body)
-    connection.query('UPDATE `cart` SET `quantity`='+quantity+'  WHERE id='+id+'', (err, rows, fields) => {
-        if (err) {
-          console.log(err)
-          res.status(500).send(err)
-        } else {
-          rows!=''?res.send(rows):res.send("faild updates")
-          console.log(rows) 
-        }})   
-}
+  connection.query("DELETE FROM `cart` WHERE `id` = "+req.body.id+" AND `user_id` = '"+req.body.user_id+"'",(err,results)=>{
+    if(err){
+      console.log(err)
+      res.status(502).send(err)
+    }else{
+     console.log(results.affectedRows)
+     results.affectedRows=='1'?res.status(201).send("successfully removed data from wishlist"):res.status(500).send("invalid input data ")
+     
+    }
+  })
+  }
+  
+  function cart_update(req,res){
+    var {id,quantity} = req.body
+    console.log(req.body)
+      connection.query('UPDATE `cart` SET `quantity`='+quantity+'  WHERE id='+id+'', (err, rows, fields) => {
+          if (err) {
+            console.log(err)
+            res.status(500).send(err)
+          } else {
+           // rows!=''?res.send(rows):res.send("faild updates")
+           rows.affectedRows=='1'?res.status(201).send("updated successfully"):res.status(500).send("invalid input data ")
 
+            console.log(rows) 
+          }})   
+  }
 
-module.exports = { add_to_cart,cart ,cart_update};
+module.exports = { add_to_cart, cart, remove_cart, cart_update };
