@@ -171,10 +171,8 @@ function productpost(req, res) {
   var { product_title_name, product_slug, store_name, product_description, product_type, brand, category, parent_category, seo_tag, other_introduction, add_custom_input, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, gst, value_added_tax, id, variety, vendor_id, shop} = postdata[0]
   
   var add_custom_input1 = JSON.stringify(add_custom_input)
-  var add_custom_input2 =JSON.parse(JSON.stringify(add_custom_input))
-  console.log(add_custom_input2)
-  console.log(add_custom_input)
-  connection.query('INSERT INTO `products`(`product_title_name`, `product_slug`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `seo_tag`, `other_introduction`, `add_custom_input`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `gst`, `value_added_tax`, `variety`, vendor_id, `shop`) VALUES ("' + product_title_name + '","' + product_slug + '","' + store_name + '","' + product_description + '","' + product_type + '","'+brand+'","'+ category + '","' + parent_category + '","' + seo_tag + '","' + other_introduction + '","'+ add_custom_input + '","'+wholesale_sales_tax+'","'+manufacturers_sales_tax+'","'+retails_sales_tax+'","'+gst+'","'+value_added_tax+'",'+variety+',"'+vendor_id+'", "'+shop+'")', (err, rows, fields) => {
+  console.log(add_custom_input1)
+  connection.query("INSERT INTO `products`(`product_title_name`, `product_slug`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `seo_tag`, `other_introduction`, `add_custom_input`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `gst`, `value_added_tax`, `variety`, vendor_id, `shop`) VALUES ('" + product_title_name + "','" + product_slug + "','" + store_name + "','" + product_description + "','" + product_type + "','"+brand+"','" + category + "','" + parent_category + "','" + seo_tag + "','" + other_introduction + "','"+ add_custom_input1 + "','"+wholesale_sales_tax+"','"+manufacturers_sales_tax+"','"+retails_sales_tax+"','"+gst+"','"+value_added_tax+"',"+variety+",'"+vendor_id+"', '"+shop+"')", (err, rows, fields) => {
     if (err) {
       console.log("/_products_post_error" + err)
       res.status(500).send(err)
@@ -187,7 +185,7 @@ function productpost(req, res) {
       product_catagory.forEach((item, index) => {
         console.log(index)
 
-        connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"'+ item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","'+	item.unit_quantity+'",'+ item.quantity +',"'+item.product_status+'")', (err, rows, fields) => {
+        connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"'+ item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","'+  item.unit_quantity+'",'+ item.quantity +',"'+item.product_status+'")', (err, rows, fields) => {
           if (err) {
             console.log("/_products_post_error" + err)
             res.status(500).send(err)
