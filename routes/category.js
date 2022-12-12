@@ -7,7 +7,7 @@ function category(req, res) {
   if (req.query.category == 'all') {
     connection.query('SELECT * FROM category WHERE 1  ', (err, rows, fields) => {
       if (err) {
-        res.send(err)
+        res.status(500).send(err)
       } else {
         res.status(200).send(rows)
       }
@@ -27,6 +27,7 @@ function category(req, res) {
 
 
 function add_category(req, res) {
+  var newlevel = 1
   console.log("add_category")
   console.log(req.body)
   var { parent_id, level, all_parent_id, new_category, image, category_type } = req.body
@@ -37,18 +38,21 @@ function add_category(req, res) {
     var image = "public/catgory_images/" + req.file.filename;
     console.log(image)
   }
-
-  connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`category_type`,`image`,`is_active`) VALUES (' + parent_id + ',"' + all_parent_id + '",' + parseInt(level + 1) + ',"' + new_category + '","' + category_type + '","' + image + '",' + 0 + ')', (err, rows, fields) => {
+//if(level>1){
+   newlevel = parseInt(level) + 1
+//}else{
+   //newlevel = level
+//}
+  connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`category_type`,`image`,`is_active`) VALUES (' + parent_id + ',"' + all_parent_id + '",' + newlevel + ',"' + new_category + '","' + category_type + '","' + image + '",' + 0 + ')', (err, rows, fields) => {
     if (err) {
-      console.log("/category_error" + err)
+      console.log("/add_category_error" + err)
       res.status(500).send(err)
     } else {
       console.log(rows)
-      res.status(201).send(rows)
+      res.status(201).send("Succesfully Add Category")
     }
   })
 }
-
 
 function update_category(req, res) {
   console.log(req.body)
@@ -65,12 +69,10 @@ function update_category(req, res) {
       console.log("/category_error" + err)
       res.status(500).send(err)
     } else {
-      res.status(200).send(rows)
+      res.status(200).send("Succesfully Update Category")
     }
   })
 }
-
-delete_category
 
 function delete_category(req, res) {
   console.log(req.body)
@@ -86,7 +88,7 @@ function delete_category(req, res) {
             console.log(err)
             res.status(500).send(err)
           } else {
-            res.status(202).send(rows)
+            res.status(202).send("deactivated category")
             console.log("deactivated category")
           }
         })
@@ -126,8 +128,7 @@ function search_category(req, res) {
   })
 }
 
-// UPDATE `category` SET `parent_id`='"'+parent_id+'"',`all_parent_id`='"'+all_parent_id+'"',`level`='"'+level+'"',`category_name`='"'+new_category+'"',`is_active`= '"'+0+'"'
-// WHERE `id`= id
+
 function get_all_category(req, res) {
   console.log("ssss")
   console.log(req.body)
@@ -163,13 +164,24 @@ function get_all_category(req, res) {
                 console.log("/category_error" + err)
                 res.status(502).send(err)
               } else {
-                rows!=''?res.status(200).send(rows):res.status(500).send("not found category")
-              }
-            })
+                rows!=''?res.status(200).send(rows):res.status(500).send("Not Found Category")
+      }
+  })
 
 }
 
 
+function category_details(req,res){
+  console.log(req.query)
+  connection.query("SELECT * FROM `category` WHERE id ="+req.query.id+"", (err, rows, fields) => {
+    if (err) {
+      console.log("/category_error" + err)
+      res.status(502).send(err)
+    } else {
+      rows!=''?res.status(200).send(rows):res.status(500).send("Not Found Category")
+    }
+  })
+  
+}
 
-
-module.exports = { category, add_category, update_category, delete_category, search_category, get_all_category}
+module.exports = { category, add_category, update_category, delete_category, search_category, get_all_category,category_details}

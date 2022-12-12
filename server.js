@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
 
-const {category,add_category,update_category,delete_category,search_category,get_all_category} = require("./routes/category.js")
+const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details} = require("./routes/auth.js")
 const {add_to_cart,cart, cart_update,remove_cart} = require("./routes/cart.js")
@@ -23,7 +23,7 @@ const {review_rating,review_approved,review_list,review_detaile} = require("./ro
 const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
 const {user_products_search} = require("./routes/user.js")
 const {add_wishlist,remove_product_from_wishlist} = require("./routes/wishlist.js")
-const {transaction,transaction_list,transaction_details} = require("./routes/transaction.js")
+const {payment,transaction_list,transaction_details} = require("./routes/transaction.js")
 
 
 
@@ -72,17 +72,34 @@ var upload = multer({
             fileSize: 1000000   // 1000000 Bytes = 1 MB
         }
       }) 
-      
+
+//_____________________________________________________________________________________________________________________
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // module.exports={imageUpload}
 
 
 //----------------category----routes------------------------
 app.get("/category", category)
 app.post("/add_category",upload.single('image'),add_category)
-app.put("/update_category",upload.single('image'),update_category) 
+app.put("/update_category",upload.single('image'), update_category) 
 app.put("/delete_category",delete_category) 
 app.post("/search_category",search_category)
-app.put("/get_all_category",get_all_category)
+app.get("/get_all_category",get_all_category)
+app.get("/category_details",category_details)
 
 
 //_______________products---routes___________________
@@ -140,7 +157,7 @@ app.get("/vendors",vendors)
 // app.post("/vendor_otp_verify",vendor_otp_verify)
 // app.post("/vendor_register",vendor_register)
 app.post("/vendor_register",upload.array('image',2),vendor_register)
-app.put("/vendor_update",vendor_update)
+app.put("/vendor_update",upload.array('image',2),vendor_update)
 
 //__________________bulk_upload___________________
 app.post("/product_bulk_uploads",imageUpload.single('bulk_xls'),product_bulk_uploads)
@@ -171,7 +188,7 @@ app.post("/add_product_wishlist",add_wishlist)
 app.put("/remove_product_from_wishlist",remove_product_from_wishlist)
 
 
-app.post("/transaction",transaction)
+app.post("/transaction",payment)
 app.post("/transaction_list",transaction_list)
 app.get("/transaction_details",transaction_details)
 

@@ -9,7 +9,7 @@ function user_products_search(req, res) {
       res.status(502).send(err)
     }else{
      console.log(results)
-     results!=''?res.status(200).send(results):res.status(500).send("invalid input data ")
+     results!=''?res.status(200).send(results):res.status(500).send("Invalid Input Data ")
      
     }
 })

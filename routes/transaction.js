@@ -1,20 +1,112 @@
 const connection = require('../db')
+const secretKey="sk_test_51LL4P3Eu1FBdOEuwSWSMEgcb36RKi4rE1Ix4hHHGL5V7wnm68PciVXNgmjvif9H6rqBEJOEcYP59NlKUApN1xd8U003I8dLiBY";
+const stripe = require('stripe')(secretKey);
 
 
-function transaction(req,res){
-    console.log(req.body)
-    var {transaction_id,order_id,invoice_no,transaction_date,amount,method,status}=req.body
-    connection.query("INSERT INTO `transaction`(`transaction_id`, `order_id`, `invoice_no`, `transaction_date`, `amount`, `method`, `status`) VALUES ('"+transaction_id+"','"+order_id+"','"+invoice_no+"','"+transaction_date+"','"+amount+"','"+method+"','"+status+"')",(err,results)=>{
-        if(err){
-          console.log(err)
-          res.status(502).send(err)
-        }else{
-         console.log(results)
-         results!=''?res.status(200).send(results):res.status(500).send("invalid input data ")
+// var stripe = require('stripe')('sk_test_51MD0K3SDWoTO57i2TZXcmiHXX720CQwZKgM9VT9S0V1urGTRwUQTtt7dw95R1qHBXxOlJP6nYHSnkffAEOEzQSgx00w7Q0Xykf');
+// var Publishable_Key = 'pk_test_51MD0K3SDWoTO57i29HWoPwjLang8JVgF9NRsavOJEYg3Kf5KdcbRODGlLnzbtXTVHFuovA04Uj5MCkMxveWL5PDu00C3VJma7P'
+// var Secret_Key = 'sk_test_51MD0K3SDWoTO57i2TZXcmiHXX720CQwZKgM9VT9S0V1urGTRwUQTtt7dw95R1qHBXxOlJP6nYHSnkffAEOEzQSgx00w7Q0Xykf'
+
+//function transaction(req,res){
+   // console.log(req.body)
+// var {transaction_id,order_id,invoice_no,transaction_date,amount,method,status}=req.body
+    // connection.query("INSERT INTO `transaction`(`transaction_id`, `order_id`, `invoice_no`, `transaction_date`, `amount`, `method`, `status`) VALUES ('"+transaction_id+"','"+order_id+"','"+invoice_no+"','"+transaction_date+"','"+amount+"','"+method+"','"+status+"')",(err,results)=>{
+    //     if(err){
+    //       console.log(err)
+    //       res.status(502).send(err)
+    //     }else{
+    //      console.log(results)
+    //      results!=''?res.status(200).send(results):res.status(500).send("invalid input data ")
          
-        }
-    })
+    //     }
+    // })
+//}
+
+async function payment(req,res){
+
+  //totalAmount=req.session.totalSelectedCartCost1;
+ var totalAmount=req.body.totalAmount;
+ console.log(totalAmount)
+
+   const token = await createToken(req.body);
+   console.log(token);
+   if (token.error) {
+      //res.send('failed')
+   }
+   if (!token.id) {
+      // res.send('failed');
+   }
+
+   const charge = await createCharge(token.id, totalAmount);
+   console.log(charge);
+   if (charge && charge.status == 'succeeded') { 
+
+      //  req.session.updateShopCart = [];
+      //  allCartData = [];
+      //  console.log(req.session.updateShopCart)
+      console.log("success____________________________________________________________________________________success")
+      console.log(charge)
+    res.send('success');
+    " c_number, cvc"
+
+    'source.name'
+    'source.exp_month'
+    'source.exp_year'
+    'receipt_url'
+    'amount'
+    'id'
+
+   } 
+   else
+    {
+       console.log("this is faild trans");
+       res.status(500).send('failed');
+   }
 }
+
+const createToken = async (cardData) => {
+   let token = {};
+   try {
+       token = await stripe.tokens.create({
+           card: {
+               number:cardData.c_number,
+               exp_month:cardData.exp_month,
+               exp_year:cardData.exp_year,
+               cvc: cardData.cvc,
+               name:cardData.name
+           }
+       });
+   } catch (error) {
+       switch (error.type) {
+           case 'StripeCardError':
+               token.error = error.message;
+               break;
+           default:
+               token.error = error.message;
+               break;
+       }
+   }
+   return token;
+}
+
+
+const createCharge = async (tokenId, amount) => {
+
+   let charge = {};
+   try {
+       charge = await stripe.charges.create({
+           amount: amount,
+           currency: 'usd',
+           source: tokenId,
+           description: 'My first payment'
+       });
+   } catch (error) {
+       charge.error = error.message;
+   }
+   return charge;
+}
+
+
 
 function transaction_list(req,res){
     console.log(req.body)
@@ -52,18 +144,18 @@ function transaction_list(req,res){
       connection.query(''+stringsearch+'',(err,rows,fields)=>{
         if(err){
           console.log("/transaction_list_error"+err)
-          res.send(err)
+          res.status(500).send(err)
         }else{
-          res.send(rows)
+          res.status(200).send(rows)
         }
       })
 }else{
 connection.query('SELECT * FROM `transaction` WHERE 1',(err,rows,fields)=>{
     if(err){
       console.log("/transaction_list_error"+err)
-      res.send(err)
+      res.status(500).send(err)
     }else{
-      res.send(rows)
+      res.status(200).send(rows)
     }
   })
 }
@@ -74,7 +166,7 @@ function transaction_details(req,res){
     if (req.query.id == 'all') {
         connection.query('SELECT * FROM transaction WHERE 1  ', (err, rows, fields) => {
           if (err) {
-            res.send(err)
+            res.status(500).send(err)
           } else {
             res.status(200).send(rows)
           }
@@ -93,4 +185,4 @@ function transaction_details(req,res){
 }
 
 
-module.exports={transaction,transaction_list,transaction_details}
+module.exports={payment,transaction_list,transaction_details}
