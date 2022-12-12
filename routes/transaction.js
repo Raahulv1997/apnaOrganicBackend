@@ -69,7 +69,7 @@ async function payment(req,res){
    else
     {
        console.log("this is faild trans");
-       res.send('failed');
+       res.status(500).send('failed');
    }
 }
 
@@ -153,18 +153,18 @@ function transaction_list(req,res){
       connection.query(''+stringsearch+'',(err,rows,fields)=>{
         if(err){
           console.log("/transaction_list_error"+err)
-          res.send(err)
+          res.status(500).send(err)
         }else{
-          res.send(rows)
+          res.status(200).send(rows)
         }
       })
 }else{
 connection.query('SELECT * FROM `transaction` WHERE 1',(err,rows,fields)=>{
     if(err){
       console.log("/transaction_list_error"+err)
-      res.send(err)
+      res.status(500).send(err)
     }else{
-      res.send(rows)
+      res.status(200).send(rows)
     }
   })
 }
@@ -175,7 +175,7 @@ function transaction_details(req,res){
     if (req.query.id == 'all') {
         connection.query('SELECT * FROM transaction WHERE 1  ', (err, rows, fields) => {
           if (err) {
-            res.send(err)
+            res.status(500).send(err)
           } else {
             res.status(200).send(rows)
           }

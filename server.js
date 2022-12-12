@@ -22,9 +22,9 @@ const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("
 const {review_rating,review_approved,review_list,review_detaile} = require("./routes/review")
 const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
 const {user_products_search, apna_organic_home} = require("./routes/user.js")
-const {add_wishlist,remove_product_from_wishlist} = require("./routes/wishlist.js")
+const {add_wishlist,remove_product_from_wishlist,wishlist} = require("./routes/wishlist.js")
 const {payment,transaction_list,transaction_details} = require("./routes/transaction.js")
-
+const {revenue} = require("./routes/reoprt.js")
 
 
 
@@ -177,14 +177,16 @@ app.post("/complaint_search",complaint_search)
 //_______________add_wishlist_______________________
 app.post("/add_product_wishlist",add_wishlist)
 app.put("/remove_product_from_wishlist",remove_product_from_wishlist)
+app.get("/wishlist",wishlist)
 
 
 app.post("/transaction",payment)
 app.post("/transaction_list",transaction_list)
 app.get("/transaction_details",transaction_details)
-app.get("/transaction_details",transaction_details)
+//app.get("/transaction_details",transaction_details)
 
-
+//________________reports___________________________
+app.post("/revenue",revenue)
 
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){

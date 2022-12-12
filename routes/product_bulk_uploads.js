@@ -34,7 +34,7 @@ const fs = require('fs');
 
             console.log("count_j" + 0 + "slength" + sheets.length)
             const temp = reader.utils.sheet_to_json(
-                file.Sheets[file.SheetNames[0]]);
+            file.Sheets[file.SheetNames[0]]);
 
             var add_custom_input1 = JSON.stringify(temp[0].add_custom_input)
             var x = 0;
@@ -91,10 +91,10 @@ const fs = require('fs');
     if (x++ < temp.length-1){
       setTimeout(go, 300);
   }else{
-    res.send("succesfully added "+x+" products")
+    res.send("Succesfully Added "+x+" Products")
   }
 }
-//)
+
 go()
   }}
 module.exports = { product_bulk_uploads }

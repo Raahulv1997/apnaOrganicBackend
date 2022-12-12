@@ -7,10 +7,10 @@ function add_complaint(req,res){
    connection.query("INSERT INTO `comaplains_support`(`order_id`, `subject`, `description`) VALUES ('"+order_id+"','"+subject+"','"+description+"')",async (err, rows, fields) => {
     if(err){
       console.log("error"+err)
-      res.send(err)
+      res.status(500).send(err)
     }else{
       console.log(rows)
-      res.send({"message":"added complaint"})
+      res.status(201).send({"Message":"Complaint Added"})
   
     }
 })
@@ -27,10 +27,10 @@ function complaint_details(req,res){
     connection.query(quy,async (err, rows, fields) => {
         if(err){
           console.log("error"+err)
-          res.send(err)
+          res.status(500).send(err)
         }else{
           console.log(rows)
-          res.send(rows)
+          rows!=''?res.status(200).send(rows):res.status(500).send("Not Found Complaints")
         }
     })
 }
@@ -41,15 +41,14 @@ function complaint_update(req,res){
     connection.query("UPDATE `comaplains_support` SET `assigned_to`='"+assigned_to+"',`resolve_date`='"+resolve_date+"',`status_`='"+status_+"',`resolve_description`='"+resolve_description+"' WHERE `id`= "+id+"",async (err, rows, fields) => {
         if(err){
           console.log("error"+err)
-          res.send(err)
+          res.status(500).send(err)
         }else{
-            rows!=''?res.send(rows):res.send("faild updates")
-          console.log(rows)
-          
+            rows!=''?resstatus(200).send("Succesfully Update Complaint"):res.status(500).send("Faild Complaint Update")          
         }
     })
 }
-//SELECT * FROM `comaplains_support` WHERE `id` = 4 AND `status_` = 'pending' AND `ticket_date` LIKE '%2022-12-02%'
+
+
 function complaint_search(req,res){
   console.log(req.body)
     var {id,status_,ticket_date}=req.body;
@@ -85,22 +84,22 @@ function complaint_search(req,res){
         }
       connection.query(''+stringsearch+'',(err,rows,fields)=>{
         if(err){
-          console.log("/review_error"+err)
-          res.send(err)
+          console.log("/complaint_error"+err)
+          res.status(500).send(err)
         }else{
-          res.send(rows)
+          res.status(200).send(rows)
         }
       })
 }else{
 connection.query('SELECT * FROM `comaplains_support` WHERE 1',(err,rows,fields)=>{
     if(err){
-      console.log("/review_error"+err)
-      res.send(err)
+      console.log("/complaint_error"+err)
+      res.status(500).send(err)
     }else{
-      res.send(rows)
+      res.status(200).send(rows)
     }
   })
 }   
-
 }
+
 module.exports={add_complaint,complaint_details,complaint_update,complaint_search}

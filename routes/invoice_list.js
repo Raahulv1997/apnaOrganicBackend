@@ -7,14 +7,14 @@ function invoice_list(req,res){
     connection.query('SELECT * FROM `orders` WHERE 1',async (err,rslt)=>{
         if(err){
         console.log(err)
-        res.send(err)
+        res.status(500).send(err)
         }else{
              if(rslt!=''){
-                //console.log(rslt)
-                res.send(rslt)
+              res.status(200).send(rslt)
              }else{
-                res.send("not search")
-             }
+              res.status(500).send(err)
+              
+            }
         }
     })
 
@@ -41,9 +41,9 @@ function invoice_search (req,res){
     connection.query('SELECT * FROM `orders` WHERE  1',(err,rows,fields)=>{
             if(err){
               console.log("/invoice_search_error"+err)
-              res.send(err)
+              res.status(500).send(err)
             }else{
-             res.send(rows)
+            res.status(200).send(rows)
             }
           })   
     }else{
@@ -51,31 +51,31 @@ function invoice_search (req,res){
             connection.query('SELECT * FROM `orders` WHERE `vendor_id` = '+search+' ',(err,rows,fields)=>{
                 if(err){
                   console.log("/invoice_search_error"+err)
-                  res.send(err)
+                  res.status(500).send(err)
                 }else{
-                  res.send(rows)
+                 res.status(200).send(rows)
                 }
               })
         }
     
         if(from_date!='' && to_date !='' && search == ''){
-            connection.query('SELECT * FROM orders WHERE (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 12:00:00" )',(err,rows,fields)=>{
+            connection.query('SELECT * FROM orders WHERE (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 23:59:59" )',(err,rows,fields)=>{
                 if(err){
                   console.log("/invoice_search_error"+err)
-                  res.send(err)
+                  res.status(500).send(err)
                 }else{
-                 res.send(rows)
+                res.status(200).send(rows)
                 }
               }) 
         }
     }
     if(from_date !='' && search != '' && to_date!='' ){
-        connection.query('SELECT * FROM `orders` WHERE  `vendor_id` = '+search+'  AND (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 12:00:00")',(err,rows,fields)=>{
+        connection.query('SELECT * FROM `orders` WHERE  `vendor_id` = '+search+'  AND (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 23:59:59")',(err,rows,fields)=>{
             if(err){
               console.log("/invoice_search_error"+err)
-              res.send(err)
+              res.status(500).send(err)
             }else{
-              res.send(rows)
+             res.status(200).send(rows)
             }
           })   
     }
@@ -89,8 +89,8 @@ function invoice_details(req,res){
     connection.query('SELECT * FROM `orders` WHERE `invoice_no` ='+req.query.invoice_no+'',(err,rslt)=>{
         if(err){
         console.log(err)
-        res.send(err)
-        }else{
+        res.status(500).send(err)
+      }else{
             if(rslt!=""){
               console.log(rslt)
               //res.send(rslt)
@@ -101,14 +101,14 @@ function invoice_details(req,res){
               connection.query("SELECT * FROM `order_products` WHERE `order_id` = '"+o_id+"'",(err,rows,fields)=>{
                 if(err){
                   console.log(err)
-                  res.send(err)
+                  res.status(500).send(err)
                 }else{
                   if(rows!=''){
                     obj["product_types"] = JSON.parse(JSON.stringify(rows))
                   console.log(obj)
-                  res.send(obj)
+                  res.status(200).send(obj)
                   }else{
-                    res.send("error")
+                    res.status(500).send(err)
                   }
                   
                   //rows!=''?res.send(rows):res.send("error")
@@ -116,7 +116,7 @@ function invoice_details(req,res){
                 }
               }) 
             }else{
-                res.send("wrong_id")
+              res.status(500).send("Wrong Id")
             }
         }
     })

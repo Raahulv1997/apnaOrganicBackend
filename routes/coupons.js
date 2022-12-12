@@ -6,19 +6,19 @@ function coupon(req,res){
     if(req.query.coupon_id == 'all'){
         connection.query('SELECT * FROM coupons WHERE 1  ',(err,rows,fields)=>{
           if(err){
-            res.send(err)
+            res.status(500).send(err)
           }else{
-            res.send(rows)
+            res.status(200).send(rows)
           }
         })
       }else{
         connection.query('SELECT * FROM coupons WHERE id ='+req.query.coupon_id+' ',(err,rows,fields)=>{
           if(err){
             console.log("/Coupouns_error"+err)
-            res.send(err)
+            res.status(500).send(err)
           }else{
             //console.log(rows)
-            res.send(rows)
+            res.status(200).send(rows)
           }
         }) 
       }
@@ -55,10 +55,10 @@ function coupons_add(req,res){
   
   connection.query('INSERT INTO `coupons`(`campaign_name`, `code`, `product_type`, `start_date`, `end_date`, `minimum_amount`, `percentage`, `status`,`image`) VALUES ("'+campaign_name+'","'+code+'","'+product_type+'","'+start_date+'","'+end_date+'","'+minimum_amount+'","'+percentage+'","'+status+'","'+image+'")',(err,rows,fields)=>{
       if(err){
-        res.send(err)
+        res.status(500).send(err)
       }else{
-          console.log("Coupon Data Insert Succecsfully")
-        res.send("Coupon Data Insert Succecsfully")
+        console.log("Coupon Data Insert Succecsfully")
+        res.status(201).send("Coupon Data Insert Succecsfully")
       }
     })
   }
@@ -76,10 +76,10 @@ function coupon_update(req,res){
   }
    connection.query('UPDATE `coupons` SET `campaign_name`="'+campaign_name+'",`code`="'+code+'",`product_type`="'+product_type+'",`start_date`="'+start_date+'",`end_date`="'+end_date+'",`minimum_amount`="'+minimum_amount+'",`percentage`="'+percentage+'",`status`="'+status+'",`image`="'+image+'"  WHERE `id`='+id+' ',(err,rows,fields)=>{
     if(err){
-      res.send(err)
+      res.status(500).send(err)
     }else{
-        console.log("Coupon Data Update Succecsfully")
-      res.send("Coupon Data Update Succecsfully")
+      console.log("Coupon Data Update Succecsfully")
+      res.status(200).send("Coupon Data Update Succecsfully")
     }
   })  
 }
@@ -111,7 +111,6 @@ function coupons_list(req,res){
       var lastCharOfHello=stringsearch.slice(-4);
       console.log("________"+lastCharOfHello+"_______")
       if(lastCharOfHello == "AND "){
-        console.log("andddddddddd")
         var id = stringsearch.substring(stringsearch.lastIndexOf(' AND') +1, stringsearch.indexOf("  "));   
         stringsearch=id;
         }else{
@@ -121,18 +120,18 @@ function coupons_list(req,res){
       connection.query(''+stringsearch+'',(err,rows,fields)=>{
         if(err){
           console.log("/Coupouns_error"+err)
-          res.send(err)
+          res.status(500).send(err)
         }else{
-          res.send(rows)
+          res.status(200).send(rows)
         }
       })
 }else{
 connection.query('SELECT * FROM `coupons` WHERE 1',(err,rows,fields)=>{
     if(err){
       console.log("/Coupouns_error"+err)
-      res.send(err)
+      res.status(500).send(err)
     }else{
-      res.send(rows)
+      res.status(200).send(rows)
     }
   })
 }      
@@ -147,16 +146,15 @@ if(is_active == '0'){
   connection.query('UPDATE vendor SET is_active= "'+is_active+'" WHERE id='+id+' ', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.send(err)
+      res.status(500).send(err)
     } else {
       console.log("successfully_products_deleted")
-      res.send(rows)
+      res.status(200).send("Successfully Products Deleted")
     }
   })
 }else{
-  res.send("not deleted product")
-}
-      
+ res.status(500).send("Not Deleted Product")
+}     
 }
 
 

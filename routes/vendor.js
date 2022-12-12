@@ -8,19 +8,19 @@ function vendors(req,res){
   if(req.query.id == 'all'){
     connection.query('SELECT * FROM vendor WHERE 1  ',(err,rows,fields)=>{
       if(err){
-        res.send(err)
+      res.status(500).send(err)
       }else{
-        res.send(rows)
+        res.status(200).send(rows)
       }
     })
   }else{
     connection.query('SELECT * FROM vendor WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
       if(err){
         console.log("/vendors_error"+err)
-        res.send(err)
+      res.status(500).send(err)
       }else{
         //console.log(rows)
-        res.send(rows)
+        res.status(200).send(rows)
       }
     }) 
   }
@@ -36,7 +36,7 @@ function vendors(req,res){
 //       connection.query("SELECT * FROM `vendor` WHERE email = '" + email_data + "'",async (err, rows, fields) => {
 //         if (err) {
 //           console.log("/signup_error" + err)
-//           res.send(err)
+//         res.status(500).send(err)
 //         } else {
 //           if (rows != '') {
 //             console.log(rows);
@@ -57,7 +57,7 @@ function vendors(req,res){
 //                 connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+email_data+'","'+OTP+'")', (err, rows, fields) => {
 //                   if (err) {
 //                     console.log("/_otp_error" + err);
-//                     res.send(err)
+//                   res.status(500).send(err)
 //                   } else {
 //                     console.log(rows);
 //                     res.send(OTP);
@@ -141,6 +141,7 @@ function vendors(req,res){
 //     }
 //   })
 // }
+
 function vendor_register(req,res){
   var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,status,document_name,availability}=req.body;
   console.log(req.body)
@@ -160,10 +161,10 @@ function vendor_register(req,res){
     connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `multiple_document_upload`, `document_name`, `availability`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+image+"','"+status+"','"+documents1+"','"+document_name1+"','"+availability+"')",async (err, rows, fields) => {
      if(err){
        console.log("error"+err)
-       res.send(err)
+       res.status(500).send(err)
      }else{
        console.log(rows)
-       res.send({"message":"Create vendor Profile"})
+       res.status(200).send({"message":"Create vendor Profile"})
    
      }
    })
@@ -208,18 +209,18 @@ function vendor_list(req,res){
           connection.query(''+stringsearch+'',(err,rows,fields)=>{
             if(err){
               console.log("/vendor_error"+err)
-              res.send(err)
+            res.status(500).send(err)
             }else{
-              res.send(rows)
+              res.status(200).send(rows)
             }
           })
    }else{
     connection.query('SELECT * FROM `vendor` WHERE 1',(err,rows,fields)=>{
         if(err){
           console.log("/vendor_error"+err)
-          res.send(err)
+        res.status(500).send(err)
         }else{
-          res.send(rows)
+          res.status(200).send(rows)
         }
       })
    }      
@@ -242,16 +243,14 @@ function vendor_update(req,res){
       connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+image+"',`status`='"+status+"',`multiple_document_upload`='"+documents1+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"' WHERE id='"+id+"'",async (err, rows, fields) => {
        if(err){
          console.log("error"+err)
-         res.send(err)
+       res.status(500).send(err)
        }else{
          if(rows!=''){
           console.log(rows)
-          res.send({"message":"updated vendor profile"})
+          res.status(200).send({"message":"Updated Vendor Profile"})
         }else{
-          res.send({"message":"error plaese give valid data "})
+          res.status(500).send({"message":"Error Plaese Give Valid Data "})
         }
-         
-     
        }
      })
 }
