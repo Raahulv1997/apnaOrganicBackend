@@ -21,7 +21,7 @@ const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
 const {review_rating,review_approved,review_list,review_detaile} = require("./routes/review")
 const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
-const {user_products_search} = require("./routes/user.js")
+const {user_products_search, apna_organic_home} = require("./routes/user.js")
 const {add_wishlist,remove_product_from_wishlist} = require("./routes/wishlist.js")
 const {payment,transaction_list,transaction_details} = require("./routes/transaction.js")
 
@@ -107,6 +107,7 @@ app.post("/otp_verification",otp_verify)
 app.post("/user_register",user_register)
 app.get("/user_details",user_details)
 app.post("/home",user_products_search)
+app.post("/apna_organic_home",apna_organic_home)
 
 
 //_____________________cart__________________________
