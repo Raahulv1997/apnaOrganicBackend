@@ -52,6 +52,7 @@ function coupons_add(req,res){
     var image = "public/catgory_images/"+req.file.filename;
     console.log(image)
   }
+  
   connection.query('INSERT INTO `coupons`(`campaign_name`, `code`, `product_type`, `start_date`, `end_date`, `minimum_amount`, `percentage`, `status`,`image`) VALUES ("'+campaign_name+'","'+code+'","'+product_type+'","'+start_date+'","'+end_date+'","'+minimum_amount+'","'+percentage+'","'+status+'","'+image+'")',(err,rows,fields)=>{
       if(err){
         res.status(500).send(err)
