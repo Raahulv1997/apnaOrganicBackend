@@ -2,7 +2,7 @@ const connection = require('../db')
 
  function products_search(req, res) {
   var condition_flag = true;
-  console.log("in product");
+  console.log("products_search");
   //console.log(req.query.keydk)
   var catobj = req.body.product_search
   var srch = catobj.search
@@ -13,10 +13,10 @@ console.log(pg)
 console.log(srch)
 var newstr = 'SELECT * from products_view WHERE '
 if(srch != ''){
-console.log("trueeeee")
+//console.log("trueeeee")
 newstr +='(`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%") AND '
 }else{
-  console.log("falseeee")
+ // console.log("falseeee")
 
 }
 console.log(newstr)
@@ -38,7 +38,7 @@ console.log(newstr)
   } 
   if(condition_flag){
 
-    console.log("_______________ressend-1_______________")
+   // console.log("_______________ressend-1_______________")
 
     var newqry = 'SELECT * FROM `products_view` WHERE `product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" '+' '+'LIMIT'
     console.log(newqry)
@@ -53,13 +53,13 @@ console.log(newstr)
       
     connection.query('SELECT count(*) as numRows FROM products_view',(err,results)=>{
           if(err){
-            console.log("/category_error"+err)
+            console.log("error:"+err)
             console.log(err)
             //return err
           }else{
             numRows = results[0].numRows;
             numPages = Math.ceil(numRows / numPerPage);
-            console.log('number of pages:', numPages);
+            //console.log('number of pages:', numPages);
             //console.log(''+newqry+' '+limit+'')
             connection.query(''+newqry+' '+limit+'',(err,results)=>{
               if(err){
@@ -81,7 +81,7 @@ console.log(newstr)
                 else responsePayload.pagination = {
                   err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
                 }
-                console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
+               // console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
                 //console.log(responsePayload);
                 res.status(200).send(responsePayload)
               }
@@ -105,10 +105,10 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
     // console.log(typeof qry)
     // console.log(qry)
 
-     console.log("_______________ressend-2_______________")
+    // console.log("_______________ressend-2_______________")
 
      var newqry = qry+' '+'LIMIT'
-     console.log('newqry-------------------------------------------------')
+    // console.log('newqry-------------------------------------------------')
      console.log(newqry)
      var numRows;
 
@@ -127,7 +127,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
            }else{
              numRows = results[0].numRows;
              numPages = Math.ceil(numRows / numPerPage);
-             console.log('number of pages:', numPages);
+            // console.log('number of pages:', numPages);
              //console.log(''+newqry+' '+limit+'')
              connection.query(''+newqry+' '+limit+'',(err,results)=>{
                if(err){
@@ -149,7 +149,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
                  else responsePayload.pagination = {
                    err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
                  }
-                 console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
+                // console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
                  //console.log(responsePayload);
                  res.status(200).send(responsePayload)
                }
@@ -216,7 +216,9 @@ function products_varient_update(req,res){
 
 function products_update(req,res){
   var {id,product_title_name,product_slug,store_name,product_description,product_type,category,parent_category,seo_tag,other_introduction,add_custom_input,brand,wholesale_sales_tax,manufacturers_sales_tax,retails_sales_tax,value_added_tax,variety,gst,is_active}=req.body
+  console.log("_______products_update________")
   console.log(req.body)
+
   var add_custom_input1 = JSON.stringify(add_custom_input)
   console.log(add_custom_input1)  
   connection.query("UPDATE `products` SET `product_title_name`='"+product_title_name+"',`product_slug`='"+product_slug+"',`brand`='"+brand+"',`store_name`='"+store_name+"',`product_description`='"+product_description+"',`product_type`='"+product_type+"',`category`="+category+",`parent_category`='"+parent_category+"',`seo_tag`='"+seo_tag+"',`variety`="+variety+",`other_introduction`='"+other_introduction+"',`add_custom_input`='"+add_custom_input1+"',`wholesale_sales_tax`='"+wholesale_sales_tax+"',`manufacturers_sales_tax`='"+manufacturers_sales_tax+"',`retails_sales_tax`='"+retails_sales_tax+"',`gst`='"+gst+"',`value_added_tax`='"+value_added_tax+"' ,`is_active`='"+is_active+"' WHERE `id`="+id+"", (err, rows, fields) => {
@@ -295,25 +297,35 @@ function products_pricing(req,res){
 }
 
 function product(req,res){
-  if(req.query.id == 'all'){
-    connection.query('SELECT * FROM products WHERE 1  ',(err,rows,fields)=>{
-      if(err){
-        res.status(500).send(err)
-      }else{
-        res.status(200).send(rows)
-      }
-    })
-  }else{
-    connection.query('SELECT * FROM products WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
+  var product_details =''
+ 
+    connection.query('SELECT * FROM `products` WHERE id ='+req.query.id+'',(err,rows,fields)=>{
       if(err){
         console.log("/product_error"+err)
-        res.status(500).send(err)
+        //res.status(500).send(err)
       }else{
-        //console.log(rows)
-        res.status(200).send(rows)
+        if(rows!=''){
+          product_details = rows[0]
+          console.log(rows[0])
+          connection.query('SELECT * FROM products_pricing WHERE product_id ='+req.query.id+'',(err,row,fields)=>{
+            if(err){
+              console.log("/product_error"+err)
+              res.status(500).send(err)
+            }else{
+              if(row!=''){{Object.assign(product_details,{product_verient:row});
+              res.status(200).send(product_details)}
+            }else{
+              res.status(500).send("error")
+            }
+            }
+          }) 
+        }else{
+          res.status(500).send("error")
+        }
+        
       }
     }) 
-  }
-}
+    
+ }
 
 module.exports = { products_search, productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product};

@@ -25,6 +25,8 @@ const {user_products_search, apna_organic_home} = require("./routes/user.js")
 const {add_wishlist,remove_product_from_wishlist,wishlist} = require("./routes/wishlist.js")
 const {payment,transaction_list,transaction_details} = require("./routes/transaction.js")
 const {revenue} = require("./routes/reoprt.js")
+const {trending_product} = require("./routes/trending_product.js")
+const {latest_product } = require("./routes/latest_product.js")
 
 
 
@@ -99,7 +101,7 @@ app.put("/products_varient_update",products_varient_update)
 app.put("/products_update",products_update)
 app.put("/products_delete",products_delete)
 app.post("/products_varient_add",products_varient_add)
-app.get("/product",product)
+app.get("/product_details",product)
 app.get("/products_pricing",products_pricing)
 //________________user-sign-up_______________________
 app.post("/sign_up",signup)
@@ -187,6 +189,14 @@ app.get("/transaction_details",transaction_details)
 
 //________________reports___________________________
 app.post("/revenue",revenue)
+
+//_______________Featured_product________
+app.get("/trending_product",trending_product)
+
+//_____________Trending_product_____________
+app.get("/latest_product",latest_product)
+
+
 
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){

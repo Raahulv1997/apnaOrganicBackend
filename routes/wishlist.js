@@ -29,7 +29,7 @@ function remove_product_from_wishlist(req,res){
 
 function wishlist(req,res){
   
-  connection.query("SELECT * FROM `wishlist_view1` WHERE user_id = '"+req.query.user_id+"'",(err,results)=>{
+  connection.query("SELECT * FROM `wishlist_view3` WHERE user_id = '"+req.query.user_id+"'",(err,results)=>{
     if(err){
       console.log(err)
       res.status(502).send(err)
