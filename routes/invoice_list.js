@@ -38,7 +38,7 @@ function invoice_search (req,res){
     //console.log(req.body)
     var {search,from_date,to_date}=req.body
     if(search =='' && from_date == '' && to_date == ''){
-    connection.query('SELECT * FROM `orders` WHERE  1',(err,rows,fields)=>{
+    connection.query('SELECT * FROM `orders` WHERE  1 ORDER BY id DESC',(err,rows,fields)=>{
             if(err){
               console.log("/invoice_search_error"+err)
               res.status(500).send(err)
@@ -48,7 +48,7 @@ function invoice_search (req,res){
           })   
     }else{
         if(search != '' && from_date =='' && to_date ==''){
-            connection.query('SELECT * FROM `orders` WHERE `vendor_id` = '+search+' ',(err,rows,fields)=>{
+            connection.query('SELECT * FROM `orders` WHERE `vendor_id` = '+search+' ORDER BY id DESC',(err,rows,fields)=>{
                 if(err){
                   console.log("/invoice_search_error"+err)
                   res.status(500).send(err)
@@ -59,7 +59,7 @@ function invoice_search (req,res){
         }
     
         if(from_date!='' && to_date !='' && search == ''){
-            connection.query('SELECT * FROM orders WHERE (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 12:00:00" )',(err,rows,fields)=>{
+            connection.query('SELECT * FROM orders WHERE (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 23:59:59") ORDER BY id DESC',(err,rows,fields)=>{
                 if(err){
                   console.log("/invoice_search_error"+err)
                   res.status(500).send(err)
@@ -70,7 +70,7 @@ function invoice_search (req,res){
         }
     }
     if(from_date !='' && search != '' && to_date!='' ){
-        connection.query('SELECT * FROM `orders` WHERE  `vendor_id` = '+search+'  AND (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 12:00:00")',(err,rows,fields)=>{
+        connection.query('SELECT * FROM `orders` WHERE  `vendor_id` = '+search+'  AND (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 23:59:59") ORDER BY id DESC',(err,rows,fields)=>{
             if(err){
               console.log("/invoice_search_error"+err)
               res.status(500).send(err)

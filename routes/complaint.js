@@ -82,7 +82,7 @@ function complaint_search(req,res){
            
           console.log("no avia")
         }
-      connection.query(''+stringsearch+'',(err,rows,fields)=>{
+      connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
           console.log("/complaint_error"+err)
           res.status(500).send(err)
@@ -91,7 +91,7 @@ function complaint_search(req,res){
         }
       })
 }else{
-connection.query('SELECT * FROM `comaplains_support` WHERE 1',(err,rows,fields)=>{
+connection.query('SELECT * FROM `comaplains_support` WHERE 1 ORDER BY id DESC ',(err,rows,fields)=>{
     if(err){
       console.log("/complaint_error"+err)
       res.status(500).send(err)

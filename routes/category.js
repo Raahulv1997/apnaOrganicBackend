@@ -5,7 +5,7 @@ function category(req, res) {
   // console.log(typeof req.query.category)
   //res.send(req.query.category)
   if (req.query.category == 'all') {
-    connection.query('SELECT * FROM category WHERE 1  ', (err, rows, fields) => {
+    connection.query('SELECT * FROM category WHERE 1 ', (err, rows, fields) => {
       if (err) {
         res.status(500).send(err)
       } else {

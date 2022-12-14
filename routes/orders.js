@@ -105,7 +105,7 @@ function orders_list(req, res) {
     var newdate = new Date();
     var current_date = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
     // console.log(current_date)
-    connection.query('SELECT * FROM orders_view WHERE `created_on` LIKE "%' + current_date + '%"', (err, rows, fields) => {
+    connection.query('SELECT * FROM orders_view WHERE `created_on` LIKE "%' + current_date + '%" ORDER BY id DESC', (err, rows, fields) => {
       if (err) {
         res.status(500).send(err)
 
@@ -115,9 +115,9 @@ function orders_list(req, res) {
     })
   } else {
     if (status == '' && created_on == '') {
-      connection.query('SELECT * FROM `orders_view` WHERE  1', (err, rows, fields) => {
+      connection.query('SELECT * FROM `orders_view` WHERE  1 ORDER BY id DESC', (err, rows, fields) => {
         if (err) {
-          console.log("/admin_login_details_error" + err)
+          console.log("/orders_list_error" + err)
           res.status(500).send(err)
 
         } else {
@@ -126,9 +126,9 @@ function orders_list(req, res) {
       })
     } else {
       if (status != '' && created_on == '') {
-        connection.query('SELECT * FROM `orders_view` WHERE `status` LIKE "%' + status + '%" ', (err, rows, fields) => {
+        connection.query('SELECT * FROM `orders_view` WHERE `status` LIKE "%' + status + '%" ORDER BY id DESC', (err, rows, fields) => {
           if (err) {
-            console.log("/admin_login_details_error" + err)
+            console.log("/orders_list_error" + err)
             res.status(500).send(err)
 
           } else {
@@ -138,9 +138,9 @@ function orders_list(req, res) {
       }
 
       if (created_on != '' && status == '') {
-        connection.query('SELECT * FROM orders_view WHERE `created_on` >= DATE_SUB(CURDATE(), INTERVAL ' + created_on + ' DAY)', (err, rows, fields) => {
+        connection.query('SELECT * FROM orders_view WHERE `created_on` >= DATE_SUB(CURDATE(), INTERVAL ' + created_on + ' DAY) ORDER BY id DESC', (err, rows, fields) => {
           if (err) {
-            console.log("/admin_login_details_error" + err)
+            console.log("/orders_list_error" + err)
             res.status(500).send(err)
 
           } else {
@@ -150,9 +150,9 @@ function orders_list(req, res) {
       }
     }
     if (status != '' && created_on != '') {
-      connection.query('SELECT * FROM `orders_view` WHERE  `status` LIKE "%' + status + '%"  AND `created_on` >= DATE_SUB(CURDATE(), INTERVAL ' + created_on + ' DAY)', (err, rows, fields) => {
+      connection.query('SELECT * FROM `orders_view` WHERE  `status` LIKE "%' + status + '%"  AND `created_on` >= DATE_SUB(CURDATE(), INTERVAL ' + created_on + ' DAY) ORDER BY id DESC', (err, rows, fields) => {
         if (err) {
-          console.log("/admin_login_details_error" + err)
+          console.log("/orders_list_error" + err)
           res.status(500).send(err)
         } else {
           res.status(200).send(rows)
@@ -162,6 +162,7 @@ function orders_list(req, res) {
 
   }
 }
+
 
 function order_status_change(req, res) {
   //console.log(req.body.id)
@@ -181,4 +182,18 @@ function order_status_change(req, res) {
   })
 }
 
-module.exports = { orders, order_deteils, orders_list, order_status_change }
+
+function orders_by_users(req,res){
+
+  connection.query('SELECT * FROM `orders_view` WHERE  `user_id`= '+req.query.user_id+'  ORDER BY id DESC', (err, rows, fields) => {
+    if (err) {
+      console.log("/orders_list_error" + err)
+      res.status(500).send(err)
+
+    } else {
+       res.status(200).send(rows)
+    }
+  })
+}
+
+module.exports = { orders, order_deteils, orders_list, order_status_change,orders_by_users}

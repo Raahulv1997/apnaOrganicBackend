@@ -13,7 +13,7 @@ const {products_search,productpost,products_varient_update,products_update,produ
 const {signup,otp_verify,user_register,user_details} = require("./routes/auth.js")
 const {add_to_cart,cart, cart_update,remove_cart} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests} = require("./routes/admin.js")
-const {orders,order_deteils,orders_list,order_status_change} = require("./routes/orders.js")
+const {orders,order_deteils,orders_list,order_status_change,orders_by_users} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
 const {vendors,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
 // const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
@@ -21,11 +21,12 @@ const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
 const {review_rating,review_approved,review_list,review_detaile} = require("./routes/review")
 const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
-const {user_products_search} = require("./routes/user.js")
-const {add_wishlist,remove_product_from_wishlist} = require("./routes/wishlist.js")
+const {user_products_search, apna_organic_home} = require("./routes/user.js")
+const {add_wishlist,remove_product_from_wishlist,wishlist} = require("./routes/wishlist.js")
 const {payment,transaction_list,transaction_details} = require("./routes/transaction.js")
-const {trending_product} = require("./routes/trending_product")
-const {latest_product } = require("./routes/latest_products")
+const {revenue,orders_report} = require("./routes/reoprt.js")
+const {trending_product} = require("./routes/trending_product.js")
+const {latest_product } = require("./routes/latest_product.js")
 
 
 
@@ -100,7 +101,7 @@ app.put("/products_varient_update",products_varient_update)
 app.put("/products_update",products_update)
 app.put("/products_delete",products_delete)
 app.post("/products_varient_add",products_varient_add)
-app.get("/product",product)
+app.get("/product_details",product)
 app.get("/products_pricing",products_pricing)
 //________________user-sign-up_______________________
 app.post("/sign_up",signup)
@@ -108,6 +109,7 @@ app.post("/otp_verification",otp_verify)
 app.post("/user_register",user_register)
 app.get("/user_details",user_details)
 app.post("/home",user_products_search)
+app.post("/apna_organic_home",apna_organic_home)
 
 
 //_____________________cart__________________________
@@ -135,6 +137,7 @@ app.get("/order_deteils",order_deteils)
 app.post("/orders_list",orders_list)
 app.put("/order_status_change",order_status_change)
 app.put("/vendor_availability",vendor_availability)
+app.get("/orders_by_users",orders_by_users)
 
 //_______________invoice_list________________________
 app.get("/invoice_list",invoice_list)
@@ -177,12 +180,23 @@ app.post("/complaint_search",complaint_search)
 //_______________add_wishlist_______________________
 app.post("/add_product_wishlist",add_wishlist)
 app.put("/remove_product_from_wishlist",remove_product_from_wishlist)
+app.get("/wishlist",wishlist)
 
 
 app.post("/transaction",payment)
 app.post("/transaction_list",transaction_list)
 app.get("/transaction_details",transaction_details)
-app.get("/transaction_details",transaction_details)
+//app.get("/transaction_details",transaction_details)
+
+//________________reports___________________________
+app.post("/revenue",revenue)
+app.post("/orders_report",orders_report)
+
+//_______________Featured_product________
+app.get("/trending_product",trending_product)
+
+//_____________Trending_product_____________
+app.get("/latest_product",latest_product)
 
 //_______________Featured_product________
 app.get("/trending_product",trending_product)

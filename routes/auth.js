@@ -67,12 +67,12 @@ function signup(req, res) {
 }
 
 function otp_verify(req,res){
+  console.log("--------------------------otp_verify--------------------------")
 console.log(req.body)
   var email_otp = req.body.email
   var otp_ver = req.body.otp
   var cheked_email = regex.test(email_otp);
-  console.log("--------------------------otp_verify--------------------------")
-  console.log(email_otp)
+console.log(email_otp)
   console.log(otp_ver)
   if(cheked_email){
     console.log("email_true")
@@ -80,6 +80,7 @@ console.log(req.body)
       if(err){
         console.log(err)
       }else{
+        console.log("otp_result")
         console.log(rows)
         if(rows!=''){
 

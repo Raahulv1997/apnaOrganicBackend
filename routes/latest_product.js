@@ -1,7 +1,7 @@
 const connection = require('../db')
 
 function latest_product(req,res){
-    connection.query('SELECT * FROM products WHERE `created_on` >= ( CURDATE() - INTERVAL 10 DAY )'
+    connection.query('SELECT * FROM products WHERE `created_on` >= ( CURDATE() - INTERVAL 10 DAY ) ORDER BY id DESC'
     ,(err,results)=>{
         if(err){
           console.log(err)

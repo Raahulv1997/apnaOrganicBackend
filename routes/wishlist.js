@@ -26,4 +26,18 @@ function remove_product_from_wishlist(req,res){
         }
     })
 }
-module.exports={add_wishlist,remove_product_from_wishlist}
+
+function wishlist(req,res){
+  
+  connection.query("SELECT * FROM `wishlist_view3` WHERE user_id = '"+req.query.user_id+"'",(err,results)=>{
+    if(err){
+      console.log(err)
+      res.status(502).send(err)
+    }else{
+     console.log(results.affectedRows)
+     results!=''?res.status(201).send(results):res.status(500).send("invalid url")
+     
+    }
+})
+}
+module.exports={add_wishlist,remove_product_from_wishlist,wishlist}
