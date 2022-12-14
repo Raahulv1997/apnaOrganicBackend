@@ -24,6 +24,8 @@ const {add_complaint,complaint_details,complaint_update,complaint_search} = requ
 const {user_products_search} = require("./routes/user.js")
 const {add_wishlist,remove_product_from_wishlist} = require("./routes/wishlist.js")
 const {payment,transaction_list,transaction_details} = require("./routes/transaction.js")
+const {trending_product} = require("./routes/trending_product")
+const {latest_product } = require("./routes/latest_products")
 
 
 
@@ -181,6 +183,12 @@ app.post("/transaction",payment)
 app.post("/transaction_list",transaction_list)
 app.get("/transaction_details",transaction_details)
 app.get("/transaction_details",transaction_details)
+
+//_______________Featured_product________
+app.get("/trending_product",trending_product)
+
+//_____________Trending_product_____________
+app.get("/latest_product",latest_product)
 
 
 
