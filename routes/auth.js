@@ -1,4 +1,5 @@
 const { Auth, LoginCredentials } = require("two-step-auth");
+const bcrypt = require("bcrypt")
 const connection = require('../db')
 var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z]{2,4})+$/;
 
@@ -17,7 +18,8 @@ function signup(req, res) {
           var umail = JSON.parse(JSON.stringify(rows));
           var useremail = umail[0].email;
           console.log(useremail);
-          res.status(200).send({"message":"User Already Exist. Please Login"})
+          console.log({"message":"User Already Exist. Please Login"});
+          res.status(200).send(false)
         } else {
           console.log("send________otp")
 
@@ -118,12 +120,17 @@ console.log(email_otp)
 
 }
 
-function user_register(req,res){
-  var {name,lastname,email, password,phone_no, gender,date_of_birth,address,address2}=req.body
-console.log(name+lastname+email+ password+phone_no+ gender+date_of_birth+address+address2)
- // UPDATE `users` SET `first_name`='ahish',`last_name`='patidar',`password`='21213778',`phone_no`='2121378943',`gender`='male',`date_of_birth`= '1999-07-30',`address`='indore',`address2`='indore banganga' WHERE email='mayurgeek@gmail.com'
+async function user_register(req,res){
+  var {first_name,last_name,email, password,phone_no, gender,date_of_birth,address,address2}=req.body
+console.log(first_name+last_name+email+ password+phone_no+ gender+date_of_birth+address+address2)
+ 
+// UPDATE `users` SET `first_name`='ahish',`last_name`='patidar',`password`='21213778',`phone_no`='2121378943',`gender`='male',`date_of_birth`= '1999-07-30',`address`='indore',`address2`='indore banganga' WHERE email='mayurgeek@gmail.com'
+ 
+const salt = await bcrypt.genSalt(10);
+ password_salt = await bcrypt.hash(password, salt);
+ console.log(password_salt)
 
- connection.query("UPDATE `users` SET `first_name`='"+name+"',`last_name`='"+lastname+"',`password`='"+password+"',`phone_no`='"+phone_no+"',`gender`='"+gender+"',`date_of_birth`= '"+date_of_birth+"',`address`='"+address+"',`address2`='"+address2+"' WHERE email='"+email+"'",async (err, rows, fields) => {
+ connection.query("UPDATE `users` SET `first_name`='"+first_name+"',`last_name`='"+last_name+"',`password`='"+password_salt+"',`phone_no`='"+phone_no+"',`gender`='"+gender+"',`date_of_birth`= '"+date_of_birth+"',`address`='"+address+"',`address2`='"+address2+"' WHERE email='"+email+"'",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
     res.status(500).send(err)
@@ -137,7 +144,7 @@ console.log(name+lastname+email+ password+phone_no+ gender+date_of_birth+address
 }
 function user_details(req,res){
 console.log(req.query)
-connection.query("SELECT `user_id`, `first_name`, `last_name`, `email`, `phone_no`, `gender`, `date_of_birth`, `address`, `address2` FROM `users` WHERE `user_id` = "+req.query.user_id+"",async (err, rows, fields) => {
+connection.query("SELECT * FROM `users` WHERE `user_id` = "+req.query.user_id+"",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
     res.status(500).send(err)
@@ -148,13 +155,112 @@ connection.query("SELECT `user_id`, `first_name`, `last_name`, `email`, `phone_n
     }else{
       res.status(401).send("invalid user id")
     }
-    
-
   }
 })
 }
 
-module.exports = {signup,otp_verify,user_register,user_details }
+async function user_login(req,res){
+console.log(req.body)
+
+var {user_email,user_password} = req.body
+
+const salt = await bcrypt.genSalt(10);
+password_salt = await bcrypt.hash(user_password, salt);
+console.log(password_salt)
+
+// const validPassword = await bcrypt.compare(password,'$2b$10$81UsHRVghsW.47o7dMqiQ.DsJgTfz333wDFKTYZYQOGkJhoSEr1m6');
+// console.log(validPassword)
+
+ connection.query('SELECT `email` , `password` FROM `users`  WHERE `email` ="'+user_email+'"',async (err,results)=>{
+        if(err){
+          console.log(err)
+          res.send(err)
+        }else{
+            if(results != ''){
+                
+                    console.log(results)
+                    var psw =  JSON.parse(JSON.stringify(results[0].password))
+                    console.log(typeof psw)
+                    const validPassword = await bcrypt.compare(user_password,psw);
+                    console.log(validPassword)
+                    validPassword ?res.send(true) : res.send("check_credintials")
+                    
+            }else{
+                res.send("check_credintials") 
+            }
+            
+        }
+})
+
+}
+
+function change_user_password(req,res){
+  var {email,password,new_password} = req.body
+if(email != '' && password != '' && new_password != ''){
+    console.log("fill all")
+    connection.query('SELECT `email` , `password` FROM `users`  WHERE `email` ="'+email+'"',async (err,results)=>{
+        if(err){
+          console.log(err)
+          res.send(err)
+        }else{
+            if(results != ''){
+                    console.log(results)
+                    var psw =  JSON.parse(JSON.stringify(results[0].password))
+                    console.log(typeof psw)
+                    const validPassword = await bcrypt.compare(password,psw);
+                    console.log(validPassword)
+                    if(validPassword) { 
+                        const salt = await bcrypt.genSalt(10);
+                        password_salt = await bcrypt.hash(new_password, salt);
+                        console.log(password_salt)
+                        connection.query('UPDATE `users` SET `password`= "'+password_salt+'" WHERE `email` = "'+email+'"',async (err,results)=>{
+                            if(err){
+                            console.log(err)
+                            res.send(err)
+                            }else{
+                                console.log("password_updated")
+                                res.send("password_updated")
+                            }
+                        })
+                    }else{
+                         res.send("check_credintials")
+                        }
+            }else{
+                res.send("check_credintials") 
+            }
+        }
+})
+}else{
+    console.log("plaese fill all input")
+}
+}
+
+function user_forgot_password(req,res){
+  console.log(req.body.admin_email)
+  connection.query('SELECT `email`, `password` FROM `users`  WHERE `email` ="'+req.body.email+'"',async (err,results)=>{
+      if(err){
+          console.log(err)
+          res.send(err)
+      }else{
+          if(results != ''){
+                  
+                  var saltpsw = JSON.parse(JSON.stringify(results[0].password))
+                  
+                  // const salt = await bcrypt.genSalt(10);
+                  // deco_salt = await bcrypt.hash(saltpsw, salt);
+                  
+                  console.log("send_password_on_your_mail")
+                  res.send(saltpsw)
+  
+          }else{
+              console.log("invalid_mail")
+              res.send("invalid_mail")
+          }
+      }
+  })
+  
+  }
+module.exports = {signup,otp_verify, user_register,user_details, user_login, change_user_password, user_forgot_password }
 
 
 

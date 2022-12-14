@@ -10,10 +10,10 @@ const SERVER_PORT = process.env.SERVER_PORT
 
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
-const {signup,otp_verify,user_register,user_details} = require("./routes/auth.js")
+const {signup,otp_verify,user_register,user_details,user_login,change_user_password,user_forgot_password} = require("./routes/auth.js")
 const {add_to_cart,cart, cart_update,remove_cart} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests} = require("./routes/admin.js")
-const {orders,order_deteils,orders_list,order_status_change} = require("./routes/orders.js")
+const {orders,order_deteils,orders_list,order_status_change,users_orders} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
 const {vendors,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
 // const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
@@ -110,7 +110,9 @@ app.post("/user_register",user_register)
 app.get("/user_details",user_details)
 app.post("/home",user_products_search)
 app.post("/apna_organic_home",apna_organic_home)
-
+app.post("/user_login",user_login)
+app.post("/change_user_password",change_user_password)
+app.post("/user_forgot_password",user_forgot_password)
 
 //_____________________cart__________________________
 app.post("/add_to_cart",add_to_cart)
@@ -137,7 +139,7 @@ app.get("/order_deteils",order_deteils)
 app.post("/orders_list",orders_list)
 app.put("/order_status_change",order_status_change)
 app.put("/vendor_availability",vendor_availability)
-
+app.get("/users_orders",users_orders)
 //_______________invoice_list________________________
 app.get("/invoice_list",invoice_list)
 app.post("/invoice_search",invoice_search)

@@ -40,7 +40,7 @@ console.log(newstr)
 
    // console.log("_______________ressend-1_______________")
 
-    var newqry = 'SELECT * FROM `products_view` WHERE `product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" '+' '+'LIMIT'
+    var newqry = 'SELECT * FROM `products_view` WHERE `product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" '+'  '+'LIMIT'
     console.log(newqry)
     var numRows;
     var queryPagination;
@@ -61,7 +61,7 @@ console.log(newstr)
             numPages = Math.ceil(numRows / numPerPage);
             //console.log('number of pages:', numPages);
             //console.log(''+newqry+' '+limit+'')
-            connection.query(''+newqry+' '+limit+'',(err,results)=>{
+            connection.query(''+newqry+' '+limit+' ',(err,results)=>{
               if(err){
                 console.log(err)
                 res.status(502).send(err)
