@@ -4,7 +4,7 @@ var max_invoice_no1 = 0
 
 
 async function orders(req, res) {
-
+  var totalcount=0
   var order_count = 0;
   var { user_id, status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon,shipping_charges } = req.body
   console.log("______chk-1_____")
@@ -26,26 +26,44 @@ async function orders(req, res) {
           if (results != '') {
               max_invoice_no1 = 0
               console.log("______chk-2_____")
+              console.log(results)
               var orderid = JSON.parse(JSON.stringify(results.insertId))
               //console.log(results)
               //res.send(results)
               order_product.forEach((item, index) => {
               //console.log("______chk-3_____"+orderid)
               //console.log(item)
+               
+              
               connection.query('INSERT INTO `order_products`(`order_id`, `product_id`, `price`, `quantity`, `gst`, `cgst`, `sgst`, `offer_id`, `discount`, `product_total_price`) VALUES ("' + orderno + '","' + item.product_id + '","' + item.price + '","' + item.quantity + '","' + item.gst + '","' + item.cgst + '","' + item.sgst + '","' + item.offer_id + '","' + item.discount + '", "' + item.product_total_price + '")', async (err, rslt) => {
                 if (err) {
                   console.log(err)
                   res.status(500).send(err)
                 } else {
                   if (rslt != '') {
-                    //console.log(rslt)
+                    console.log("______chk-3_____")
+                    console.log(rslt)
                     order_count++
+                    totalcount +=parseInt(item.product_total_price)
                   }
                 }
               })
 
             });
-            setTimeout(() => { res.status(200).send("order_count_" + order_count + "") }, 800)
+            setTimeout(() => { 
+              console.log(totalcount)
+              console.log(orderno)
+              connection.query("UPDATE `orders` SET `total_amount`='"+totalcount+"' WHERE id = "+orderno+"", async (err,rslt) => {
+                if (err) {
+                  console.log(err)
+                  res.status(500).send(err)
+                } else {
+                  console.log("______chk-4_____")
+                 console.log(rslt)
+                 res.status(200).send("order_count_" + order_count + "") 
+                }
+              })
+            }, 1200)
           }
         }
       })
@@ -184,7 +202,7 @@ function order_status_change(req, res) {
 
 function users_orders(req,res){
 
-  connection.query('SELECT * FROM `orders` WHERE  `user_id`= '+req.query.user_id+'  ORDER BY id DESC', (err, rows, fields) => {
+  connection.query('SELECT * FROM `orders_view` WHERE  `user_id`= '+req.query.user_id+'  ORDER BY id DESC', (err, rows, fields) => {
     if (err) {
       console.log("/orders_list_error" + err)
       res.status(500).send(err)

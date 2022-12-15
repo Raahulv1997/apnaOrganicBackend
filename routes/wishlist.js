@@ -1,8 +1,8 @@
 const connection = require('../db')
 function add_wishlist(req,res){
     console.log(req.body)
-    var {user_id,product_id}=req.body
-    connection.query("INSERT INTO `wishlist`(`user_id`, `product_id`) VALUES ('"+user_id+"','"+product_id+"')",(err,results)=>{
+    var {user_id,product_view_id}=req.body
+    connection.query("INSERT INTO `wishlist`(`user_id`, `product_id`) VALUES ('"+user_id+"','"+product_view_id+"')",(err,results)=>{
         if(err){
           console.log(err)
           res.status(502).send(err)
@@ -36,8 +36,9 @@ function wishlist(req,res){
     }else{
      console.log(results.affectedRows)
      results!=''?res.status(201).send(results):res.status(500).send("invalid url")
-     
     }
 })
 }
+
+
 module.exports={add_wishlist,remove_product_from_wishlist,wishlist}

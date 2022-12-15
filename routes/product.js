@@ -168,11 +168,11 @@ function productpost(req, res) {
   console.log(postdata)
   console.log(product_catagory)
 
-  var { product_title_name, product_slug, store_name, product_description, product_type, brand, category, parent_category, seo_tag, other_introduction, add_custom_input, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, gst, value_added_tax, id, variety, vendor_id, shop } = postdata[0]
+  var { product_title_name, product_slug, store_name, product_description, product_type, brand, category, parent_category, seo_tag, other_introduction, add_custom_input, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, gst, value_added_tax, id, variety, vendor_id, shop ,cgst,sgst} = postdata[0]
 
   var add_custom_input1 = JSON.stringify(add_custom_input)
   console.log(add_custom_input1)
-  connection.query("INSERT INTO `products`(`product_title_name`, `product_slug`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `seo_tag`, `other_introduction`, `add_custom_input`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `gst`, `value_added_tax`, `variety`, vendor_id, `shop`) VALUES ('" + product_title_name + "','" + product_slug + "','" + store_name + "','" + product_description + "','" + product_type + "','" + brand + "','" + category + "','" + parent_category + "','" + seo_tag + "','" + other_introduction + "','" + add_custom_input1 + "','" + wholesale_sales_tax + "','" + manufacturers_sales_tax + "','" + retails_sales_tax + "','" + gst + "','" + value_added_tax + "'," + variety + ",'" + vendor_id + "', '" + shop + "')", (err, rows, fields) => {
+  connection.query("INSERT INTO `products`(`product_title_name`, `product_slug`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `seo_tag`, `other_introduction`, `add_custom_input`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `gst`, `cgst`, `sgst`, `value_added_tax`, `variety`, vendor_id, `shop`) VALUES ('" + product_title_name + "','" + product_slug + "','" + store_name + "','" + product_description + "','" + product_type + "','" + brand + "','" + category + "','" + parent_category + "','" + seo_tag + "','" + other_introduction + "','" + add_custom_input1 + "','" + wholesale_sales_tax + "','" + manufacturers_sales_tax + "','" + retails_sales_tax + "','" + gst + "', '" + cgst + "','" + sgst + "','" + value_added_tax + "'," + variety + ",'" + vendor_id + "', '" + shop + "')", (err, rows, fields) => {
     if (err) {
       console.log("/_products_post_error" + err)
       res.status(500).send(err)
@@ -215,13 +215,13 @@ function products_varient_update(req, res) {
 }
 
 function products_update(req, res) {
-  var { id, product_title_name, product_slug, store_name, product_description, product_type, category, parent_category, seo_tag, other_introduction, add_custom_input, brand, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, value_added_tax, variety, gst, is_active } = req.body
+  var { id, product_title_name, product_slug, store_name, product_description, product_type, category, parent_category, seo_tag, other_introduction, add_custom_input, brand, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, value_added_tax, variety, gst, cgst, sgst, is_active } = req.body
   console.log("_______products_update________")
   console.log(req.body)
 
   var add_custom_input1 = JSON.stringify(add_custom_input)
   console.log(add_custom_input1)
-  connection.query("UPDATE `products` SET `product_title_name`='" + product_title_name + "',`product_slug`='" + product_slug + "',`brand`='" + brand + "',`store_name`='" + store_name + "',`product_description`='" + product_description + "',`product_type`='" + product_type + "',`category`=" + category + ",`parent_category`='" + parent_category + "',`seo_tag`='" + seo_tag + "',`variety`=" + variety + ",`other_introduction`='" + other_introduction + "',`add_custom_input`='" + add_custom_input1 + "',`wholesale_sales_tax`='" + wholesale_sales_tax + "',`manufacturers_sales_tax`='" + manufacturers_sales_tax + "',`retails_sales_tax`='" + retails_sales_tax + "',`gst`='" + gst + "',`value_added_tax`='" + value_added_tax + "' ,`is_active`='" + is_active + "' WHERE `id`=" + id + "", (err, rows, fields) => {
+  connection.query("UPDATE `products` SET `product_title_name`='" + product_title_name + "',`product_slug`='" + product_slug + "',`brand`='" + brand + "',`store_name`='" + store_name + "',`product_description`='" + product_description + "',`product_type`='" + product_type + "',`category`=" + category + ",`parent_category`='" + parent_category + "',`seo_tag`='" + seo_tag + "',`variety`=" + variety + ",`other_introduction`='" + other_introduction + "',`add_custom_input`='" + add_custom_input1 + "',`wholesale_sales_tax`='" + wholesale_sales_tax + "',`manufacturers_sales_tax`='" + manufacturers_sales_tax + "',`retails_sales_tax`='" + retails_sales_tax + "',`gst`='" + gst + "' ,`cgst`='" + cgst + "' ,`sgst`='" + sgst + "',`value_added_tax`='" + value_added_tax + "' ,`is_active`='" + is_active + "' WHERE `id`=" + id + "", (err, rows, fields) => {
     if (err) {
       console.log("/products_update" + err)
       res.status(500).send(err)

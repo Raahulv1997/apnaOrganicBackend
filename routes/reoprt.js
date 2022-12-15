@@ -49,7 +49,7 @@ function revenue(req,res){
 
 function orders_report(req,res){
   console.log(req.body)
-  connection.query("SELECT COUNT(`id`) as order_count,SUM(`total_amount`) net_sales,AVG(`total_amount`) avg_order_value,(SELECT COUNT(product_id) / COUNT(DISTINCT order_id) as avg_item_per_order FROM order_products) as avg_item_per_order FROM orders WHERE `created_on` BETWEEN '"+req.body.from_date+" 24:00:00' AND '"+req.body.to_date+" 23:59:59'",(err,rows,fields)=>{
+  connection.query("SELECT COUNT(`id`) as order_count,SUM(`total_amount`) net_sales,AVG(`total_amount`) avg_order_value,(SELECT COUNT(product_id) / COUNT(DISTINCT order_id) as avg_item_per_order FROM order_products) as avg_item_per_order FROM orders WHERE (`created_on` BETWEEN '"+req.body.from_date+" 24:00:00' AND '"+req.body.to_date+" 23:59:59') AND (NOT `status` = 'return')",(err,rows,fields)=>{
     if(err){
       console.log(err)
       res.status(500).send(err)

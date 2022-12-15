@@ -68,12 +68,19 @@ function signup(req, res) {
 
 }
 
-function otp_verify(req,res){
+async function otp_verify(req,res){
   console.log("--------------------------otp_verify--------------------------")
 console.log(req.body)
   var email_otp = req.body.email
   var otp_ver = req.body.otp
+  var password = req.body.password
   var cheked_email = regex.test(email_otp);
+
+  const salt = await bcrypt.genSalt(10);
+  password_salt = await bcrypt.hash(password, salt);
+  console.log(password_salt)
+
+
 console.log(email_otp)
   console.log(otp_ver)
   if(cheked_email){
@@ -93,7 +100,7 @@ console.log(email_otp)
             console.log("otp verification successfully")
             //res.send({"message":"otp verification successfully"})
 
-            connection.query("INSERT INTO `users`( `email`) VALUES ('"+email_otp+"')",async (err, rows, fields) => {
+            connection.query("INSERT INTO `users`( `email`, `password`) VALUES ('"+email_otp+"','"+password_salt+"')",async (err, rows, fields) => {
               if(err){
                 console.log("error"+err)
                 res.status(500).send(err)
@@ -121,22 +128,22 @@ console.log(email_otp)
 }
 
 async function user_register(req,res){
-  var {first_name,last_name,email, password,phone_no, gender,date_of_birth,address,address2}=req.body
-console.log(first_name+last_name+email+ password+phone_no+ gender+date_of_birth+address+address2)
+  var {first_name,last_name,email,phone_no, gender,date_of_birth,address,address2}=req.body
+console.log(first_name+last_name+email+phone_no+ gender+date_of_birth+address+address2)
  
 // UPDATE `users` SET `first_name`='ahish',`last_name`='patidar',`password`='21213778',`phone_no`='2121378943',`gender`='male',`date_of_birth`= '1999-07-30',`address`='indore',`address2`='indore banganga' WHERE email='mayurgeek@gmail.com'
  
-const salt = await bcrypt.genSalt(10);
- password_salt = await bcrypt.hash(password, salt);
- console.log(password_salt)
-
- connection.query("UPDATE `users` SET `first_name`='"+first_name+"',`last_name`='"+last_name+"',`password`='"+password_salt+"',`phone_no`='"+phone_no+"',`gender`='"+gender+"',`date_of_birth`= '"+date_of_birth+"',`address`='"+address+"',`address2`='"+address2+"' WHERE email='"+email+"'",async (err, rows, fields) => {
+// const salt = await bcrypt.genSalt(10);
+//  password_salt = await bcrypt.hash(password, salt);
+//  console.log(password_salt)
+ //return false
+ connection.query("UPDATE `users` SET `first_name`='"+first_name+"',`last_name`='"+last_name+"',`phone_no`='"+phone_no+"',`gender`='"+gender+"',`date_of_birth`= '"+date_of_birth+"',`address`='"+address+"',`address2`='"+address2+"' WHERE email='"+email+"'",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
     res.status(500).send(err)
   }else{
     console.log(rows)
-    res.status(202).send({"message":"updated user profile"})
+    rows.affectedRows=='1'?res.status(202).send({"message":"updated user profile"}):res.status(500).send({"message":"error"})
 
   }
 })
@@ -144,7 +151,7 @@ const salt = await bcrypt.genSalt(10);
 }
 function user_details(req,res){
 console.log(req.query)
-connection.query("SELECT * FROM `users` WHERE `user_id` = "+req.query.user_id+"",async (err, rows, fields) => {
+connection.query("SELECT `user_id`,`first_name`,`last_name`,`email`,`phone_no`,`gender`,`date_of_birth`,`address`,`address2` FROM `users` WHERE `user_id` = "+req.query.user_id+"",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
     res.status(500).send(err)
@@ -179,11 +186,12 @@ console.log(password_salt)
             if(results != ''){
                 
                     console.log(results)
+                   // return false
                     var psw =  JSON.parse(JSON.stringify(results[0].password))
                     console.log(typeof psw)
                     const validPassword = await bcrypt.compare(user_password,psw);
                     console.log(validPassword)
-                    validPassword ?res.send(true) : res.send("check_credintials")
+                    validPassword ?res.send(true) : res.send(false)
                     
             }else{
                 res.send("check_credintials") 
@@ -219,14 +227,14 @@ if(email != '' && password != '' && new_password != ''){
                             res.send(err)
                             }else{
                                 console.log("password_updated")
-                                res.send("password_updated")
+                                res.send(true)
                             }
                         })
                     }else{
-                         res.send("check_credintials")
+                         res.send(false)
                         }
             }else{
-                res.send("check_credintials") 
+                res.send(false) 
             }
         }
 })
