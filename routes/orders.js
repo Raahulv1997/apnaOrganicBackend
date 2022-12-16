@@ -34,8 +34,9 @@ async function orders(req, res) {
               //console.log("______chk-3_____"+orderid)
               //console.log(item)
                
-              
-              connection.query('INSERT INTO `order_products`(`order_id`, `product_id`, `price`, `quantity`, `gst`, `cgst`, `sgst`, `offer_id`, `discount`, `product_total_price`) VALUES ("' + orderno + '","' + item.product_id + '","' + item.price + '","' + item.quantity + '","' + item.gst + '","' + item.cgst + '","' + item.sgst + '","' + item.offer_id + '","' + item.discount + '", "' + item.product_total_price + '")', async (err, rslt) => {
+// {id,user_id,product_id,product_title_name,product_slug,store_name, product_description,product_type,brand, category, parent_category, seo_tag,other_introduction, wholesale_sales_tax, manufacturers_sales_tax,retails_sales_tax, gst, cgst, sgst,value_added_tax,variety,vendor_id,shop, rating,colors,size, mrp, product_price,sale_price, discount, manufacturing_date,special_offer, featured_product,expire_date,unit,unit_quantity,is_delete,product_status}   
+           
+              connection.query('INSERT INTO `order_products`(`order_id`, `product_id`, `mrp`, `quantity`, `gst`, `cgst`, `sgst`, `offer_id`, `discount`, `product_price`,`product_title_name`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `other_introduction`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `variety`, `vendor_id`, `shop`, `rating`, `colors`, `size`, `sale_price`, `manufacturing_date`, `special_offer`, `product_status`, `expire_date`, `unit`, `unit_quantity`) VALUES ("' + orderno + '","' + item.product_id + '","' + item.mrp + '","' + item.quantity + '","' + item.gst + '","'+item.cgst + '","' + item.sgst + '","' + item.offer_id + '","' + item.discount + '", "' + item.product_price + '","'+item.product_title_name+'", "'+item.store_name+'", "'+item.product_description+'", "'+item.product_type+'", "'+item.brand+'", "'+item.category+'", "'+item.parent_category+'", "'+item.other_introduction+'", "'+item.wholesale_sales_tax+'", "'+item.manufacturers_sales_tax+'", "'+item.retails_sales_tax+'", "'+item.variety+'", "'+item.vendor_id+'", "'+item.shop+'", "'+item.rating+'", "'+item.colors+'", "'+item.size+'", "'+item.sale_price+'", "'+item.manufacturing_date+'", "'+item.special_offer+'", "'+item.product_status+'", "'+item.expire_date+'", "'+item.unit+'", "'+item.unit_quantity+'")', async (err, rslt) => {
                 if (err) {
                   console.log(err)
                   res.status(500).send(err)
@@ -44,7 +45,7 @@ async function orders(req, res) {
                     console.log("______chk-3_____")
                     console.log(rslt)
                     order_count++
-                    totalcount +=parseInt(item.product_total_price)
+                    totalcount +=parseInt(item.product_price)
                   }
                 }
               })
@@ -212,4 +213,12 @@ function users_orders(req,res){
     }
   })
 }
+
+
+
+
 module.exports = { orders, order_deteils, orders_list, order_status_change,users_orders }
+
+
+
+

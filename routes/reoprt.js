@@ -68,7 +68,7 @@ function orders_report(req, res) {
 function products_report(req, res) {
   console.log(req.body)
   var products_report_arr = [];
-  connection.query('SELECT COUNT(DISTINCT `order_id`) as order_count,SUM(`product_total_price`) net_sales,COUNT(product_id) as product_count FROM orders_view WHERE status="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 24:00:00" AND "' + req.body.to_date + ' 23:59:59" ', (err, rows, fields) => {
+  connection.query('SELECT COUNT(DISTINCT `order_id`) as order_count,SUM(`product_price`) net_sales,COUNT(product_id) as product_count FROM orders_view WHERE status="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 24:00:00" AND "' + req.body.to_date + ' 23:59:59" ', (err, rows, fields) => {
     if (err) {
       console.log(err)
       res.status(500).send(err)
@@ -77,7 +77,7 @@ function products_report(req, res) {
     }
   })
 
-  connection.query('SELECT product_id, COUNT(DISTINCT order_id) as order_count,SUM(product_total_price) net_sales,COUNT(product_id) as product_count, (SELECT products.product_title_name FROM products WHERE orders_view.product_id = products.id) as product_name, (SELECT (SELECT category.category_name FROM category WHERE products.category=category.id) FROM products WHERE orders_view.product_id = products.id) as category_name FROM orders_view WHERE `status`="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 24:00:00" AND "' + req.body.to_date + ' 23:59:59"  GROUP BY product_id', (err, rows, fields) => {
+  connection.query('SELECT product_id, COUNT(DISTINCT order_id) as order_count,SUM(product_price) net_sales,COUNT(product_id) as product_count, (SELECT products.product_title_name FROM products WHERE orders_view.product_id = products.id) as product_name, (SELECT (SELECT category.category_name FROM category WHERE products.category=category.id) FROM products WHERE orders_view.product_id = products.id) as category_name FROM orders_view WHERE `status`="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 24:00:00" AND "' + req.body.to_date + ' 23:59:59"  GROUP BY product_id', (err, rows, fields) => {
     if (err) {
       console.log(err)
       res.status(500).send(err)
@@ -94,4 +94,8 @@ function products_report(req, res) {
   })
 }
 
-module.exports = { revenue, orders_report, products_report }
+function categories_report(req,res){
+console.log(req.body)
+}
+
+module.exports = { revenue, orders_report, products_report, categories_report}

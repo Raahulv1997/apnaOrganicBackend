@@ -31,7 +31,7 @@ function cart(req,res){
 
 function remove_cart(req,res){
   console.log(req.body)
-  connection.query("DELETE FROM `cart` WHERE `id` = "+req.body.id+" AND `user_id` = '"+req.body.user_id+"'",(err,results)=>{
+  connection.query("DELETE FROM `cart` WHERE `product_view_id` = "+req.body.id+" AND `user_id` = '"+req.body.user_id+"'",(err,results)=>{
     if(err){
       console.log(err)
       res.status(502).send(err)
