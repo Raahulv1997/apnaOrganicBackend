@@ -1,11 +1,11 @@
 const connection = require('../db')
 
 function add_to_cart(req,res){
-var {user_id,product_id,price,discount,quantity,is_active} = req.body
+var {user_id,product_view_id,price,discount,quantity,is_active} = req.body
 
     console.log(req.body)
 
-    connection.query('INSERT INTO `cart`(`user_id`, `product_id`, `price`, `discount`, `quantity`, `is_active`) VALUES ('+user_id+','+product_id+','+price+','+discount+','+quantity+','+is_active+')', (err, rows, fields) => {
+    connection.query('INSERT INTO `cart`(`user_id`, `product_view_id`, `price`, `discount`, `quantity`, `is_active`) VALUES ('+user_id+','+product_view_id+','+price+','+discount+','+quantity+','+is_active+')', (err, rows, fields) => {
         if (err) {
           console.log(err)
           res.status(500).send(err)
@@ -19,7 +19,7 @@ var {user_id,product_id,price,discount,quantity,is_active} = req.body
 function cart(req,res){
   console.log(req.query.user_id)
     console.log("user_cart")
-    connection.query('SELECT * FROM `cart` WHERE user_id='+req.query.user_id+'', (err, rows, fields) => {
+    connection.query('SELECT * FROM `cart_view` WHERE user_id='+req.query.user_id+'', (err, rows, fields) => {
         if (err) {
           console.log(err)
           res.status(500).send(err)
@@ -58,4 +58,17 @@ function remove_cart(req,res){
           }})   
   }
 
-module.exports = { add_to_cart, cart, remove_cart, cart_update };
+  function cart_list(req,res){
+    console.log("carttttttttttttt")
+  //   connection.query("SELECT * FROM `cart_view` WHERE user_id = '"+req.query.user_id+"'",(err,results)=>{
+  //     if(err){
+  //       console.log(err)
+  //       res.status(502).send(err)
+  //     }else{
+  //      console.log(results.affectedRows)
+  //      results!=''?res.status(201).send(results):res.status(500).send("invalid url")
+  //     }
+  // })
+  }
+
+module.exports = { add_to_cart, cart, remove_cart, cart_update, cart_list };
