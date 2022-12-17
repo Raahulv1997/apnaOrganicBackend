@@ -24,7 +24,7 @@ const {add_complaint,complaint_details,complaint_update,complaint_search} = requ
 const {user_products_search, apna_organic_home} = require("./routes/user.js")
 const {add_wishlist,remove_product_from_wishlist,wishlist} = require("./routes/wishlist.js")
 const {payment,transaction_list,transaction_details} = require("./routes/transaction.js")
-const {revenue,orders_report,products_report,coupons_report} = require("./routes/reoprt.js")
+const {revenue,orders_report,products_report,coupons_report,categories_report} = require("./routes/reoprt.js")
 const {trending_product} = require("./routes/trending_product.js")
 const {latest_product } = require("./routes/latest_product.js")
 
@@ -194,12 +194,14 @@ app.post("/revenue",revenue)
 app.post("/orders_report",orders_report)
 app.post("/products_report",products_report)
 app.post("/coupons_report",coupons_report)
+app.post("/categories_report",categories_report)
 
 //_______________Featured_product________
 app.get("/trending_product",trending_product)
 
 //_____________Trending_product_____________
 app.get("/latest_product",latest_product)
+
 
 
 

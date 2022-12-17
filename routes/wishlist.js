@@ -15,7 +15,8 @@ function add_wishlist(req,res){
 }
 
 function remove_product_from_wishlist(req,res){
-    connection.query("DELETE FROM `wishlist` WHERE `id` = "+req.body.id+" AND `user_id` = '"+req.body.user_id+"'",(err,results)=>{
+  console.log(req.body)
+    connection.query("DELETE FROM `wishlist` WHERE `product_id` = '"+req.body.id+"' AND `user_id` = '"+req.body.user_id+"'",(err,results)=>{
         if(err){
           console.log(err)
           res.status(502).send(err)
@@ -29,7 +30,7 @@ function remove_product_from_wishlist(req,res){
 
 function wishlist(req,res){
   
-  connection.query("SELECT * FROM `wishlist_view` WHERE user_id = '"+req.query.user_id+"'",(err,results)=>{
+  connection.query("SELECT * FROM `wishlist_view1` WHERE user_id = '"+req.query.user_id+"'",(err,results)=>{
     if(err){
       console.log(err)
       res.status(502).send(err)
