@@ -178,7 +178,7 @@ console.log(password_salt)
 // const validPassword = await bcrypt.compare(password,'$2b$10$81UsHRVghsW.47o7dMqiQ.DsJgTfz333wDFKTYZYQOGkJhoSEr1m6');
 // console.log(validPassword)
 
- connection.query('SELECT `email` , `password` FROM `users`  WHERE `email` ="'+user_email+'"',async (err,results)=>{
+ connection.query('SELECT `user_id`, `email` , `password` FROM `users`  WHERE `email` ="'+user_email+'"',async (err,results)=>{
         if(err){
           console.log(err)
           res.send(err)
@@ -191,7 +191,7 @@ console.log(password_salt)
                     console.log(typeof psw)
                     const validPassword = await bcrypt.compare(user_password,psw);
                     console.log(validPassword)
-                    validPassword ?res.send(true) : res.send(false)
+                    validPassword ?res.send({"user_id":results[0].user_id,"user_email":results[0].email}) : res.send(false)
                     
             }else{
                 res.send("check_credintials") 

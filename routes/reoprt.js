@@ -22,11 +22,6 @@ function revenue(req, res) {
 
     }
   })
-
-
-
-
-
   connection.query("SELECT SUM(coupons.percentage) as total_discount FROM coupons WHERE id IN(SELECT discount_coupon FROM orders WHERE (`created_on` BETWEEN '" + req.body.from_date + " 24:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return'))", (err, rows, fields) => {
     if (err) {
       console.log(err)
@@ -36,8 +31,8 @@ function revenue(req, res) {
         Object.assign(revenuearr[0], rows[0])
         var coupon_discount = revenuearr[0].gross_total_amount / 100 * revenuearr[0].total_discount
         var net_sale = revenuearr[0].gross_total_amount - coupon_discount
-        var total_amount_with_shipping_tax = revenuearr[0].gross_total_amount + revenuearr[0].total_shipping_charges
-        Object.assign(revenuearr[0], { net_sale, total_amount_with_shipping_tax })
+        var total_amount_with_shipping = revenuearr[0].gross_total_amount + revenuearr[0].total_shipping_charges
+        Object.assign(revenuearr[0], { net_sale, total_amount_with_shipping})
         res.status(200).send(revenuearr)
       } else {
         res.status(500).send("error")
@@ -96,6 +91,33 @@ function products_report(req, res) {
 
 function categories_report(req,res){
 console.log(req.body)
+var cat_str = 'SELECT SUM(`total_amount`) total_sold_product_amount, COUNT(`id`) total_sold_product_count, COUNT(DISTINCT order_id) order_count FROM `orders_view` WHERE '
+if(req.body.parent_category ==''){
+cat_str +="(`created_on` BETWEEN '" + req.body.from_date + " 24:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')"
+}else{
+  var cat_arr = JSON.stringify(req.body.parent_category);
+var abc="'"+cat_arr+"'"
+const cat_string = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
+console.log(cat_string)
+  cat_str += "parent_category IN ("+cat_string+") AND (`created_on` BETWEEN '" + req.body.from_date + " 24:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')"
+}
+
+// SELECT * FROM `orders_view` WHERE parent_category = '"+req.body.category+"' AND (`created_on` BETWEEN '" + req.body.from_date + " 24:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')
+
+// SELECT  COUNT(`id`) total_sold FROM `orders_view` WHERE parent_category IN ('5,18','5,19') AND (`created_on` BETWEEN '2022-11-28 24:00:00' AND '2022-11-29 23:59:59') AND (NOT `status` = 'return')
+
+//SELECT COUNT(DISTINCT order_id) FROM orders_view WHERE parent_category IN ('5,18','5,19') AND (`created_on` BETWEEN '2022-11-28 24:00:00' AND '2022-11-29 23:59:59') AND (NOT `status` = 'return')
+connection.query(cat_str, (err, rows, fields) => {
+  if (err) {
+    console.log(err)
+    res.status(500).send(err)
+  } else {
+    
+    rows != '' ? res.status(200).send(rows) : res.status(500).send(err)
+  }
+})
+
+
 }
 
 module.exports = { revenue, orders_report, products_report, categories_report}
