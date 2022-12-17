@@ -23,8 +23,11 @@ if(u_id!==''){
     //console.log(req.query.keydk)
     var catobj = req.body.product_search
     var srch = catobj.search
-  
-    console.log( catobj)
+    var price_to=catobj.price_to;
+    var price_from=catobj.price_from;
+    console.log(price_to)
+    console.log(price_from)
+  console.log( catobj)
   var pg = req.query
   console.log(pg)
   console.log(srch)
@@ -36,20 +39,39 @@ if(u_id!==''){
     console.log("falseeee")
   
   }
+  if (price_to != '' && price_from !='') {
+    //console.log("trueeeee")
+    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND '
+  } else {
+    // console.log("falseeee")
+  }
   console.log(newstr)
     var onjkayarrry =Object.keys(catobj)
     var onjvaluarrry =Object.values(catobj)
   
-    for(var i=1;i<=onjkayarrry.length-1;i++){
+    for(var i=3;i<=onjkayarrry.length-1;i++){
   
       if(onjvaluarrry[i]!=''){
          condition_flag = false;
   
         if(onjkayarrry.length-1 == i){
-          newstr += ' '+onjkayarrry[i]+ '=' + '"' + onjvaluarrry[i] + '"' 
+                  console.log(onjvaluarrry[i])
+        var arr = JSON.stringify(onjvaluarrry[i]);
+        var abc="'"+arr+"'"
+        console.log(abc)
+        console.log(typeof abc)
+        const id = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
+        console.log("__"+id+"__")
+        newstr += ' ' + onjkayarrry[i] + ' IN ' + '(' + id + ')' 
         }else{
-          newstr += ' '+onjkayarrry[i]+ '=' + '"' + onjvaluarrry[i]+'"'+'___'
-        }
+        console.log(onjvaluarrry[i])
+        var arr = JSON.stringify(onjvaluarrry[i]);
+        var abc="'"+arr+"'"
+        console.log(abc)
+        console.log(typeof abc)
+        const id = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
+        console.log("__"+id+"__")
+        newstr += ' ' + onjkayarrry[i] + ' IN ' + '(' + id + ')' + '___'        }
       }
       
     } 
@@ -203,7 +225,10 @@ if(u_id!==''){
     //console.log(req.query.keydk)
     var catobj = req.body.product_search
     var srch = catobj.search
-  
+    var price_to=catobj.price_to;
+    var price_from=catobj.price_from;
+    console.log(price_to)
+    console.log(price_from)
     console.log( catobj)
   var pg = req.query
   console.log(pg)
@@ -216,20 +241,40 @@ if(u_id!==''){
     console.log("falseeee")
   
   }
+  if (price_to != '' && price_from !='') {
+    //console.log("trueeeee")
+    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND '
+  } else {
+    // console.log("falseeee")
+  }
   console.log(newstr)
     var onjkayarrry =Object.keys(catobj)
     var onjvaluarrry =Object.values(catobj)
   
-    for(var i=1;i<=onjkayarrry.length-1;i++){
+    for(var i=3;i<=onjkayarrry.length-1;i++){
   
       if(onjvaluarrry[i]!=''){
          condition_flag = false;
   
         if(onjkayarrry.length-1 == i){
-          newstr += ' '+onjkayarrry[i]+ '=' + '"' + onjvaluarrry[i] + '"' 
+                  console.log(onjvaluarrry[i])
+        var arr = JSON.stringify(onjvaluarrry[i]);
+        var abc="'"+arr+"'"
+        console.log(abc)
+        console.log(typeof abc)
+        const id = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
+        console.log("__"+id+"__")
+        newstr += ' ' + onjkayarrry[i] + ' IN ' + '(' + id + ')' 
         }else{
-          newstr += ' '+onjkayarrry[i]+ '=' + '"' + onjvaluarrry[i]+'"'+'___'
-        }
+        console.log(onjvaluarrry[i])
+        var arr = JSON.stringify(onjvaluarrry[i]);
+        var abc="'"+arr+"'"
+        console.log(abc)
+        console.log(typeof abc)
+        const id = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
+        console.log("__"+id+"__")
+        newstr += ' ' + onjkayarrry[i] + ' IN ' + '(' + id + ')' + '___'       
+       }
       }
       
     } 
