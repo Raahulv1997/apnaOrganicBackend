@@ -6,6 +6,7 @@ var max_invoice_no1 = 0
 async function orders(req, res) {
   var totalcount=0
   var order_count = 0;
+  var percentage;
   var { user_id, status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon,shipping_charges } = req.body
   console.log("______chk-1_____")
   console.log(user_id + "" + status)
@@ -27,6 +28,17 @@ async function orders(req, res) {
               max_invoice_no1 = 0
               console.log("______chk-2_____")
               console.log(results)
+              connection.query('SELECT * FROM coupons WHERE `id`='+discount_coupon+'', async (err, rslt) => {
+                if (err) {
+                  console.log(err)
+                  res.status(500).send(err)
+                } else {
+                  if (rslt != '') {
+                    console.log(rslt[0].percentage)
+                    percentage= rslt[0].percentage;
+                  }
+                }
+              }) 
               var orderid = JSON.parse(JSON.stringify(results.insertId))
               //console.log(results)
               //res.send(results)
@@ -53,7 +65,11 @@ async function orders(req, res) {
             setTimeout(() => { 
               console.log(totalcount)
               console.log(orderno)
-              connection.query("UPDATE `orders` SET `total_amount`='"+totalcount+"' WHERE id = "+orderno+"", async (err,rslt) => {
+              console.log("_________________________________________________")
+              console.log(percentage)
+              var coupon_discount_value = totalcount / 100 * percentage
+              console.log("_________________________________________________" +coupon_discount_value)
+              connection.query("UPDATE `orders` SET `total_amount`='"+totalcount+"',`discount_coupon_value`='"+coupon_discount_value+"' WHERE id = "+orderno+"", async (err,rslt) => {
                 if (err) {
                   console.log(err)
                   res.status(500).send(err)

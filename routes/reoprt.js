@@ -94,4 +94,39 @@ function products_report(req, res) {
   })
 }
 
-module.exports = { revenue, orders_report, products_report }
+function coupons_report(req, res) {
+  console.log(req.body)
+  var coupon_report_arr = [];
+  connection.query('SELECT SUM(`discount_coupon_value`) amount,COUNT(`discount_coupon`) total_order FROM `orders` WHERE discount_coupon!="" ', (err, rows, fields) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send(err)
+    } else {
+      rows != '' ? coupon_report_arr.push(rows) : console.log('coupon_report_error')
+    }
+  })
+
+  connection.query(' SELECT discount_coupon,COUNT(DISTINCT order_id) order_count, (SELECT coupons.code FROM coupons WHERE orders_view.discount_coupon = coupons.id) as coupons_code,SUM(`discount_coupon_value`) amount_discounted, DATE_FORMAT(order_date, "%Y-%m-%d") created_date FROM orders_view  WHERE `status`="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 24:00:00" AND "' + req.body.to_date + ' 23:59:59"  GROUP BY discount_coupon,order_date', (err, rows, fields) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send(err)
+    } else {
+      if (rows != '') {
+        coupon_report_arr.push(rows)
+        console.log(coupon_report_arr)
+        res.status(200).send(coupon_report_arr)
+      } else {
+        res.status(500).send("coupon_report_error")
+        console.log('coupon_report_error')
+      }
+    }
+  })
+}
+
+
+
+// SELECT SUM(`discount_coupon_value`) amount,COUNT(`discount_coupon`) total_order FROM `orders` WHERE discount_coupon!=""
+
+// SELECT discount_coupon,COUNT(DISTINCT order_id) order_count, (SELECT coupons.code FROM coupons WHERE orders_view.discount_coupon = coupons.id) as coupons_code,SUM(`discount_coupon_value`) amount_discounted, DATE_FORMAT(order_date,'%Y-%m-%d') created_date FROM orders_view GROUP BY discount_coupon,order_date
+
+module.exports = { revenue, orders_report, products_report,coupons_report }
