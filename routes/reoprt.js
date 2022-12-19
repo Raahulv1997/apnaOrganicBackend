@@ -133,4 +133,27 @@ function categories_report(req,res){
 console.log(req.body)
 }
 
-module.exports = { revenue, orders_report, products_report, categories_report,coupons_report }
+
+function stock_report(req,res){
+  var {value}=req.body
+  connection.query('SELECT `product_title_name`,`product_status`,`quantity` FROM `products_view` WHERE product_status < 1', (err, rows, fields) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send(err)
+    } else {
+      if (err) {
+        console.log(err)
+        res.status(500).send(err)
+      } else {
+        if (rows != '') {
+          console.log(rows)
+          res.status(200).send(rows)
+        } else {
+          res.status(500).send("products_report_error")
+          console.log('products_report_error')
+        }
+      }    }
+  })
+}
+
+module.exports = { revenue, orders_report, products_report, categories_report,coupons_report,stock_report }
