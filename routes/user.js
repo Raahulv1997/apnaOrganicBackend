@@ -243,7 +243,9 @@ if(u_id!==''){
   }
   if (price_to != '' && price_from !='') {
     //console.log("trueeeee")
-    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND '
+    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'")  AND '
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    console.log(newstr)
   } else {
     // console.log("falseeee")
   }
