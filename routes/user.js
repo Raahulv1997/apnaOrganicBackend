@@ -39,11 +39,16 @@ if(u_id!==''){
     console.log("falseeee")
   
   }
-  if (price_to != '' && price_from !='') {
+  if (price_to != '' && price_from !='' && srch != '' ) {
     //console.log("trueeeee")
-    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND '
+    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
+    condition_flag = false;
   } else {
-    // console.log("falseeee")
+    if(price_to != '' && price_from !=''){
+      newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
+      condition_flag = false;  
+    }
+
   }
   console.log(newstr)
     var onjkayarrry =Object.keys(catobj)
@@ -53,7 +58,9 @@ if(u_id!==''){
   
       if(onjvaluarrry[i]!=''){
          condition_flag = false;
-  
+         if(price_to != '' && price_from !='' && srch ==''){
+          newstr += ' AND'
+        }
         if(onjkayarrry.length-1 == i){
                   console.log(onjvaluarrry[i])
         var arr = JSON.stringify(onjvaluarrry[i]);
@@ -206,6 +213,10 @@ if(u_id!==''){
 }
   } 
 
+
+
+
+
   function apna_organic_home(req,res){
     console.log("apna_organic_home")
   //   connection.query("SELECT * FROM products_view WHERE is_delete ='1'",(err,results)=>{
@@ -241,13 +252,16 @@ if(u_id!==''){
     console.log("falseeee")
   
   }
-  if (price_to != '' && price_from !='') {
+  if (price_to != '' && price_from !='' && srch != '' ) {
     //console.log("trueeeee")
-    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'")  AND '
-    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    console.log(newstr)
+    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
+    condition_flag = false;
   } else {
-    // console.log("falseeee")
+    if(price_to != '' && price_from !=''){
+      newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
+      condition_flag = false;  
+    }
+
   }
   console.log(newstr)
     var onjkayarrry =Object.keys(catobj)
@@ -257,7 +271,9 @@ if(u_id!==''){
   
       if(onjvaluarrry[i]!=''){
          condition_flag = false;
-  
+         if(price_to != '' && price_from !='' && srch ==''){
+          newstr += ' AND'
+        }
         if(onjkayarrry.length-1 == i){
                   console.log(onjvaluarrry[i])
         var arr = JSON.stringify(onjvaluarrry[i]);

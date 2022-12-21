@@ -20,11 +20,16 @@ function products_search(req, res) {
   } else {
     // console.log("falseeee")
   }
-  if (price_to != '' && price_from !='') {
+  if (price_to != '' && price_from !='' && srch != '' ) {
     //console.log("trueeeee")
-    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND '
+    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
+    condition_flag = false;
   } else {
-    // console.log("falseeee")
+    if(price_to != '' && price_from !=''){
+      newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
+      condition_flag = false;  
+    }
+
   }
   console.log(newstr)
   var onjkayarrry = Object.keys(catobj)
@@ -34,6 +39,9 @@ function products_search(req, res) {
 
     if (onjvaluarrry[i] != '') {
       condition_flag = false;
+      if(price_to != '' && price_from !='' && srch ==''){
+        newstr += ' AND'
+      }
 
       if (onjkayarrry.length - 1 == i) {
         console.log(onjvaluarrry[i])
@@ -133,7 +141,7 @@ function products_search(req, res) {
     console.log(newqry)
     var numRows;
 
-    var numPerPage = 10
+    var numPerPage = pg.per_page
     var page = parseInt(pg.page, pg.per_page) || 0;
     var numPages;
     var skip = page * numPerPage;
