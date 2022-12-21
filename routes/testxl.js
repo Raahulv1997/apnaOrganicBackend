@@ -4,16 +4,16 @@
 // const fs = require('fs');
 
 // function test(){
-// console.log("tset chk")
+// //console.log("tset chk")
 // const file = reader.readFile('../routes/agw.xls')
 //           const sheets = file.SheetNames; 
-//           console.log(sheets)
+//           //console.log(sheets)
 //           for (let j = 0; j < sheets.length; j++) {
-//             console.log("count_j"+j+"slength"+sheets.length)
+//             //console.log("count_j"+j+"slength"+sheets.length)
 //               const temp = reader.utils.sheet_to_json(
 //                   file.Sheets[file.SheetNames[j]]);
-//                   console.log("temp------------------------")
-//                   console.log(temp)
+//                   //console.log("temp------------------------")
+//                   //console.log(temp)
 //    }
 // }
 // test()
@@ -24,9 +24,9 @@
 // const elements = ['Fire', 'Air', 'Water'];
 // var str =''
 // var ccc=true
-// console.log("kkkkkkkkkkkkkkkkkkkkkkkk")
+// //console.log("kkkkkkkkkkkkkkkkkkkkkkkk")
 // elements.forEach((ind,item)=>{if(ccc){str += "'"+item+"'";ccc=false}else{str += ",'"+item+"'"};})
-// console.log(str)
+// //console.log(str)
 
 // (`created_on` BETWEEN '" + req.body.from_date + " 24:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')
 //SELECT * FROM `orders_view` WHERE parent_category = '5,18' AND (`created_on` BETWEEN   '2022-11-28 24:00:00' AND '2022-11-29 23:59:59')

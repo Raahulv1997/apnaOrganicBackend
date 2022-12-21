@@ -3,13 +3,13 @@ const connection = require('../db')
 
 
 function review_rating(req,res){
-    console.log("review")
+    //console.log("review")
     var {product_name,category_type,review_date,review_rating,comment,status}=req.body;
     connection.query('INSERT INTO  `review`(`product_name`, `category_type`, `review_date`, `review_rating`, `comment`, `status`) VALUES ("'+product_name+'","'+category_type+'","'+review_date+'","'+review_rating+'","'+comment+'","'+status+'")',(err,rows,fields)=>{
         if(err){
       res.status(500).send(err)
         }else{
-            console.log("review_rating Data Insert Succecsfully")
+            //console.log("review_rating Data Insert Succecsfully")
           res.status(201).send("Review Rating Data Insert Succecsfully")
         }
       }) 
@@ -23,7 +23,7 @@ function review_approved(req,res){
         if(err){
       res.status(500).send(err)
         }else{
-            console.log("review_approved update Succecsfully")
+            //console.log("review_approved update Succecsfully")
           res.status(200).send("Review Approved Update Succecsfully")
         }
     }) 
@@ -32,13 +32,13 @@ function review_approved(req,res){
 
 
 function review_list(req,res){
-    console.log(req.body)
+    //console.log(req.body)
     var {product_name,category_type,status}=req.body;
     if(product_name != '' || category_type != '' || status != '' ){
 
         var stringsearch = 'SELECT * FROM `review` WHERE '
         var catobj=req.body;
-        console.log(catobj)
+        //console.log(catobj)
         var objvalue=Object.values(catobj)
         var objkey=Object.keys(catobj)
         for(m=0;m<objkey.length;m++){
@@ -54,19 +54,19 @@ function review_list(req,res){
         }
       }
       }
-      console.log(stringsearch)
+      //console.log(stringsearch)
       var lastCharOfHello=stringsearch.slice(-4);
-      console.log("________"+lastCharOfHello+"_______")
+      //console.log("________"+lastCharOfHello+"_______")
       if(lastCharOfHello == "AND "){
         var id = stringsearch.substring(stringsearch.lastIndexOf(' AND') +1, stringsearch.indexOf("  "));   
         stringsearch=id;
         }else{
            
-          console.log("no avia")
+          //console.log("no avia")
         }
       connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
-          console.log("/review_error"+err)
+          //console.log("/review_error"+err)
       res.status(500).send(err)
         }else{
           res.status(200).send(rows)
@@ -75,7 +75,7 @@ function review_list(req,res){
 }else{
 connection.query('SELECT * FROM `review` WHERE 1 ORDER BY id DESC',(err,rows,fields)=>{
     if(err){
-      console.log("/review_error"+err)
+      //console.log("/review_error"+err)
       res.status(500).send(err)
     }else{
       res.status(200).send(rows)
@@ -85,10 +85,10 @@ connection.query('SELECT * FROM `review` WHERE 1 ORDER BY id DESC',(err,rows,fie
 }
 
 function review_detaile(req,res){
-console.log(req.query)
+//console.log(req.query)
 connection.query("SELECT * FROM `review` WHERE `id` ="+req.query.id+"",(err,rows,fields)=>{
   if(err){
-    console.log(err)
+    //console.log(err)
     res.status(500).send(err)
   }else{
     if(rows!=''){
