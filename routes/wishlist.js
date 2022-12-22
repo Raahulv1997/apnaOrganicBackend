@@ -1,4 +1,5 @@
 const connection = require('../db')
+
 function add_wishlist(req,res){
     console.log(req.body)
     var {user_id,product_view_id}=req.body

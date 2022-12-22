@@ -33,24 +33,23 @@ function revenue(req, res) {
         var net_sale = revenuearr[0].gross_total_amount - coupon_discount
         var total_amount_with_shipping = revenuearr[0].gross_total_amount + revenuearr[0].total_shipping_charges
         Object.assign(revenuearr[0], { net_sale, total_amount_with_shipping})
-        res.status(200).send(revenuearr)
+        //res.status(200).send(revenuearr)
       } else {
         res.status(500).send("error")
         console.log('error')
       }
     }
   })
-}
 
-function revenue_table(req,res){
-
-  connection.query('SELECT DISTINCT date(date_format(`order_date`, "%Y-%m-%d")) as uniquedates ,SUM(`total_amount`) gross_amount,SUM(`total_gst`) total_gst, SUM(`shipping_charges`) total_shipping_charges,(SELECT SUM(total_amount) return_total FROM `orders` WHERE `status` = "return") return_value ,SUM(`discount_coupon_value`) discount , (SUM(`total_amount`) - SUM(`discount_coupon_value`)) net_sales,(SUM(`total_amount`) + SUM(`shipping_charges`)) total_sales from orders WHERE order_date > now() - INTERVAL 15 day GROUP BY date(date_format(`order_date`, "%Y-%m-%d")) ORDER by date(date_format(`order_date`, "%Y-%m-%d")) DESC ', (err, rows, fields) => {
+  connection.query('SELECT DISTINCT date(date_format(`created_on`, "%Y-%m-%d")) as uniquedates ,SUM(`total_amount`) gross_amount,SUM(`total_gst`) total_gst, SUM(`shipping_charges`) total_shipping_charges,(SELECT SUM(total_amount) return_total FROM `orders` WHERE `status` = "return") return_value ,SUM(`discount_coupon_value`) discount , (SUM(`total_amount`) - SUM(`discount_coupon_value`)) net_sales,(SUM(`total_amount`) + SUM(`shipping_charges`)) total_sales from orders WHERE (`created_on` BETWEEN "'+ req.body.from_date +' 00:00:00" AND "'+ req.body.to_date +' 23:59:59") AND (NOT `status` = "return") GROUP BY date(date_format(`created_on`, "%Y-%m-%d")) ORDER by date(date_format(`created_on`, "%Y-%m-%d")) DESC', (err, rows, fields) => {
     if (err) {
       console.log(err)
       res.status(500).send(err)
     } else {
       if (rows != '') {
-        res.status(200).send(rows)
+        console.log(rows)
+        Object.assign(revenuearr[0], { "ravenue_date_data":rows })
+        res.status(200).send(revenuearr)
       } else {
         res.status(500).send("error")
         console.log('error')
@@ -210,8 +209,8 @@ function coupons_report(req, res) {
           console.log(coupon_report_arr)
           res.status(200).send(coupon_report_arr)
         } else {
-          res.status(500).send("coupon_report_error")
-          console.log('coupon_report_error')
+          res.status(200).send({message:"No_Data"})
+          console.log('No Data')
         }
       }
     })
@@ -237,7 +236,7 @@ function coupons_report(req, res) {
           console.log(coupon_report_arr)
           res.status(200).send(coupon_report_arr)
         } else {
-          res.status(500).send("coupon_report_error")
+          res.status(200).send({message:"No_Data"})
           console.log('coupon_report_error')
         }
       }
@@ -330,14 +329,47 @@ function stock_report(req,res){
 function customers_report(req,res){
   console.log(req.body)
   var {user_search}=req.body;
-  connection.query('SELECT first_name,last_name,`user_id`,`email`,`address`,(SELECT COUNT(`id`) FROM orders WHERE users.user_id=orders.user_id) order_count,(SELECT SUM(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) total_amount,(SELECT AVG(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) avg_value,`created_on` FROM `users` WHERE `first_name` LIKE "%'+user_search+'%" AND `email` LIKE "%'+user_search+'%"', (err, rows, fields) => {
+  connection.query('SELECT first_name,last_name,`user_id`,`email`,`address`,(SELECT COUNT(`id`) FROM orders WHERE users.user_id=orders.user_id) order_count,(SELECT SUM(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) total_amount,(SELECT AVG(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) avg_value,`created_on` FROM `users` WHERE `first_name` LIKE "%'+user_search+'%" OR `email` LIKE "%'+user_search+'%"', (err, rows, fields) => {
     if (err) {
       console.log(err)
       res.status(500).send(err)
     } else {
-      rows != '' ? res.send(rows) : console.log('coupon_report_error')
+      rows != '' ? res.send(rows) : res.send('NO DATA')
     }
   })
 }
 
-module.exports = { revenue,revenue_table, orders_report, products_report, categories_report,coupons_report,stock_report,customers_report }
+function taxes_report(req,res){
+  console.log(req.body)
+  var taxes_report_arr = [];
+
+    connection.query('SELECT SUM(total_gst) order_tax,COUNT(DISTINCT order_id) order_count FROM orders_view WHERE `status`="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59" ', (err, rows, fields) => {
+      if (err) {
+        console.log(err)
+        res.status(500).send(err)
+      } else {
+        rows != '' ? taxes_report_arr.push(rows) : console.log('No Data')
+      }
+    })
+
+    connection.query('SELECT DISTINCT `gst`,COUNT(DISTINCT `order_id`) order_count,SUM(`total_gst`) order_taxes FROM orders_view  WHERE  `status`="delivered"  AND (`created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59 ")  GROUP by gst', (err, rows, fields) => {
+      if (err) {
+        console.log(err)
+        res.status(500).send(err)
+      } else {
+        if (rows != '') {
+          taxes_report_arr.push(rows)
+          console.log(taxes_report_arr)
+          res.status(200).send(taxes_report_arr)
+        } else {
+          res.status(200).send({message:"No_Data"})
+          console.log('No Data')
+        }
+      }
+    })
+  }
+
+
+
+
+module.exports = { revenue, orders_report, products_report, categories_report,coupons_report,stock_report,customers_report,taxes_report }
