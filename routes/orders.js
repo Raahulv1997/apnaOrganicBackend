@@ -7,7 +7,7 @@ async function orders(req, res) {
   var totalcount=0
   var order_count = 0;
   var percentage;
-  var { user_id, status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon,shipping_charges } = req.body
+  var { user_id, status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon,shipping_charges,discount_coupon_value } = req.body
   console.log("______chk-1_____")
   console.log(user_id + "" + status)
   //console.log(order_product)
@@ -19,7 +19,7 @@ async function orders(req, res) {
       max_invoice_no1 = 0
       max_invoice_no1 = JSON.parse(JSON.stringify(results[0].max_invoice_no))
 
-      connection.query('INSERT INTO `orders` (`id`,`user_id`,`vendor_id`,`total_quantity`,`ref_no`,`payment_mode`,`delivery_date`, `shipping_charges`, `status`,`invoice_no`,`invoice_date`, `order_date`, `total_amount`, `total_gst`, `total_cgst`, `total_sgst`, `taxable_value`, `discount_coupon`) VALUES (' + orderno + ',' + user_id + ',"' + vendor_id + '","' + total_quantity + '","' + ref_no + '","' + payment_mode + '","' + delivery_date + '", "'+shipping_charges+'","' + status + '",' + parseInt(max_invoice_no1 + 1) + ',"' + invoice_date + '","' + order_date + '","' + total_amount + '","' + total_gst + '","' + total_cgst + '","' + total_sgst + '","' + taxable_value + '","' + discount_coupon + '")', async (err, results) => {
+      connection.query('INSERT INTO `orders` (`id`,`user_id`,`vendor_id`,`total_quantity`,`ref_no`,`payment_mode`,`delivery_date`, `shipping_charges`, `status`,`invoice_no`,`invoice_date`, `order_date`, `total_amount`, `total_gst`, `total_cgst`, `total_sgst`, `taxable_value`, `discount_coupon`,`discount_coupon_value`) VALUES (' + orderno + ',' + user_id + ',"' + vendor_id + '","' + total_quantity + '","' + ref_no + '","' + payment_mode + '","' + delivery_date + '", "'+shipping_charges+'","' + status + '",' + parseInt(max_invoice_no1 + 1) + ',"' + invoice_date + '","' + order_date + '","' + total_amount + '","' + total_gst + '","' + total_cgst + '","' + total_sgst + '","' + taxable_value + '","' + discount_coupon + '","' + discount_coupon_value + '")', async (err, results) => {
         if (err) {
           console.log(err)
           res.status(500).send(err)
@@ -66,11 +66,7 @@ async function orders(req, res) {
             setTimeout(() => { 
               console.log(totalcount)
               console.log(orderno)
-              console.log("_________________________________________________")
-              console.log(percentage)
-              var coupon_discount_value = totalcount / 100 * percentage
-              console.log("_________________________________________________" +coupon_discount_value)
-              connection.query("UPDATE `orders` SET `total_amount`='"+totalcount+"',`discount_coupon_value`='"+coupon_discount_value+"' WHERE id = "+orderno+"", async (err,rslt) => {
+              connection.query("UPDATE `orders` SET `total_amount`='"+totalcount+"'  WHERE id = "+orderno+"", async (err,rslt) => {
                 if (err) {
                   console.log(err)
                   res.status(500).send(err)
