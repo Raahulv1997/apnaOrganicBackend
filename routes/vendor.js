@@ -3,7 +3,7 @@ var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z]{2,4})+$/;
 
 
 function vendors(req,res){
-    // //console.log(typeof req.query.category)
+    // console.log(typeof req.query.category)
     //res.send(req.query.category)
   if(req.query.id == 'all'){
     connection.query('SELECT * FROM vendor WHERE 1  ',(err,rows,fields)=>{
@@ -16,10 +16,10 @@ function vendors(req,res){
   }else{
     connection.query('SELECT * FROM vendor WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
       if(err){
-        //console.log("/vendors_error"+err)
+        console.log("/vendors_error"+err)
       res.status(500).send(err)
       }else{
-        ////console.log(rows)
+        //console.log(rows)
         res.status(200).send(rows)
       }
     }) 
@@ -35,18 +35,18 @@ function vendors(req,res){
 //     if (rst) {
 //       connection.query("SELECT * FROM `vendor` WHERE email = '" + email_data + "'",async (err, rows, fields) => {
 //         if (err) {
-//           //console.log("/signup_error" + err)
+//           console.log("/signup_error" + err)
 //         res.status(500).send(err)
 //         } else {
 //           if (rows != '') {
-//             //console.log(rows);
-//             //console.log("redirect login page");
+//             console.log(rows);
+//             console.log("redirect login page");
 //             var umail = JSON.parse(JSON.stringify(rows));
 //             var useremail = umail[0].email;
-//             //console.log(useremail);
+//             console.log(useremail);
 //             res.send({"message":"User Already Exist. Please Login"})
 //           } else {
-//             //console.log("send________otp")
+//             console.log("send________otp")
   
 //             function generateOTP() {
 //               var digits = '0123456789';
@@ -56,16 +56,16 @@ function vendors(req,res){
 //               }
 //                 connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+email_data+'","'+OTP+'")', (err, rows, fields) => {
 //                   if (err) {
-//                     //console.log("/_otp_error" + err);
+//                     console.log("/_otp_error" + err);
 //                   res.status(500).send(err)
 //                   } else {
-//                     //console.log(rows);
+//                     console.log(rows);
 //                     res.send(OTP);
 //                   }
 //                 })
 //               return OTP
 //           }
-//            //console.log(generateOTP()) 
+//            console.log(generateOTP()) 
 //           }
 //         }
 //       })
@@ -76,34 +76,34 @@ function vendors(req,res){
 
 
 // function vendor_otp_verify(req,res){
-// //console.log(req.body)
+// console.log(req.body)
 //   var email_otp = req.body.email
 //   var otp_ver = req.body.otp
 //   var cheked_email = regex.test(email_otp);
-//   //console.log("--------------------------otp_verify--------------------------")
-//   //console.log(email_otp)
-//   //console.log(otp_ver)
+//   console.log("--------------------------otp_verify--------------------------")
+//   console.log(email_otp)
+//   console.log(otp_ver)
 //   if(cheked_email){
-//     //console.log("email_true")
+//     console.log("email_true")
 //     connection.query("SELECT * FROM `users_otp` WHERE email = '" + email_otp + "'",async (err, rows, fields) => {
 //       if(err){
-//         //console.log(err)
+//         console.log(err)
 //       }else{
-//         //console.log(rows)
+//         console.log(rows)
 //         if(rows!=''){
 
 //           var userauth = JSON.parse(JSON.stringify(rows));
 //           var user_otp = userauth[0].otp;
-//           //console.log( otp_ver +"=="+ user_otp)
+//           console.log( otp_ver +"=="+ user_otp)
 //           if(otp_ver === user_otp){
-//             //console.log("otp verification successfully")
+//             console.log("otp verification successfully")
 //             //res.send({"message":"otp verification successfully"})
 
 //             connection.query("INSERT INTO `vendor`( `email`) VALUES ('"+email_otp+"')",async (err, rows, fields) => {
 //               if(err){
-//                 //console.log("error"+err)
+//                 console.log("error"+err)
 //               }else{
-//                 //console.log(rows)
+//                 console.log(rows)
 //                 res.send(rows)
 //               }
 //             })  
@@ -117,7 +117,7 @@ function vendors(req,res){
 //       }
 //     })
 //   }else{
-//     //console.log("email_false")
+//     console.log("email_false")
 //     res.status(513).send({ "message": "invalid address" })
 //   }
 
@@ -126,16 +126,16 @@ function vendors(req,res){
 
 // function vendor_register(req,res){
 //  var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,shop_logo,status,multiple_document_upload,document_name,availability}=req.body;
-//  //console.log(req.body)
+//  console.log(req.body)
 //  var documents1 = JSON.stringify(multiple_document_upload)
 //  var document_name1 = JSON.stringify(document_name)
 
 //    connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `multiple_document_upload`, `document_name`, `availability`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+shop_logo+"','"+status+"','"+documents1+"','"+document_name1+"','"+availability+"')",async (err, rows, fields) => {
 //     if(err){
-//       //console.log("error"+err)
+//       console.log("error"+err)
 //       res.send(err)
 //     }else{
-//       //console.log(rows)
+//       console.log(rows)
 //       res.send({"message":"Create vendor Profile"})
   
 //     }
@@ -144,26 +144,26 @@ function vendors(req,res){
 
 function vendor_register(req,res){
   var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,status,document_name,availability}=req.body;
-  //console.log(req.body)
-  //console.log(req.files)
+  console.log(req.body)
+  console.log(req.files)
 
   if(req.files == undefined || req.files == '' ){
    image="no image"
  }else{
    var image = "public/catgory_images/"+req.files[0].filename;
-   //console.log(image)
+   console.log(image)
  }
   var documents1 = JSON.stringify("public/catgory_images/"+req.files[1].filename)
   var document_name1 = JSON.stringify(document_name)
-  //console.log(documents1)
+  console.log(documents1)
 
  
     connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `multiple_document_upload`, `document_name`, `availability`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+image+"','"+status+"','"+documents1+"','"+document_name1+"','"+availability+"')",async (err, rows, fields) => {
      if(err){
-       //console.log("error"+err)
+       console.log("error"+err)
        res.status(500).send(err)
      }else{
-       //console.log(rows)
+       console.log(rows)
        res.status(200).send({"message":"Create vendor Profile"})
    
      }
@@ -173,13 +173,13 @@ function vendor_register(req,res){
  
 
 function vendor_list(req,res){
-        //console.log(req.body)
+        console.log(req.body)
         var {owner_name,store_type,status}=req.body;
         if(owner_name != '' || store_type != '' || status != '' ){
 
             var stringsearch = 'SELECT * FROM `vendor` WHERE '
             var catobj=req.body;
-            //console.log(catobj)
+            console.log(catobj)
             var objvalue=Object.values(catobj)
             var objkey=Object.keys(catobj)
             for(m=0;m<objkey.length;m++){
@@ -195,20 +195,20 @@ function vendor_list(req,res){
             }
           }
           }
-          //console.log(stringsearch)
+          console.log(stringsearch)
           var lastCharOfHello=stringsearch.slice(-4);//d
-          //console.log("________"+lastCharOfHello+"_______")
+          console.log("________"+lastCharOfHello+"_______")
           if(lastCharOfHello == "AND "){
-            //console.log("and")
+            console.log("and")
             var id = stringsearch.substring(stringsearch.lastIndexOf(' AND') +1, stringsearch.indexOf("  "));   
             stringsearch=id;
             }else{
                
-              //console.log("no avia")
+              console.log("no avia")
             }
           connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
             if(err){
-              //console.log("/vendor_error"+err)
+              console.log("/vendor_error"+err)
             res.status(500).send(err)
             }else{
               res.status(200).send(rows)
@@ -217,7 +217,7 @@ function vendor_list(req,res){
    }else{
     connection.query('SELECT * FROM `vendor` WHERE 1 ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
-          //console.log("/vendor_error"+err)
+          console.log("/vendor_error"+err)
         res.status(500).send(err)
         }else{
           res.status(200).send(rows)
@@ -228,25 +228,25 @@ function vendor_list(req,res){
 
 function vendor_update(req,res){
     var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,status,document_name,availability}=req.body;
-    //console.log(req.body)
+    console.log(req.body)
 
     if(req.files == undefined || req.files == '' ){
       image="no image"
     }else{
       var image = "public/catgory_images/"+req.files[0].filename;
-      //console.log(image)
+      console.log(image)
     }
      var documents1 = JSON.stringify("public/catgory_images/"+req.files[1].filename)
      var document_name1 = JSON.stringify(document_name)
-     //console.log(documents1)
+     console.log(documents1)
    
       connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+image+"',`status`='"+status+"',`multiple_document_upload`='"+documents1+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"' WHERE id='"+id+"'",async (err, rows, fields) => {
        if(err){
-         //console.log("error"+err)
+         console.log("error"+err)
        res.status(500).send(err)
        }else{
          if(rows!=''){
-          //console.log(rows)
+          console.log(rows)
           res.status(200).send({"message":"Updated Vendor Profile"})
         }else{
           res.status(500).send({"message":"Error Plaese Give Valid Data "})
