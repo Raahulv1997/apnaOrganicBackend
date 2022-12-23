@@ -2,22 +2,33 @@ const connection = require('../db')
 
 function add_wishlist(req,res){
     console.log(req.body)
-    var {user_id,product_view_id}=req.body
-    connection.query("INSERT INTO `wishlist`(`user_id`, `product_id`) VALUES ('"+user_id+"','"+product_view_id+"')",(err,results)=>{
+    var {user_id,product_view_id}=req.body;
+    connection.query('SELECT * FROM `wishlist` WHERE `user_id`='+user_id+'  AND `product_id`='+product_view_id+' ',(err,results)=>{
         if(err){
           console.log(err)
           res.status(502).send(err)
         }else{
          console.log(results)
-         results!=''?res.status(200).send(results):res.status(500).send("Invalid Input Data ")
-         
+         if(results==''){   
+        connection.query("INSERT INTO `wishlist`(`user_id`, `product_id`) VALUES ('"+user_id+"','"+product_view_id+"')",(err,results)=>{
+      if(err){
+        console.log(err)
+        res.status(502).send(err)
+      }else{
+       console.log(results)
+       results!=''?res.status(200).send(results):res.status(500).send("Invalid Input Data ")
+      }
+      })
+         }else{
+          res.status(500).send("Already add in wishlist")
+         }       
         }
     })
 }
 
 function remove_product_from_wishlist(req,res){
   console.log(req.body)
-    connection.query("DELETE FROM `wishlist` WHERE `product_id` = '"+req.body.id+"' AND `user_id` = '"+req.body.user_id+"'",(err,results)=>{
+    connection.query("DELETE FROM `wishlist` WHERE `product_id` = '"+req.body.product_id+"' AND `user_id` = '"+req.body.user_id+"'",(err,results)=>{
         if(err){
           console.log(err)
           res.status(502).send(err)
