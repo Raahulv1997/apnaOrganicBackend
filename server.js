@@ -78,7 +78,11 @@ var upload = multer({
 
 //_____________________________________________________________________________________________________________________
    
+// const nDate = new Date().toLocaleString('en-US', {
+//   timeZone: 'Asia/Calcutta'
+// });
 
+// console.log(nDate);
 
 
 // module.exports={imageUpload}

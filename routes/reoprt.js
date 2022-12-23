@@ -1,7 +1,8 @@
 const connection = require('../db')
 
 function revenue(req, res) {
-  var str_revenue = ''
+  var discount_amount=0;
+  var str_revenue=''
   var revenuearr = []
   var { vendors_id, categorys, user_locations, brand } = req.body
   console.log(req.body)
@@ -49,13 +50,14 @@ function revenue(req, res) {
     console.log("false4")
   }
 
-  console.log("+++++++++++++++++____________str_revenue______1___++++++++++++++++++++++++++")
-  console.log(str_revenue)
-  //return false
-  connection.query("SELECT SUM(`sale_price`) gross_total_amount , SUM(`gst`) total_gst, SUM(DISTINCT `shipping_charges`)  total_shipping_charges FROM orders_view WHERE (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') " + str_revenue + "", (err, rows, fields) => {
+console.log("+++++++++++++++++____________str_revenue______1___++++++++++++++++++++++++++")  
+console.log(str_revenue)  
+//return false
+//(SELECT SUM(orders.shipping_charges) FROM orders WHERE orders.id=orders_view.order_id) as count
+  connection.query("SELECT SUM(`sale_price`) gross_total_amount , SUM(`gst`) total_gst, (SELECT SUM(orders.shipping_charges) FROM orders WHERE (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59')) as total_shipping_charges FROM orders_view WHERE (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') "+str_revenue+"", (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       console.log("first_query__")
       console.log(rows)
@@ -66,7 +68,7 @@ function revenue(req, res) {
   connection.query("SELECT SUM(`sale_price`) return_total FROM `orders_view` WHERE `status` = 'return' AND (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') " + str_revenue + "", (err, rslt, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       console.log("second_query__")
       console.log(rslt)
@@ -75,28 +77,44 @@ function revenue(req, res) {
     }
   })
 
-  connection.query("SELECT SUM(coupons.percentage) as total_discount FROM coupons WHERE id IN(SELECT discount_coupon FROM orders_view WHERE (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return') " + str_revenue + ")", (err, rows, fields) => {
+  // connection.query("SELECT SUM(coupons.percentage) as total_discount FROM coupons WHERE id IN(SELECT discount_coupon FROM orders_view WHERE (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return') "+str_revenue+")", (err, rows, fields) => {
+  //   if (err) {
+  //     console.log(err)
+  //     res.status(200).send(err)
+  //   } else {
+  //     if (rows != '') {
+  //       console.log("third_query__")
+  //       console.log(rows)
+  //       Object.assign(revenuearr[0], rows[0])
+  //       var coupon_discount = revenuearr[0].gross_total_amount / 100 * revenuearr[0].total_discount
+  //       var net_sale = revenuearr[0].gross_total_amount - coupon_discount
+  //       var total_amount_with_shipping = revenuearr[0].gross_total_amount + revenuearr[0].total_shipping_charges
+  //       Object.assign(revenuearr[0], { net_sale, total_amount_with_shipping})
+  //       //res.status(200).send(revenuearr)
+  //     } else {
+  //       // res.status(500).send("error")
+  //       console.log('error')
+  //     }
+  //   }
+  // })
+  
+  connection.query('SELECT DISTINCT order_id,(SELECT SUM(orders.discount_coupon_value) FROM orders WHERE orders.id=orders_view.order_id) as count FROM `orders_view` WHERE status="delivered" AND discount_coupon!="" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59" ' + str_revenue + '', (err, rows, fields) => {
     if (err) {
       console.log(err)
       res.status(500).send(err)
     } else {
       if (rows != '') {
-        console.log("third_query__")
-        console.log(rows)
-        Object.assign(revenuearr[0], rows[0])
-        var coupon_discount = revenuearr[0].gross_total_amount / 100 * revenuearr[0].total_discount
-        var net_sale = revenuearr[0].gross_total_amount - coupon_discount
-        var total_amount_with_shipping = revenuearr[0].gross_total_amount + revenuearr[0].total_shipping_charges
-        Object.assign(revenuearr[0], { net_sale, total_amount_with_shipping })
-        //res.status(200).send(revenuearr)
-      } else {
-        // res.status(500).send("error")
-        console.log('error')
+        rows.forEach((item, index) => {
+          discount_amount += parseInt(item.count);
+        })
+       // coupon_report_arr.push()
+        Object.assign(revenuearr[0], { discount_amount })
       }
     }
   })
 
-  connection.query('SELECT DISTINCT date(date_format(`created_on`, "%Y-%m-%d")) as uniquedates ,SUM(`sale_price`) gross_amount,SUM(`gst`) total_gst, SUM(DISTINCT `shipping_charges`) total_shipping_charges,SUM(`discount_coupon`) discount , (SUM(`sale_price`) - SUM(`discount_coupon`)) net_sales,(SUM(`sale_price`) + SUM(DISTINCT `shipping_charges`)) total_sales from orders_view WHERE (`created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59")   ' + str_revenue + '  GROUP BY date(date_format(`created_on`, "%Y-%m-%d")) ORDER by date(date_format(`created_on`, "%Y-%m-%d")) DESC', (err, rows, fields) => {
+
+  connection.query('SELECT DISTINCT date(date_format(`created_on`, "%Y-%m-%d")) as uniquedates ,SUM(`sale_price`) gross_amount,SUM(`gst`) total_gst, SUM(DISTINCT `shipping_charges`) total_shipping_charges,SUM(`discount_coupon`) discount , (SUM(`sale_price`) - SUM(`discount_coupon`)) net_sales,(SUM(`sale_price`) + SUM(DISTINCT `shipping_charges`)) total_sales from orders_view WHERE (`created_on` BETWEEN "'+ req.body.from_date +' 00:00:00" AND "'+ req.body.to_date +' 23:59:59")   ' +str_revenue+'  GROUP BY date(date_format(`created_on`, "%Y-%m-%d")) ORDER by date(date_format(`created_on`, "%Y-%m-%d")) DESC', (err, rows, fields) => {
     if (err) {
       console.log(err)
       res.status(500).send(err)
@@ -106,7 +124,7 @@ function revenue(req, res) {
         Object.assign(revenuearr[0], { "ravenue_date_data": rows })
         res.status(200).send(revenuearr)
       } else {
-        res.status(500).send("error")
+        res.status(200).send({"message":"no_data"})
         console.log('error')
       }
     }
@@ -378,40 +396,42 @@ function coupons_report(req, res) {
 
 // SELECT discount_coupon,COUNT(DISTINCT order_id) order_count, (SELECT coupons.code FROM coupons WHERE orders_view.discount_coupon = coupons.id) as coupons_code,SUM(`discount_coupon_value`) amount_discounted, DATE_FORMAT(order_date,'%Y-%m-%d') created_date FROM orders_view GROUP BY discount_coupon,order_date
 
-function categories_report(req, res) {
-  console.log(req.body)
-  var cat_str = 'SELECT SUM(`total_amount`) total_sold_product_amount, COUNT(`id`) total_sold_product_count, COUNT(DISTINCT order_id) order_count FROM `orders_view` WHERE '
-  if (req.body.parent_category == '') {
-    cat_str += "(`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')"
-  } else {
-    var cat_arr = JSON.stringify(req.body.parent_category);
-    var abc = "'" + cat_arr + "'"
-    const cat_string = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
-    console.log(cat_string)
-    cat_str += "parent_category IN (" + cat_string + ") AND (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')"
-  }
+function categories_report(req,res){
+console.log(req.body)
+var cat_str = 'SELECT SUM(`sale_price`) total_sold_product_amount, COUNT(`id`) total_sold_product_count, COUNT(DISTINCT order_id) order_count FROM `orders_view` WHERE '
+if(req.body.parent_category ==''){
+cat_str +="(`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')"
+}else{
+  var cat_arr = JSON.stringify(req.body.parent_category);
 
-  // SELECT * FROM `orders_view` WHERE parent_category = '"+req.body.category+"' AND (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')
-
-  // SELECT  COUNT(`id`) total_sold FROM `orders_view` WHERE parent_category IN ('5,18','5,19') AND (`created_on` BETWEEN '2022-11-28 00:00:00' AND '2022-11-29 23:59:59') AND (NOT `status` = 'return')
-
-  //SELECT COUNT(DISTINCT order_id) FROM orders_view WHERE parent_category IN ('5,18','5,19') AND (`created_on` BETWEEN '2022-11-28 00:00:00' AND '2022-11-29 23:59:59') AND (NOT `status` = 'return')
-  connection.query(cat_str, (err, rows, fields) => {
-    if (err) {
-      console.log(err)
-      res.status(500).send(err)
-    } else {
-
-      rows != '' ? res.status(200).send(rows) : res.status(500).send(err)
-    }
-  })
-
-
+var abc="'"+cat_arr+"'"
+const cat_string = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
+console.log("cat_string__________________________________")
+console.log(cat_string)
+//FIND_IN_SET('1', all_parent)
+  cat_str += " FIND_IN_SET ("+cat_string+",parent_category) AND (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')"
 }
 
 
-function stock_report(req, res) {
-  var { values } = req.body;
+// SELECT * FROM `orders_view` WHERE parent_category = '"+req.body.category+"' AND (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')
+
+  // SELECT  COUNT(`id`) total_sold FROM `orders_view` WHERE parent_category IN ('5,18','5,19') AND (`created_on` BETWEEN '2022-11-28 00:00:00' AND '2022-11-29 23:59:59') AND (NOT `status` = 'return')
+
+//SELECT COUNT(DISTINCT order_id) FROM orders_view WHERE parent_category IN ('5,18','5,19') AND (`created_on` BETWEEN '2022-11-28 00:00:00' AND '2022-11-29 23:59:59') AND (NOT `status` = 'return')
+console.log(cat_str)
+connection.query(cat_str, (err, rows, fields) => {
+  if (err) {
+    console.log(err)
+    res.status(500).send(err)
+  } else {
+    
+    rows != '' ? res.status(200).send(rows) : res.status(500).send(err)
+  }
+})
+}
+
+function stock_report(req,res){
+  var {values}=req.body;
   console.log(values)
 
   if (values != "") {
