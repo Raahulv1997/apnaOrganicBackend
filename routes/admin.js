@@ -251,4 +251,17 @@ function vendor_requests(req,res){
   }) 
 
 }
-module.exports = {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests};
+
+
+function brand_list(req,res){
+  connection.query('SELECT DISTINCT brand FROM products WHERE 1',(err,rows,fields)=>{
+    if(err){
+      console.log("/brand_list"+err)
+      res.send(err)
+    }else{
+      console.log(rows)
+      res.send(rows)
+    }
+  }) 
+}
+module.exports = {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests,brand_list};

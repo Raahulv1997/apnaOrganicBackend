@@ -12,7 +12,7 @@ const {category,add_category,update_category,delete_category,search_category,get
 const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details,user_login,change_user_password,user_forgot_password} = require("./routes/auth.js")
 const {add_to_cart,cart, cart_update,remove_cart,cart_list} = require("./routes/cart.js")
-const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests} = require("./routes/admin.js")
+const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests,brand_list} = require("./routes/admin.js")
 const {orders,order_deteils,orders_list,order_status_change,users_orders} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
 const {vendors,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
@@ -135,7 +135,7 @@ app.put("/vendor_status_change",vendor_status_change)
 app.get("/admin", admin)
 app.get("/vendor_requests", vendor_requests)
 app.post("/vendor_list",vendor_list)
-
+app.get("/brand_list", brand_list)
 //________________order______________________________
 app.post("/orders",orders)
 //app.post("/orders",order_search)

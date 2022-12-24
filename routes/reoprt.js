@@ -23,21 +23,22 @@ function revenue(req, res) {
     var categorys_arr = "'" + categorys_ar + "'"
     var categorys_arr = categorys_arr.substring(categorys_arr.lastIndexOf("'[") + 2, categorys_arr.indexOf("]'"));
     console.log("__" + categorys_arr + "__")
-    str_revenue += ' AND parent_category IN (' + categorys_arr + ')'
+    str_revenue += ' AND FIND_IN_SET ('+categorys_arr+',parent_category)'//FIND_IN_SET ("+cat_string+",parent_category)
   } else {
     console.log("false2")
   }
 
-  // if(user_locations!=''){
-  // console.log("true3")
-  // var user_locations_ar = JSON.stringify(user_locations);
-  // var user_locations_arr="'"+user_locations_ar+"'"
-  // var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
-  // console.log("__"+user_locations_arr+"__")
-  // str_revenue+= ' AND parent_category IN ('+user_locations_arr+')'
-  // }else{
-  //   console.log("false3")
-  // }
+  if(user_locations!=''){
+  console.log("true3")
+  var user_locations_ar = JSON.stringify(user_locations);
+  var user_locations_arr="'"+user_locations_ar+"'"
+  console.log(user_locations_arr)
+  var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
+  console.log("__"+user_locations_arr+"__")
+  str_revenue+= ' AND user_address LIKE '+user_locations_arr+''
+  }else{
+    console.log("false3")
+  }
 
   if (brand != '') {
     console.log("true4")
@@ -52,7 +53,7 @@ function revenue(req, res) {
 
 console.log("+++++++++++++++++____________str_revenue______1___++++++++++++++++++++++++++")  
 console.log(str_revenue)  
-//return false
+
 //(SELECT SUM(orders.shipping_charges) FROM orders WHERE orders.id=orders_view.order_id) as count
   connection.query("SELECT SUM(`sale_price`) gross_total_amount , SUM(`gst`) total_gst, (SELECT SUM(orders.shipping_charges) FROM orders WHERE (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59')) as total_shipping_charges FROM orders_view WHERE (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') "+str_revenue+"", (err, rows, fields) => {
     if (err) {
@@ -156,21 +157,22 @@ function orders_report(req, res) {
     var categorys_arr = "'" + categorys_ar + "'"
     var categorys_arr = categorys_arr.substring(categorys_arr.lastIndexOf("'[") + 2, categorys_arr.indexOf("]'"));
     console.log("__" + categorys_arr + "__")
-    str_revenue += ' AND parent_category IN (' + categorys_arr + ')'
+    str_revenue += ' AND FIND_IN_SET ('+categorys_arr+',parent_category)'
   } else {
     console.log("false2")
   }
 
-  // if(user_locations!=''){
-  // console.log("true3")
-  // var user_locations_ar = JSON.stringify(user_locations);
-  // var user_locations_arr="'"+user_locations_ar+"'"
-  // var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
-  // console.log("__"+user_locations_arr+"__")
-  // str_revenue+= ' AND parent_category IN ('+user_locations_arr+')'
-  // }else{
-  //   console.log("false3")
-  // }
+  if(user_locations!=''){
+    console.log("true3")
+    var user_locations_ar = JSON.stringify(user_locations);
+    var user_locations_arr="'"+user_locations_ar+"'"
+    console.log(user_locations_arr)
+    var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
+    console.log("__"+user_locations_arr+"__")
+    str_revenue+= ' AND user_address LIKE '+user_locations_arr+''
+    }else{
+      console.log("false3")
+    }
 
   if (brand != '') {
     console.log("true4")
@@ -189,7 +191,7 @@ function orders_report(req, res) {
   connection.query("SELECT COUNT(DISTINCT `order_id`) as order_count,SUM(`sale_price`) net_sales,AVG(`sale_price`) avg_order_value,(SELECT COUNT( product_id) / COUNT(DISTINCT order_id) as avg_item_per_order FROM order_products) as avg_item_per_order FROM orders_view WHERE status='delivered' AND  `created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59' " + str_revenue + "", (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       rows != '' ? order_report_arr.push(rows) : console.log('orders_report_error')
     }
@@ -198,14 +200,14 @@ function orders_report(req, res) {
   connection.query("SELECT DISTINCT `order_id`,`created_on`,`status`,`user_id`,COUNT(product_id) p_id,SUM(`sale_price`) total_order_amount FROM orders_view WHERE `status` = 'delivered' AND `created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59' " + str_revenue + "  GROUP BY `order_id` ", (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       if (rows != '') {
         order_report_arr.push(rows)
         console.log(order_report_arr)
         res.status(200).send(order_report_arr)
       } else {
-        res.status(200).send("orders_report_error")
+        res.status(200).send({ message: "No_Data" })
         console.log('orders_report_error')
       }
     }
@@ -244,16 +246,17 @@ function products_report(req, res) {
     console.log("false2")
   }
 
-  // if(user_locations!=''){
-  // console.log("true3")
-  // var user_locations_ar = JSON.stringify(user_locations);
-  // var user_locations_arr="'"+user_locations_ar+"'"
-  // var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
-  // console.log("__"+user_locations_arr+"__")
-  // str_revenue+= ' AND parent_category IN ('+user_locations_arr+')'
-  // }else{
-  //   console.log("false3")
-  // }
+  if(user_locations!=''){
+    console.log("true3")
+    var user_locations_ar = JSON.stringify(user_locations);
+    var user_locations_arr="'"+user_locations_ar+"'"
+    console.log(user_locations_arr)
+    var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
+    console.log("__"+user_locations_arr+"__")
+    str_revenue+= ' AND user_address LIKE '+user_locations_arr+''
+    }else{
+      console.log("false3")
+    }
 
   if (brand != '') {
     console.log("true4")
@@ -274,7 +277,7 @@ function products_report(req, res) {
   connection.query('SELECT COUNT(DISTINCT `order_id`) as order_count,SUM(`product_price`) net_sales,COUNT(product_id) as product_count FROM orders_view WHERE status="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59" AND NOT `status` = "return"  ' + str_revenue + '', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      //res.status(500).send(err)
     } else {
       rows != '' ? products_report_arr.push(rows) : console.log('products_report_error')
     }
@@ -283,14 +286,14 @@ function products_report(req, res) {
   connection.query('SELECT product_id, COUNT(DISTINCT order_id) as order_count,SUM(product_price) net_sales,COUNT(product_id) as product_count, (SELECT products.product_title_name FROM products WHERE orders_view.product_id = products.id) as product_name, (SELECT (SELECT category.category_name FROM category WHERE products.category=category.id) FROM products WHERE orders_view.product_id = products.id) as category_name FROM orders_view WHERE `status`="delivered" AND NOT `status` = "return" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59"  ' + str_revenue + ' GROUP BY product_id', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+     // res.status(500).send(err)
     } else {
       if (rows != '') {
         products_report_arr.push(rows)
         console.log(products_report_arr)
         res.status(200).send(products_report_arr)
       } else {
-        res.status(500).send("products_report_error")
+        res.status(200).send({ message: "No_Data" })
         console.log('products_report_error')
       }
     }
@@ -325,21 +328,22 @@ function coupons_report(req, res) {
     var categorys_arr = "'" + categorys_ar + "'"
     var categorys_arr = categorys_arr.substring(categorys_arr.lastIndexOf("'[") + 2, categorys_arr.indexOf("]'"));
     console.log("__" + categorys_arr + "__")
-    str_revenue += ' AND parent_category IN (' + categorys_arr + ')'
+    str_revenue += ' AND FIND_IN_SET ('+categorys_arr+',parent_category)'
   } else {
     console.log("false2")
   }
 
-  // if(user_locations!=''){
-  // console.log("true3")
-  // var user_locations_ar = JSON.stringify(user_locations);
-  // var user_locations_arr="'"+user_locations_ar+"'"
-  // var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
-  // console.log("__"+user_locations_arr+"__")
-  // str_revenue+= ' AND parent_category IN ('+user_locations_arr+')'
-  // }else{
-  //   console.log("false3")
-  // }
+  if(user_locations!=''){
+    console.log("true3")
+    var user_locations_ar = JSON.stringify(user_locations);
+    var user_locations_arr="'"+user_locations_ar+"'"
+    console.log(user_locations_arr)
+    var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
+    console.log("__"+user_locations_arr+"__")
+    str_revenue+= ' AND user_address LIKE '+user_locations_arr+''
+    }else{
+      console.log("false3")
+    }
 
   if (brand != '') {
     console.log("true4")
@@ -359,7 +363,7 @@ function coupons_report(req, res) {
   connection.query('SELECT DISTINCT order_id,(SELECT SUM(orders.discount_coupon_value) FROM orders WHERE orders.id=orders_view.order_id) as count FROM `orders_view` WHERE status="delivered" AND discount_coupon!="" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59" ' + str_revenue + '', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       if (rows != '') {
         rows.forEach((item, index) => {
@@ -374,7 +378,7 @@ function coupons_report(req, res) {
   connection.query('SELECT discount_coupon,COUNT(DISTINCT order_id) order_count, (SELECT coupons.code FROM coupons WHERE orders_view.discount_coupon = coupons.id) as coupons_code, SUM(DISTINCT `discount_coupon_value`) amount_discounted, DATE_FORMAT(order_date, "%Y-%m-%d") created_date FROM orders_view WHERE `status`="delivered" AND discount_coupon !="" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59" ' + str_revenue + '  GROUP BY discount_coupon,order_date', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       if (rows != '') {
         coupon_report_arr.push(rows)
@@ -387,10 +391,6 @@ function coupons_report(req, res) {
     }
   })
 }
-
-
-
-
 
 // SELECT SUM(`discount_coupon_value`) amount,COUNT(`discount_coupon`) total_order FROM `orders` WHERE discount_coupon!=""
 
@@ -422,10 +422,10 @@ console.log(cat_str)
 connection.query(cat_str, (err, rows, fields) => {
   if (err) {
     console.log(err)
-    res.status(500).send(err)
+    res.status(200).send(err)
   } else {
     
-    rows != '' ? res.status(200).send(rows) : res.status(500).send(err)
+    rows != '' ? res.status(200).send(rows) : res.status(200).send({ message: "No_Data" })
   }
 })
 }
@@ -455,17 +455,17 @@ function stock_report(req,res){
   connection.query('' + stock_value + '', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       if (err) {
         console.log(err)
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         if (rows != '') {
           console.log(rows)
           res.status(200).send(rows)
         } else {
-          res.status(500).send("stock_report_error")
+          res.status(200).send({ message: "No_Data" })
           console.log('stock_report_error')
         }
       }
@@ -479,9 +479,9 @@ function customers_report(req, res) {
   connection.query('SELECT first_name,last_name,`user_id`,`email`,`address`,(SELECT COUNT(`id`) FROM orders WHERE users.user_id=orders.user_id) order_count,(SELECT SUM(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) total_amount,(SELECT AVG(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) avg_value,`created_on` FROM `users` WHERE `first_name` LIKE "%' + user_search + '%" OR `email` LIKE "%' + user_search + '%"', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
-      rows != '' ? res.send(rows) : res.send('error')
+      rows != '' ? res.send(rows) : res.status(200).send({ message: "No_Data" })
     }
   })
 }
@@ -509,21 +509,22 @@ function taxes_report(req, res) {
     var categorys_arr = "'" + categorys_ar + "'"
     var categorys_arr = categorys_arr.substring(categorys_arr.lastIndexOf("'[") + 2, categorys_arr.indexOf("]'"));
     console.log("__" + categorys_arr + "__")
-    str_revenue += ' AND parent_category IN (' + categorys_arr + ')'
+    str_revenue += ' AND FIND_IN_SET ('+categorys_arr+',parent_category)'
   } else {
     console.log("false2")
   }
 
-  // if(user_locations!=''){
-  // console.log("true3")
-  // var user_locations_ar = JSON.stringify(user_locations);
-  // var user_locations_arr="'"+user_locations_ar+"'"
-  // var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
-  // console.log("__"+user_locations_arr+"__")
-  // str_revenue+= ' AND parent_category IN ('+user_locations_arr+')'
-  // }else{
-  //   console.log("false3")
-  // }
+  if(user_locations!=''){
+    console.log("true3")
+    var user_locations_ar = JSON.stringify(user_locations);
+    var user_locations_arr="'"+user_locations_ar+"'"
+    console.log(user_locations_arr)
+    var user_locations_arr = user_locations_arr.substring(user_locations_arr.lastIndexOf("'[") + 2, user_locations_arr.indexOf("]'"));
+    console.log("__"+user_locations_arr+"__")
+    str_revenue+= ' AND user_address LIKE '+user_locations_arr+''
+    }else{
+      console.log("false3")
+    }
 
   if (brand != '') {
     console.log("true4")
@@ -543,7 +544,7 @@ function taxes_report(req, res) {
   connection.query('SELECT SUM(total_gst) order_tax,COUNT(DISTINCT order_id) order_count FROM orders_view WHERE `status`="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59" ' + str_revenue + '', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       rows != '' ? taxes_report_arr.push(rows) : console.log('No Data')
     }
