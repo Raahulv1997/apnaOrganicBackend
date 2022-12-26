@@ -3,16 +3,17 @@ const connection = require('../db')
 
 
 function review_rating(req,res){
-    console.log("review")
-    var {product_name,category_type,review_date,review_rating,comment,status}=req.body;
-    connection.query('INSERT INTO  `review`(`product_name`, `category_type`, `review_date`, `review_rating`, `comment`, `status`) VALUES ("'+product_name+'","'+category_type+'","'+review_date+'","'+review_rating+'","'+comment+'","'+status+'")',(err,rows,fields)=>{
-        if(err){
-      res.status(500).send(err)
-        }else{
-            console.log("review_rating Data Insert Succecsfully")
-          res.status(201).send("Review Rating Data Insert Succecsfully")
-        }
-      }) 
+  console.log("review")
+  console.log(req.body)
+  var {user_id,product_id,product_name,user_name,category_type,review_rating,comment}=req.body;                                                           
+  connection.query('INSERT INTO  `review`( `user_id`, `user_name`, `product_id`,`product_name`,`category_type`, `review_rating`, `comment`) VALUES ("'+user_id+'","'+user_name+'","'+product_id+'","'+product_name+'","'+category_type+'","'+review_rating+'","'+comment+'")',(err,rows,fields)=>{
+      if(err){
+    res.status(500).send(err)
+      }else{
+          console.log("review_rating Data Insert Succecsfully")
+        res.status(201).send("Review Rating Data Insert Succecsfully")
+      }
+    }) 
 }
 
 
@@ -96,7 +97,6 @@ connection.query("SELECT * FROM `review` WHERE `id` ="+req.query.id+"",(err,rows
     }else{
       res.status(500).send("error")
     }
-    
   }
 })
 }

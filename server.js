@@ -27,6 +27,7 @@ const {payment,transaction_list,transaction_details} = require("./routes/transac
 const {revenue,orders_report,products_report,coupons_report,categories_report,stock_report,customers_report,taxes_report} = require("./routes/reoprt.js")
 const {trending_product} = require("./routes/trending_product.js")
 const {latest_product } = require("./routes/latest_product.js")
+const {add_blog,blogs,update_blog,update_blog_status,delete_blog} = require("./routes/blog.js")
 
 
 
@@ -209,8 +210,12 @@ app.get("/trending_product",trending_product)
 //_____________Trending_product_____________
 app.get("/latest_product",latest_product)
 
-
-
+//_____________blog_______________________________________
+app.post("/add_blog",upload.single('image'),add_blog)
+app.post("/blogs",blogs)
+app.put("/update_blog",upload.single('image'),update_blog)
+app.put("/update_blog_status",update_blog_status)
+app.put("/delete_blog",delete_blog)
 
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){

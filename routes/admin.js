@@ -251,8 +251,6 @@ function vendor_requests(req,res){
   }) 
 
 }
-
-
 function brand_list(req,res){
   connection.query('SELECT DISTINCT brand FROM products WHERE 1',(err,rows,fields)=>{
     if(err){

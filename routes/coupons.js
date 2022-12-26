@@ -1,7 +1,4 @@
 const connection = require('../db')
-
-
-
 function coupon(req,res){
     if(req.query.coupon_id == 'all'){
         connection.query('SELECT * FROM coupons WHERE 1  ',(err,rows,fields)=>{
