@@ -30,3 +30,52 @@
 
 // (`created_on` BETWEEN '" + req.body.from_date + " 24:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')
 //SELECT * FROM `orders_view` WHERE parent_category = '5,18' AND (`created_on` BETWEEN   '2022-11-28 24:00:00' AND '2022-11-29 23:59:59')
+
+
+// cron.schedule('0 0 */12 * * *', function(){
+//     console.log('running a task every twelve hours');
+//   });
+
+//____________________try_1________
+// var cron = require('node-cron');
+// console.log("node-cron-fun")
+// cron.schedule(' 21 12 * * *', () => {
+//     console.log('node-cron-test');
+//   });
+
+//____________________try_2________
+  //const schedule = require('node-schedule');
+ // var schedule = require('node-schedule-tz');
+//  var date = new Date(2022, 12, 26, 12, 26, 0);
+// const date = new Date(2022, 12, 26, 12, 28, 0).toLocaleString('en-US', { timeZone: 'Asia/Kolkata'});
+//   console.log(date)
+// const str = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata'});
+// console.log(str);
+//   var j = schedule.scheduleJob(str,'Asia/Kolkata',function(){
+//     console.log('job is running');
+//     console.log(j)
+//   });
+
+// var schedule = require('node-schedule');
+// var date = new Date(2022, 11, 27, 16, 52, 0);
+// console.log(date)
+// var j = schedule.scheduleJob(date, function(){
+//   console.log('job is running');
+
+// })
+// console.log(j)
+//____________________try_3________________
+//var CronJob = require('cron').CronJob;
+// var job = new CronJob('0 40 11 * * *', function() {
+//     //will run every day at 12:00 AM
+//     console.log(" run every day at 12:00 AM")
+//    })
+// var job = new CronJob(
+// 	'0 41 11 * * *',
+// 	function() {
+// 		console.log('You will see this message every second');
+// 	},
+// 	null,
+// 	true,
+// 	'Asia/Kolkata'
+// );

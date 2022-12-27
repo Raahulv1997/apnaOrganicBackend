@@ -28,6 +28,8 @@ const {revenue,orders_report,products_report,coupons_report,categories_report,st
 const {trending_product} = require("./routes/trending_product.js")
 const {latest_product } = require("./routes/latest_product.js")
 const {add_blog,blogs,update_blog,update_blog_status,delete_blog} = require("./routes/blog.js")
+const {publish_blog} = require("./routes/cron_.js")
+const {add_banner,update_banner} = require("./routes/banner.js")
 
 
 
@@ -217,6 +219,10 @@ app.put("/update_blog",upload.single('image'),update_blog)
 app.put("/update_blog_status",update_blog_status)
 app.put("/delete_blog",delete_blog)
 
+//_____________banner______________________________________
+app.post("/add_banner",upload.single('image'),add_banner)
+app.put("/update_banner",upload.single('image'),update_banner)
+
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
@@ -228,5 +234,7 @@ SERVER_PORT == undefined || SERVER_PORT =='' ? PORT = 5000: PORT = SERVER_PORT;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${SERVER_PORT}.`);
+  //____________________node-cron-function_______________________________________
+  publish_blog()
 });
 

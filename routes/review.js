@@ -5,8 +5,8 @@ const connection = require('../db')
 function review_rating(req,res){
   console.log("review")
   console.log(req.body)
-  var {user_id,product_id,product_name,user_name,category_type,review_rating,comment}=req.body;                                                           
-  connection.query('INSERT INTO  `review`( `user_id`, `user_name`, `product_id`,`product_name`,`category_type`, `review_rating`, `comment`) VALUES ("'+user_id+'","'+user_name+'","'+product_id+'","'+product_name+'","'+category_type+'","'+review_rating+'","'+comment+'")',(err,rows,fields)=>{
+  var {user_id,product_id,product_name,user_name,category_type,review_rating,comment,review_date}=req.body;                                                           
+  connection.query('INSERT INTO  `review`( `user_id`, `user_name`, `product_id`,`product_name`,`category_type`,`review_date`,`review_rating`, `comment`) VALUES ("'+user_id+'","'+user_name+'","'+product_id+'","'+product_name+'","'+category_type+'","'+review_date+'","'+review_rating+'","'+comment+'")',(err,rows,fields)=>{
       if(err){
     res.status(500).send(err)
       }else{
