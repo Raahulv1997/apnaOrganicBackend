@@ -185,8 +185,9 @@ function orders_report(req, res) {
     console.log("false4")
   }
 
-  console.log("+++++++++++++++++____________str_revenue______1___++++++++++++++++++++++++++")
-  console.log(str_revenue)
+  console.log("+++++++++++++++++____________str_______1___++++++++++++++++++++++++++")
+  
+  console.log("SELECT COUNT(DISTINCT `order_id`) as order_count,SUM(`sale_price`) net_sales,AVG(`sale_price`) avg_order_value,(SELECT COUNT( product_id) / COUNT(DISTINCT order_id) as avg_item_per_order FROM order_products) as avg_item_per_order FROM orders_view WHERE status='delivered' AND  `created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59' " + str_revenue + "")
 
   connection.query("SELECT COUNT(DISTINCT `order_id`) as order_count,SUM(`sale_price`) net_sales,AVG(`sale_price`) avg_order_value,(SELECT COUNT( product_id) / COUNT(DISTINCT order_id) as avg_item_per_order FROM order_products) as avg_item_per_order FROM orders_view WHERE status='delivered' AND  `created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59' " + str_revenue + "", (err, rows, fields) => {
     if (err) {
@@ -196,7 +197,10 @@ function orders_report(req, res) {
       rows != '' ? order_report_arr.push(rows) : console.log('orders_report_error')
     }
   })
-
+  console.log("+++++++++++++++++____________str_______2___++++++++++++++++++++++++++")
+  
+  console.log("SELECT DISTINCT `order_id`,`created_on`,`status`,`user_id`,COUNT(product_id) p_id,SUM(`sale_price`) total_order_amount FROM orders_view WHERE `status` = 'delivered' AND `created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59' " + str_revenue + "  GROUP BY `order_id` ")
+  
   connection.query("SELECT DISTINCT `order_id`,`created_on`,`status`,`user_id`,COUNT(product_id) p_id,SUM(`sale_price`) total_order_amount FROM orders_view WHERE `status` = 'delivered' AND `created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59' " + str_revenue + "  GROUP BY `order_id` ", (err, rows, fields) => {
     if (err) {
       console.log(err)
@@ -264,15 +268,12 @@ function products_report(req, res) {
     var brand_arr = "'" + brand_ar + "'"
     var brand_arr = brand_arr.substring(brand_arr.lastIndexOf("'[") + 2, brand_arr.indexOf("]'"));
     console.log("__" + brand_arr + "__")
-    str_revenue += ' AND brand IN (' + brand_arr + ')'
+    str_revenue += ' AND brand IN (' +brand_arr+ ')'
   } else {
     console.log("false4")
   }
-
   console.log("+++++++++++++++++____________str_revenue______1___++++++++++++++++++++++++++")
   console.log(str_revenue)
-
-
 
   connection.query('SELECT COUNT(DISTINCT `order_id`) as order_count,SUM(`product_price`) net_sales,COUNT(product_id) as product_count FROM orders_view WHERE status="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59" AND NOT `status` = "return"  ' + str_revenue + '', (err, rows, fields) => {
     if (err) {

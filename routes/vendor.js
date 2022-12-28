@@ -254,6 +254,19 @@ function vendor_update(req,res){
        }
      })
 }
-
+//UPDATE `vendor` SET `show_product_rating`='1' WHERE `id`='1'
+function content_manager(req,res){
+  console.log(req.body)
+  var {vendor_id,show_product_rating}=req.body
+  connection.query('UPDATE `vendor` SET `show_product_rating`='+show_product_rating+' WHERE `id`='+vendor_id+'',async (err, rows, fields) => {
+    if(err){
+      console.log("error"+err)
+    res.status(500).send(err)
+    }else{
+      console.log(rows)
+      rows.affectedRows == '1' ? res.status(200).send({ "message": "deleted_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+    }
+  })
+}
 // module.exports={vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update,vendors}
-module.exports={vendor_register,vendor_list,vendor_update,vendors}
+module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager}

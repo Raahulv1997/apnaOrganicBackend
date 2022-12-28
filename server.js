@@ -15,7 +15,7 @@ const {add_to_cart,cart, cart_update,remove_cart,cart_list} = require("./routes/
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests,brand_list} = require("./routes/admin.js")
 const {orders,order_deteils,orders_list,order_status_change,users_orders} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
-const {vendors,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
+const {vendors,vendor_register,vendor_list,vendor_update,content_manager} = require("./routes/vendor")
 // const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
 const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
@@ -29,7 +29,7 @@ const {trending_product} = require("./routes/trending_product.js")
 const {latest_product } = require("./routes/latest_product.js")
 const {add_blog,blogs,update_blog,update_blog_status,delete_blog} = require("./routes/blog.js")
 const {publish_blog} = require("./routes/cron_.js")
-const {add_banner,update_banner} = require("./routes/banner.js")
+const {add_banner,update_banner,banner_list,banner_delete,cahange_banner_status} = require("./routes/banner.js")
 
 
 
@@ -160,6 +160,7 @@ app.get("/vendors",vendors)
 // app.post("/vendor_register",vendor_register)
 app.post("/vendor_register",upload.array('image',2),vendor_register)
 app.put("/vendor_update",upload.array('image',2),vendor_update)
+app.put("/content_manager",content_manager)
 
 //__________________bulk_upload___________________
 app.post("/product_bulk_uploads",imageUpload.single('bulk_xls'),product_bulk_uploads)
@@ -222,7 +223,9 @@ app.put("/delete_blog",delete_blog)
 //_____________banner______________________________________
 app.post("/add_banner",upload.single('image'),add_banner)
 app.put("/update_banner",upload.single('image'),update_banner)
-
+app.post("/banner_list",banner_list)
+app.put("/banner_delete",banner_delete)
+app.put("/cahange_banner_status",cahange_banner_status)
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})

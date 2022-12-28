@@ -40,4 +40,61 @@ function update_banner(req, res) {
         }
       })
   }
-module.exports={add_banner,update_banner}
+
+
+
+  function banner_list(req,res){
+    console.log("banner_list")
+    var {banner_id,title,banner_location}=req.body
+    var banner_list_qry = '' 
+
+    if(	banner_id=='' && title=='' && banner_location==''){
+        banner_list_qry = 'SELECT * FROM `banner` WHERE is_deleted=1 ' 
+    }else{
+        banner_list_qry = 'SELECT * FROM `banner` WHERE is_deleted=1 '
+        if(	banner_id!=''){
+            banner_id!=''? banner_list_qry+=' AND banner_id = '+banner_id+'':console.log("false")
+        }else{
+            title!=''? banner_list_qry+=' AND title LIKE "%'+title+'%"':console.log("false")
+            banner_location!=''? banner_list_qry+=' AND banner_location = "'+banner_location+'"':console.log("false")
+        }    
+    }
+    console.log(banner_list_qry)
+    connection.query(banner_list_qry, (err, rows, fields) => {
+        if (err) {
+            res.status(200).send(err)
+        } else {
+            console.log(rows)
+            res.status(200).send(rows)
+        }
+    }) 
+  }
+  function banner_delete(req,res){
+    console.log(req.body)
+    var {is_deleted,banner_id}=req.body
+    if(is_deleted=='0'){
+        connection.query('UPDATE `banner` SET `is_deleted`="'+is_deleted+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
+            if (err) {
+              res.status(500).send(err)
+            } else {
+              rows.affectedRows == '1' ? res.status(200).send({ "message": "deleted_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+            }
+          })
+    }else{
+        res.status(200).send({ "message": "invalid is_deleted data" })
+    }
+    
+  }
+
+  function cahange_banner_status(req,res){
+    console.log(req.body)
+    var {status,banner_id}=req.body
+        connection.query('UPDATE `banner` SET `status`="'+status+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
+            if (err) {
+              res.status(500).send(err)
+            } else {
+              rows.affectedRows == '1' ? res.status(200).send({ "message": "change_status_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+            }
+          })
+  }
+module.exports={add_banner,update_banner,banner_list,banner_delete,cahange_banner_status}
