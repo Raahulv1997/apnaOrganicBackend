@@ -19,7 +19,11 @@ function vendors(req,res){
         console.log("/vendors_error"+err)
       res.status(500).send(err)
       }else{
-        //console.log(rows)
+        var slink = JSON.parse(JSON.stringify(rows[0].social_media_links))
+        var slink1= JSON.parse(slink)
+        delete rows[0].social_media_links;
+        Object.assign(rows[0],{"social_media_links":slink1})
+        //console.log(JSON.parse())
         res.status(200).send(rows)
       }
     }) 
@@ -143,9 +147,9 @@ function vendors(req,res){
 // }
 
 function vendor_register(req,res){
-  var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,status,document_name,availability}=req.body;
+  var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
+  console.log("_________+++++_________________vendor_register______________++++++_______________")
   console.log(req.body)
-  console.log(req.files)
 
   if(req.files == undefined || req.files == '' ){
    image="no image"
@@ -154,17 +158,23 @@ function vendor_register(req,res){
    console.log(image)
  }
   var documents1 = JSON.stringify("public/catgory_images/"+req.files[1].filename)
+ // var logo = JSON.stringify("public/catgory_images/"+req.files[2].filename)
   var document_name1 = JSON.stringify(document_name)
+  console.log(document_name1)
   console.log(documents1)
 
- 
-    connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `multiple_document_upload`, `document_name`, `availability`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+image+"','"+status+"','"+documents1+"','"+document_name1+"','"+availability+"')",async (err, rows, fields) => {
+var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
+  console.log(typeof social_media_links_new)
+  console.log(social_media_links_new)
+//res.send([newar])
+ //return false
+    connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `multiple_document_upload`, `document_name`, `availability`,`social_media_links`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+image+"','"+status+"','"+documents1+"','"+document_name1+"','"+availability+"','"+social_media_links_new+"')",async (err, rows, fields) => {
      if(err){
        console.log("error"+err)
        res.status(500).send(err)
      }else{
        console.log(rows)
-       res.status(200).send({"message":"Create vendor Profile"})
+       res.status(200).send(rows)
    
      }
    })
