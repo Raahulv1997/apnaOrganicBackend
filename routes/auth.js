@@ -1,8 +1,12 @@
 const { Auth, LoginCredentials } = require("two-step-auth");
 const bcrypt = require("bcrypt")
+const nodemailer = require("nodemailer")
 const connection = require('../db')
 var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z]{2,4})+$/;
 
+var OTP = '';
+var signup_condition=false;
+var otp_verify_condition=false;
 function signup(req, res) {
   var edata = req.body.email;
   var rst = regex.test(edata);
@@ -25,7 +29,7 @@ function signup(req, res) {
 
           function generateOTP() {
             var digits = '0123456789';
-            let OTP = '';
+            OTP = '';
             for (let o = 0; o < 6; o++ ) {
                 OTP += digits[Math.floor(Math.random() * 10)];
             }
@@ -41,26 +45,50 @@ function signup(req, res) {
             return OTP
         }
          console.log(generateOTP()) 
-            // try {
-            //   console.log(edata)
-            //   const resp = await Auth(edata, "apnaorganicstore");
-            //   console.log(resp);
-            //   // res.json({"message":"Sent Otp On Your Email"})
-            //   connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+resp.mail+'","'+resp.OTP+'")', (err, rows, fields) => {
-            //     if (err) {
-            //       console.log("/_otp_error" + err);
-            //       res.send(err)
-            //     } else {
-            //       console.log("_____");
-            //       res.send(rows);
-            //     }
-            //   })
-            //   } catch (error) {
-            //   console.log(error);
-            // }
+            try {
+               console.log(edata)
+              // const resp = await Auth(edata, "apnaorganicstore");
+              // console.log(resp);
+              // // res.json({"message":"Sent Otp On Your Email"})
+              // connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+resp.mail+'","'+resp.OTP+'")', (err, rows, fields) => {
+              //   if (err) {
+              //     console.log("/_otp_error" + err);
+              //     res.send(err)
+              //   } else {
+              //     console.log(rows);
+              //     res.send(rows);
+              //   }
+              // })
+              const mail_configs={
+                from:'ashish.we2code@gmail.com',
+                to:edata,
+                subject:'Apna Organic Store',
+                text:"One-time-password "+ OTP
+              }
+
+                 nodemailer.createTransport({
+                  service:'gmail',
+                  auth:{
+                      user:'ashish.we2code@gmail.com',
+                      pass:'nczaguozpagczmjv'
+                  }
+                })
+                .sendMail(mail_configs,(err)=>{
+                  if(err){
+                    return console.log('errrr',err);
+                  }else{
+                    return console.log('email sent')
+                  }
+                })
+
+              }
+              catch (error) {
+              console.log(error);
+            }
         }
 
       }
+      signup_condition = true;
     })
   } else {
     res.status(513).send({ "message": "invalid address" })
@@ -69,62 +97,82 @@ function signup(req, res) {
 }
 
 async function otp_verify(req,res){
-  console.log("--------------------------otp_verify--------------------------")
-console.log(req.body)
-  var email_otp = req.body.email
-  var otp_ver = req.body.otp
-  var password = req.body.password
-  var cheked_email = regex.test(email_otp);
-
-  const salt = await bcrypt.genSalt(10);
-  password_salt = await bcrypt.hash(password, salt);
-  console.log(password_salt)
-
-
-console.log(email_otp)
-  console.log(otp_ver)
-  if(cheked_email){
-    console.log("email_true")
-    connection.query("SELECT * FROM `users_otp` WHERE email = '" + email_otp + "'",async (err, rows, fields) => {
-      if(err){
-        console.log(err)
-      }else{
-        console.log("otp_result")
-        console.log("_____")
-        if(rows!=''){
-
-          var userauth = JSON.parse(JSON.stringify(rows));
-          var user_otp = userauth[0].otp;
-          console.log( otp_ver +"=="+ user_otp)
-          if(otp_ver === user_otp){
-            console.log("otp verification successfully")
-            //res.send({"message":"otp verification successfully"})
-
-            connection.query("INSERT INTO `users`( `email`, `password`) VALUES ('"+email_otp+"','"+password_salt+"')",async (err, rows, fields) => {
-              if(err){
-                console.log("error"+err)
-                res.status(500).send(err)
-              }else{
-                console.log("_____")
-                res.status(202).send(rows)
-
-              }
-            })
-            
+    console.log("--------------------------otp_verify--------------------------")
+    console.log(req.body)
+      var email_otp = req.body.email
+      var otp_ver = req.body.otp
+      var password = req.body.password
+      var cheked_email = regex.test(email_otp);
+    
+      const salt = await bcrypt.genSalt(10);
+      password_salt = await bcrypt.hash(password, salt);
+      console.log(password_salt)
+    
+    
+    console.log(email_otp)
+      console.log(otp_ver)
+      if(cheked_email){
+        console.log("email_true")
+        connection.query("SELECT * FROM `users_otp` WHERE email = '" + email_otp + "'",async (err, rows, fields) => {
+          if(err){
+            console.log(err)
           }else{
-            res.status(500).send({"message":"otp does not match"})
-          }
-         
-        }else{
-          res.status(500).send({"message":"email does not match"})
-        }
-      }
-    })
-  }else{
-    console.log("email_false")
-    res.status(513).send({ "message": "invalid address" })
-  }
+            console.log("otp_result")
+            console.log(rows)
+            if(rows!=''){
+    
+              var userauth = JSON.parse(JSON.stringify(rows));
+              var user_otp = userauth[0].otp;
+              console.log( otp_ver +"=="+ user_otp)
+              if(otp_ver === user_otp){
+                console.log("otp verification successfully")
+                //res.send({"message":"otp verification successfully"})
+                if(signup_condition){
+                  connection.query("INSERT INTO `users`( `email`, `password`) VALUES ('"+email_otp+"','"+password_salt+"')",async (err, rows, fields) => {
+                    if(err){
+                      console.log("error"+err)
+                      res.status(500).send(err)
+                    }else{
+                      console.log(rows)
+                      res.status(202).send(rows)
+                      console.log('insert user')
+                      signup_condition=false;
+                    }
+                  })
+                }
+                else{
+                  console.log('otp veification error')
+                }
 
+                if(otp_verify_condition){
+                  connection.query('UPDATE `users` SET `password`="'+password_salt+'" WHERE `email`="'+email_otp+'" ',async (err, rows, fields) => {
+                    if(err){
+                      console.log("error"+err)
+                      res.status(500).send(err)
+                    }else{
+                      console.log(rows)
+                      res.status(202).send(rows)
+                      console.log('update user')
+                      otp_verify_condition=false;
+                    }
+                  }) 
+                }
+                
+              }else{
+                res.status(500).send({"message":"otp does not match"})
+              }
+             
+            }else{
+              res.status(500).send({"message":"email does not match"})
+            }
+          }
+        })
+      }else{
+        console.log("email_false")
+        res.status(513).send({ "message": "invalid address" })
+      }
+
+  
 }
 
 async function user_register(req,res){
@@ -244,28 +292,80 @@ if(email != '' && password != '' && new_password != ''){
 }
 
 function user_forgot_password(req,res){
-  console.log(req.body.admin_email)
-  connection.query('SELECT `email`, `password` FROM `users`  WHERE `email` ="'+req.body.email+'"',async (err,results)=>{
-      if(err){
-          console.log(err)
-          res.send(err)
-      }else{
-          if(results != ''){
-                  
-                  var saltpsw = JSON.parse(JSON.stringify(results[0].password))
-                  
-                  // const salt = await bcrypt.genSalt(10);
-                  // deco_salt = await bcrypt.hash(saltpsw, salt);
-                  
-                  console.log("send_password_on_your_mail")
-                  res.send(saltpsw)
-  
-          }else{
-              console.log("invalid_mail")
-              res.send("invalid_mail")
-          }
+
+  var edata = req.body.email;
+  var rst = regex.test(edata);
+  if (rst) {
+    connection.query("SELECT * FROM `users` WHERE email = '" + edata + "'",async (err, rows, fields) => {
+      if (err) {
+        console.log("/signup_error" + err)
+        res.status(500).send(err)
+      } else {
+        if (rows != '') {
+          console.log(rows);
+          console.log("redirect login page");
+          var umail = JSON.parse(JSON.stringify(rows));
+          var useremail = umail[0].email;
+          console.log(useremail);
+          console.log({"message":"User Already Exist. Please Login"});
+          //res.status(200).send(false)
+          function generateOTP() {
+            var digits = '0123456789';
+            OTP = '';
+            for (let o = 0; o < 6; o++ ) {
+                OTP += digits[Math.floor(Math.random() * 10)];
+            }
+              connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
+                if (err) {
+                  console.log("/_otp_error" + err);
+                  res.status(500).send(err)
+                } else {
+                  console.log(rows);
+                  res.status(200).send(OTP);
+                }
+              })
+            return OTP
+        }
+
+        console.log(generateOTP()) 
+            try {
+               console.log(edata)
+              const mail_configs={
+                from:'ashish.we2code@gmail.com',
+                to:edata,
+                subject:'Apna Organic Store',
+                text:"One-time-password "+ OTP
+              }
+
+                 nodemailer.createTransport({
+                  service:'gmail',
+                  auth:{
+                      user:'ashish.we2code@gmail.com',
+                      pass:'nczaguozpagczmjv'
+                  }
+                })
+                .sendMail(mail_configs,(err)=>{
+                  if(err){
+                    return console.log('errrr',err);
+                  }else{
+                    return console.log('email sent')
+                  }
+                })
+
+              }
+              catch (error) {
+              console.log(error);
+            }
+        } else {
+          res.status(500).send({ "message": "User Not Found" })
+        }
+
       }
-  })
+      otp_verify_condition = true;
+    })
+  } else {
+    res.status(513).send({ "message": "invalid address" })
+  }
   
   }
 module.exports = {signup,otp_verify, user_register,user_details, user_login, change_user_password, user_forgot_password }
