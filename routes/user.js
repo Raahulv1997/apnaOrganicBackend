@@ -8,7 +8,7 @@ function user_products_search(req, res) {
 //       console.log(err)
 //       res.status(502).send(err)
 //     }else{
-//      //console.log(results)
+//      //console.log("_____")
 //      results!=''?res.status(200).send(results):res.status(500).send("invalid input data ")
      
 //     }
@@ -112,7 +112,7 @@ if(u_id!==''){
                   console.log(err)
                   res.status(502).send(err)
                 }else{
-                 // console.log(results)
+                 // console.log("_____")
                   var responsePayload = {
                     results: results
                   };
@@ -181,7 +181,7 @@ if(u_id!==''){
                    console.log(err)
                    res.status(502).send(err)
                  }else{
-                  // console.log(results)
+                  // console.log("_____")
                    var responsePayload = {
                      results: results
                    };
@@ -307,7 +307,7 @@ console.log(newstr)
                console.log(err)
                res.status(502).send(err)
              }else{
-              // console.log(results)
+              // console.log("_____")
                var responsePayload = {
                  results: results
                };
@@ -375,7 +375,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
                 console.log(err)
                 res.status(502).send(err)
               }else{
-               // console.log(results)
+               // console.log("_____")
                 var responsePayload = {
                   results: results
                 };

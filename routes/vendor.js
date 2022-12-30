@@ -43,7 +43,7 @@ function vendors(req,res){
 //         res.status(500).send(err)
 //         } else {
 //           if (rows != '') {
-//             console.log(rows);
+//             console.log("_____");
 //             console.log("redirect login page");
 //             var umail = JSON.parse(JSON.stringify(rows));
 //             var useremail = umail[0].email;
@@ -63,7 +63,7 @@ function vendors(req,res){
 //                     console.log("/_otp_error" + err);
 //                   res.status(500).send(err)
 //                   } else {
-//                     console.log(rows);
+//                     console.log("_____");
 //                     res.send(OTP);
 //                   }
 //                 })
@@ -93,7 +93,7 @@ function vendors(req,res){
 //       if(err){
 //         console.log(err)
 //       }else{
-//         console.log(rows)
+//         console.log("_____")
 //         if(rows!=''){
 
 //           var userauth = JSON.parse(JSON.stringify(rows));
@@ -107,7 +107,7 @@ function vendors(req,res){
 //               if(err){
 //                 console.log("error"+err)
 //               }else{
-//                 console.log(rows)
+//                 console.log("_____")
 //                 res.send(rows)
 //               }
 //             })  
@@ -139,7 +139,7 @@ function vendors(req,res){
 //       console.log("error"+err)
 //       res.send(err)
 //     }else{
-//       console.log(rows)
+//       console.log("_____")
 //       res.send({"message":"Create vendor Profile"})
   
 //     }
@@ -173,7 +173,7 @@ var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
        console.log("error"+err)
        res.status(500).send(err)
      }else{
-       console.log(rows)
+       console.log("_____")
        res.status(200).send(rows)
    
      }
@@ -256,7 +256,7 @@ function vendor_update(req,res){
        res.status(500).send(err)
        }else{
          if(rows!=''){
-          console.log(rows)
+          console.log("_____")
           res.status(200).send({"message":"Updated Vendor Profile"})
         }else{
           res.status(500).send({"message":"Error Plaese Give Valid Data "})
@@ -273,7 +273,7 @@ function content_manager(req,res){
       console.log("error"+err)
     res.status(500).send(err)
     }else{
-      console.log(rows)
+      console.log("_____")
       rows.affectedRows == '1' ? res.status(200).send({ "message": "deleted_successfully" }) : res.status(200).send({ "message": "invalid_id" })
     }
   })

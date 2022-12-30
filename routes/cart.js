@@ -11,21 +11,20 @@ var {user_id,product_view_id,price,discount,quantity,is_active} = req.body
           res.status(500).send(err)
         } else {
             res.status(200).send(rows)
-            console.log(rows) 
+            console.log("_____") 
         }})
 
 }
 
 function cart(req,res){
   console.log(req.query.user_id)
-    console.log("user_cart")
     connection.query('SELECT * FROM `cart_view` WHERE user_id='+req.query.user_id+'', (err, rows, fields) => {
         if (err) {
           console.log(err)
           res.status(500).send(err)
         } else {
             res.status(200).send(rows)
-            console.log(rows) 
+            console.log("_____") 
         }})   
 }
 
@@ -54,7 +53,7 @@ function remove_cart(req,res){
            // rows!=''?res.send(rows):res.send("faild updates")
            rows.affectedRows=='1'?res.status(201).send("updated successfully"):res.status(500).send("invalid input data ")
 
-            console.log(rows) 
+            console.log("_____") 
           }})   
   }
 

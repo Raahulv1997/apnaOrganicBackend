@@ -7,7 +7,7 @@ function latest_product(req,res){
           console.log(err)
           res.status(502).send(err)
         }else{
-         console.log(results)
+         console.log("_____")
          results!=''?res.status(200).send(results):res.status(500).send(" No Products Data ")
         }
     })

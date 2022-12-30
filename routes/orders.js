@@ -27,7 +27,7 @@ async function orders(req, res) {
           if (results != '') {
               max_invoice_no1 = 0
               console.log("______chk-2_____")
-              console.log(results)
+              console.log("_____")
               connection.query('SELECT * FROM coupons WHERE `id`='+discount_coupon+'', async (err, rslt) => {
                 if (err) {
                   console.log(err)
@@ -40,7 +40,7 @@ async function orders(req, res) {
                 }
               }) 
               var orderid = JSON.parse(JSON.stringify(results.insertId))
-              //console.log(results)
+              //console.log("_____")
               //res.send(results)
               order_product.forEach((item, index) => {
               //console.log("______chk-3_____"+orderid)

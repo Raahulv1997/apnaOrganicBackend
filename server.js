@@ -1,7 +1,9 @@
 const connection = require('./db')
 const express = require("express");
 const multer  = require('multer');
+const formidable = require('formidable');
 const path  = require('path');
+const fs  = require('fs');
 const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
@@ -30,6 +32,9 @@ const {latest_product } = require("./routes/latest_product.js")
 const {add_blog,blogs,update_blog,update_blog_status,delete_blog} = require("./routes/blog.js")
 const {publish_blog} = require("./routes/cron_.js")
 const {add_banner,update_banner,banner_list,banner_delete,cahange_banner_status} = require("./routes/banner.js")
+
+//__________+++___________testing______________+++_______________
+//const {multer_image} = require("./routes/testxl.js")
 
 
 
@@ -63,11 +68,9 @@ var upload = multer({
 //_______________________________________________________________________________________________________________
 
     const imageStorage = multer.diskStorage({
-  
-        destination: './public/bulk_upload_xls', // Destination to store image 
-        
-        filename: (req, file, cb) => {
-            cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname))
+          destination: './public/bulk_upload_xls', // Destination to store image 
+          filename: (req, file, cb) => {
+          cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname))
             // file.fieldname is name of the field (image), path.extname get the uploaded file extension
         }
       });
@@ -227,6 +230,45 @@ app.post("/banner_list",banner_list)
 app.put("/banner_delete",banner_delete)
 app.put("/cahange_banner_status",cahange_banner_status)
 //___________________invalid_url_error_______________
+
+//__________+++___________testing______________+++_______________
+//app.post("/multer_image",upload.array('image',2),multer_image)
+app.post('/multer_image', (req, res, next) => {
+  console.log("form___________")
+
+  const form = formidable({ multiples: true });
+
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.json(files);
+  })
+
+
+//--------------------------------------------------
+
+//   const form = new formidable.IncomingForm();
+//   console.log(form)
+//   form.parse(req, function(err, fields, file){
+//       var oldPath = file.image.path;
+//       console.log("oldPath_______")
+//       console.log(oldPath)
+
+//       var newPath = path.join(__dirname,'/apna_backend/public/catgory_images')+ '/'+files.image.name
+//       console.log("newPath________")
+//       console.log(newPath)
+//       var rawData = fs.readFileSync(oldPath)
+//       console.log(newPath)
+      
+//       fs.writeFile(newPath, rawData, function(err){
+//           if(err) console.log(err)
+//           return res.send("Successfully uploaded")
+//       })
+// })
+ });
+
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
@@ -241,3 +283,5 @@ app.listen(PORT, () => {
   publish_blog()
 });
 
+// const filePath = path.join(__dirname,'/apna_backend/public/catgory_images' );
+// console.log(filePath)

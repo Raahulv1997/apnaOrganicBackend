@@ -64,7 +64,7 @@ function update_banner(req, res) {
         if (err) {
             res.status(200).send(err)
         } else {
-            console.log(rows)
+            console.log("_____")
             res.status(200).send(rows)
         }
     }) 

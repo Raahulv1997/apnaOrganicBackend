@@ -9,7 +9,7 @@ function add_complaint(req,res){
       console.log("error"+err)
       res.status(500).send(err)
     }else{
-      console.log(rows)
+      console.log("_____")
       res.status(201).send({"Message":"Complaint Added"})
   
     }
@@ -29,7 +29,7 @@ function complaint_details(req,res){
           console.log("error"+err)
           res.status(500).send(err)
         }else{
-          console.log(rows)
+          console.log("_____")
           rows!=''?res.status(200).send(rows):res.status(500).send("Not Found Complaints")
         }
     })

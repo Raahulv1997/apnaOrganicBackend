@@ -61,7 +61,7 @@ console.log(str_revenue)
       res.status(200).send(err)
     } else {
       console.log("first_query__")
-      console.log(rows)
+      console.log("_____")
       rows != '' ? revenuearr.push(rows[0]) : console.log('error')
     }
   })
@@ -85,7 +85,7 @@ console.log(str_revenue)
   //   } else {
   //     if (rows != '') {
   //       console.log("third_query__")
-  //       console.log(rows)
+  //       console.log("_____")
   //       Object.assign(revenuearr[0], rows[0])
   //       var coupon_discount = revenuearr[0].gross_total_amount / 100 * revenuearr[0].total_discount
   //       var net_sale = revenuearr[0].gross_total_amount - coupon_discount
@@ -121,7 +121,7 @@ console.log(str_revenue)
       res.status(500).send(err)
     } else {
       if (rows != '') {
-        console.log(rows)
+        console.log("_____")
         Object.assign(revenuearr[0], { "ravenue_date_data": rows })
         res.status(200).send(revenuearr)
       } else {
@@ -463,7 +463,7 @@ function stock_report(req,res){
         res.status(200).send(err)
       } else {
         if (rows != '') {
-          console.log(rows)
+          console.log("_____")
           res.status(200).send(rows)
         } else {
           res.status(200).send({ message: "No_Data" })

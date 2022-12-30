@@ -95,7 +95,7 @@ function products_search(req, res) {
             console.log(err)
             res.status(502).send(err)
           } else {
-            // console.log(results)
+            // console.log("_____")
             var responsePayload = {
               results: results
             };
@@ -163,7 +163,7 @@ function products_search(req, res) {
             console.log(err)
             res.status(502).send(err)
           } else {
-            // console.log(results)
+            // console.log("_____")
             var responsePayload = {
               results: results
             };
@@ -317,7 +317,7 @@ function products_pricing(req, res) {
         console.log("/product_error" + err)
         res.status(500).send(err)
       } else {
-        //console.log(rows)
+        //console.log("_____")
         res.status(200).send(rows)
       }
     })

@@ -15,7 +15,7 @@ const stripe = require('stripe')(secretKey);
     //       console.log(err)
     //       res.status(502).send(err)
     //     }else{
-    //      console.log(results)
+    //      console.log("_____")
     //      results!=''?res.status(200).send(results):res.status(500).send("invalid input data ")
          
     //     }
@@ -59,7 +59,7 @@ async function payment(req,res){
         console.log("/transaction_details_error" + err)
         res.status(500).send(err)
       } else {
-        //console.log(rows)
+        //console.log("_____")
         rows ==''?res.status(500).send(err):res.status(200).send(rows)
         
       }
@@ -186,7 +186,7 @@ function transaction_details(req,res){
             console.log("/transaction_details_error" + err)
             res.status(500).send(err)
           } else {
-            //console.log(rows)
+            //console.log("_____")
             res.status(200).send(rows)
           }
         })

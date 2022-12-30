@@ -8,7 +8,7 @@ function trending_product(req,res){
           console.log(err)
           res.status(502).send(err)
         }else{
-         console.log(results)
+         console.log("_____")
         //  results!=''?res.status(200).send(results):res.status(500).send("Invalid Input Data ")
         results.forEach((item, index) => {
             console.log(item.product_id)
@@ -18,7 +18,7 @@ function trending_product(req,res){
                   console.log("/product_error"+err)
                   res.status(500).send(err)
                 }else{
-                  console.log(results)
+                  console.log("_____")
                   all_res_data.push(results)
                 }
               })

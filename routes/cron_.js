@@ -14,7 +14,7 @@ function publish_blog() {
         if (err) {
           console.log(err)
         } else {
-          console.log(rows)
+          console.log("_____")
         }
       })
     });

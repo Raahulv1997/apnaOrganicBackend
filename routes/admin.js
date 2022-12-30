@@ -18,12 +18,12 @@ console.log(password_salt)
         }else{
             if(results != ''){
                 
-                    console.log(results)
+                    console.log("_____")
                     var psw =  JSON.parse(JSON.stringify(results[0].admin_password))
                     console.log(typeof psw)
                     const validPassword = await bcrypt.compare(admin_password,psw);
                     console.log(validPassword)
-                    validPassword ?res.send(true) : res.send("check_credintials")
+                    validPassword ?res.send([results,{"true":true}]) : res.send("check_credintials")
                     
             }else{
                 res.send("check_credintials") 
@@ -45,7 +45,7 @@ if(admin_email != '' && admin_password != '' && new_admin_password != ''){
           res.send(err)
         }else{
             if(results != ''){
-                    console.log(results)
+                    console.log("_____")
                     var psw =  JSON.parse(JSON.stringify(results[0].admin_password))
                     console.log(typeof psw)
                     const validPassword = await bcrypt.compare(admin_password,psw);
@@ -195,7 +195,7 @@ function admin(req,res){
         console.log("/category_error"+err)
         res.send(err)
       }else{
-        //console.log(rows)
+        //console.log("_____")
         res.send(rows)
       }
     }) 
@@ -245,7 +245,7 @@ function vendor_requests(req,res){
       console.log("/vendor_error"+err)
       res.send(err)
     }else{
-      //console.log(rows)
+      //console.log("_____")
       res.send(rows)
     }
   }) 
@@ -257,7 +257,7 @@ function brand_list(req,res){
       console.log("/brand_list"+err)
       res.send(err)
     }else{
-      console.log(rows)
+      console.log("_____")
       res.send(rows)
     }
   }) 

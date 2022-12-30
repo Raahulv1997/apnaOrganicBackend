@@ -13,7 +13,7 @@ function signup(req, res) {
         res.status(500).send(err)
       } else {
         if (rows != '') {
-          console.log(rows);
+          console.log("_____");
           console.log("redirect login page");
           var umail = JSON.parse(JSON.stringify(rows));
           var useremail = umail[0].email;
@@ -34,7 +34,7 @@ function signup(req, res) {
                   console.log("/_otp_error" + err);
                   res.status(500).send(err)
                 } else {
-                  console.log(rows);
+                  console.log("_____");
                   res.status(200).send(OTP);
                 }
               })
@@ -51,7 +51,7 @@ function signup(req, res) {
             //       console.log("/_otp_error" + err);
             //       res.send(err)
             //     } else {
-            //       console.log(rows);
+            //       console.log("_____");
             //       res.send(rows);
             //     }
             //   })
@@ -90,7 +90,7 @@ console.log(email_otp)
         console.log(err)
       }else{
         console.log("otp_result")
-        console.log(rows)
+        console.log("_____")
         if(rows!=''){
 
           var userauth = JSON.parse(JSON.stringify(rows));
@@ -105,7 +105,7 @@ console.log(email_otp)
                 console.log("error"+err)
                 res.status(500).send(err)
               }else{
-                console.log(rows)
+                console.log("_____")
                 res.status(202).send(rows)
 
               }
@@ -142,7 +142,7 @@ console.log(first_name+last_name+email+phone_no+ gender+date_of_birth+address+ad
     console.log("error"+err)
     res.status(500).send(err)
   }else{
-    console.log(rows)
+    console.log("_____")
     rows.affectedRows=='1'?res.status(202).send({"message":"updated user profile"}):res.status(500).send({"message":"error"})
 
   }
@@ -157,7 +157,7 @@ connection.query("SELECT `user_id`,`first_name`,`last_name`,`email`,`phone_no`,`
     res.status(500).send(err)
   }else{
     if(rows!=''){
-      console.log(rows)
+      console.log("_____")
       res.status(200).send(rows)
     }else{
       res.status(401).send("invalid user id")
@@ -185,7 +185,7 @@ console.log(password_salt)
         }else{
             if(results != ''){
                 
-                    console.log(results)
+                    console.log("_____")
                    // return false
                     var psw =  JSON.parse(JSON.stringify(results[0].password))
                     console.log(typeof psw)
@@ -212,7 +212,7 @@ if(email != '' && password != '' && new_password != ''){
           res.send(err)
         }else{
             if(results != ''){
-                    console.log(results)
+                    console.log("_____")
                     var psw =  JSON.parse(JSON.stringify(results[0].password))
                     console.log(typeof psw)
                     const validPassword = await bcrypt.compare(password,psw);

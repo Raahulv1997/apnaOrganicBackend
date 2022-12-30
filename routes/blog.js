@@ -61,7 +61,7 @@ if(for_=='admin'){
       if (err) {
         res.status(200).send(err)
       } else {
-        console.log(rows)
+        console.log("_____")
         res.status(200).send(rows)
       }
     })
@@ -77,24 +77,15 @@ function update_blog(req, res) {
     var image = "public/catgory_images/" + req.file.filename;
     console.log(image)
   }
-  connection.query('SELECT * FROM `blog` WHERE `id`=' + id + ' AND `admin_id`=' + admin_id + '', (err, rows, fields) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
-      if (rows != '') {
-        console.log("pass+++++++")
-        connection.query('UPDATE `blog` SET `image`="' + image + '",`title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '"', (err, rows, fields) => {
+      console.log("pass+++++++")
+        connection.query('UPDATE `blog` SET `image`="' + image + '",`title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '" WHERE admin_id="'+admin_id+'" AND id="'+id+'"', (err, rows, fields) => {
           if (err) {
             res.status(500).send(err)
           } else {
             rows.affectedRows == '1' ? res.status(200).send({ "message": "update_blog_successfully" }) : res.status(200).send({ "message": "invalid_id" })
           }
         })
-      } else {
-        console.log("invalid_id")
-      }
-    }
-  })
+ 
 }
 
 function update_blog_status(req, res) {

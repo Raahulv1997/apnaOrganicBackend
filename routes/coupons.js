@@ -14,7 +14,7 @@ function coupon(req,res){
             console.log("/Coupouns_error"+err)
             res.status(500).send(err)
           }else{
-            //console.log(rows)
+            //console.log("_____")
             res.status(200).send(rows)
           }
         }) 

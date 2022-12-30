@@ -18,7 +18,7 @@ function category(req, res) {
         console.log("/category_error" + err)
         res.status(500).send(err)
       } else {
-        //console.log(rows)
+        //console.log("_____")
         res.status(200).send(rows)
       }
     })
@@ -48,7 +48,7 @@ function add_category(req, res) {
       console.log("/add_category_error" + err)
       res.status(500).send(err)
     } else {
-      console.log(rows)
+      console.log("_____")
       res.status(201).send("Succesfully Add Category")
     }
   })
