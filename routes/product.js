@@ -360,4 +360,19 @@ function product(req, res) {
 
 }
 
-module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product };
+function product_status_update(req,res){
+  // UPDATE `products_pricing` SET `product_status`='Approved' WHERE `id`='35' AND `product_id`='1'
+  var { id, product_id, product_status } = req.body
+
+  connection.query('UPDATE products_pricing SET `product_status`="'+product_status+'"  WHERE id=' + id + ' AND product_id='+ product_id +' ', (err, rows, fields) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send(err)
+    } else {
+      console.log("successfully_products_updated")
+      res.status(202).send("successfully_products_updated")
+    }
+  })
+}
+
+module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product,product_status_update };

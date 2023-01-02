@@ -39,7 +39,7 @@ function signup(req, res) {
                   res.status(500).send(err)
                 } else {
                   console.log("_____");
-                  res.status(200).send(OTP);
+                  // res.status(200).send(OTP);
                 }
               })
             return OTP
@@ -59,27 +59,30 @@ function signup(req, res) {
               //     res.send(rows);
               //   }
               // })
-              const mail_configs={
-                from:'ashish.we2code@gmail.com',
-                to:edata,
-                subject:'Apna Organic Store',
-                text:"One-time-password "+ OTP
+              if(OTP != ''){
+                const mail_configs={
+                  from:'ashish.we2code@gmail.com',
+                  to:edata,
+                  subject:'Apna Organic Store',
+                  text:"One-time-password "+ OTP
+                }
+  
+                   nodemailer.createTransport({
+                    service:'gmail',
+                    auth:{
+                        user:'ashish.we2code@gmail.com',
+                        pass:'nczaguozpagczmjv'
+                    }
+                  })
+                  .sendMail(mail_configs,(err)=>{
+                    if(err){
+                      return console.log('errrr',err);
+                    }else{
+                      return res.status(200).send("Send otp in Gmail Succesfully");
+                    }
+                  })
               }
 
-                 nodemailer.createTransport({
-                  service:'gmail',
-                  auth:{
-                      user:'ashish.we2code@gmail.com',
-                      pass:'nczaguozpagczmjv'
-                  }
-                })
-                .sendMail(mail_configs,(err)=>{
-                  if(err){
-                    return console.log('errrr',err);
-                  }else{
-                    return console.log('email sent')
-                  }
-                })
 
               }
               catch (error) {
