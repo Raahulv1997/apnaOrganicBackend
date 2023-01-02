@@ -1,3 +1,4 @@
+const fs  = require('fs');
 const connection = require('../db')
 
 function products_search(req, res) {
@@ -194,6 +195,7 @@ function productpost(req, res) {
   console.log("---post---product--")
   var postdata = req.body
   var product_catagory = postdata[0].price
+  var base64_type=postdata[0].product_images
   console.log(postdata)
   console.log(product_catagory)
 
@@ -206,7 +208,23 @@ function productpost(req, res) {
       console.log("/_products_post_error" + err)
       res.status(500).send(err)
     } else {
-
+      //___add-images______________________________________________________________________________________
+      
+      console.log(base64_type)
+      base64_type.forEach((item,ind) => {
+        var imgBase64 = item.img_64
+        console.log(item.img_64)
+        var base64Data = imgBase64.replace("data:image/png;base64,", "");
+        // Store Image into Server
+        fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
+          if(null){
+            console.log("Image Saved Successfully."); 
+          }else{
+            console.log(err); 
+          }
+        });
+      });
+      //__add-product-varient______________________________________________________________________________
       var p_id = JSON.parse(rows.insertId)
       console.log("p_id______" + p_id)
       res.status(201).send({ "message": "succesfully added data on new_product table" })
@@ -335,7 +353,7 @@ function product(req, res) {
     } else {
       if (rows != '') {
         product_details = rows[0]
-        console.log(rows[0])
+       // console.log(rows[0])
         connection.query('SELECT * FROM products_pricing WHERE product_id =' + req.query.id + '', (err, row, fields) => {
           if (err) {
             console.log("/product_error" + err)
@@ -359,5 +377,23 @@ function product(req, res) {
   })
 
 }
+function product_images(req,res){
+  //console.log(req.body)
+  var base64_type=req.body.product_images
+  console.log(base64_type)
+  base64_type.forEach((item,ind) => {
+    var imgBase64 = item.img_64
+    console.log(item.img_64)
 
-module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product };
+    var base64Data = imgBase64.replace("data:image/png;base64,", "");
+    // Store Image into Server
+    fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
+      if(null){
+        console.log("Image Saved Successfully."); 
+      }else{
+        console.log(err); 
+      }
+    });
+  });
+}
+module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product, product_images};

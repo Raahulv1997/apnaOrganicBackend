@@ -128,7 +128,7 @@ if(u_id!==''){
                     err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
                   }
                   console.log("responsePayload++++++++++++++++++++++++++++++++++++++++");
-                  //console.log(responsePayload);
+                  //console.log(responsePayload)
                   res.status(200).send(responsePayload)
                 }
               })

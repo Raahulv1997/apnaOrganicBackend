@@ -24,7 +24,7 @@ function invoice_list(req,res){
     //     res.send(err)
     //     }else{
     //          if(rslt!=''){
-    //             console.log(rslt)
+    //             console.log("_____")
     //             res.send(rslt)
     //          }else{
     //             res.send("not search")
@@ -92,7 +92,7 @@ function invoice_details(req,res){
         res.status(500).send(err)
       }else{
             if(rslt!=""){
-              console.log(rslt)
+            //  console.log("_____")
               //res.send(rslt)
                obj = JSON.parse(JSON.stringify(rslt[0]))
                  o_id = JSON.parse(JSON.stringify(rslt[0].id))

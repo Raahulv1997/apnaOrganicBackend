@@ -55,7 +55,7 @@ async function orders(req, res) {
                 } else {
                   if (rslt != '') {
                     console.log("______chk-3_____")
-                    console.log(rslt)
+                    console.log("_____")
                     order_count++
                     totalcount +=parseInt(item.product_price)
                   }
@@ -72,7 +72,7 @@ async function orders(req, res) {
                   res.status(500).send(err)
                 } else {
                   console.log("______chk-4_____")
-                 console.log(rslt)
+                 console.log("_____")
                  res.status(200).send("order_count_" + order_count + "") 
                 }
               })
@@ -98,7 +98,7 @@ function order_deteils(req, res) {
       res.status(500).send(err)
     } else {
       if (rslt != "") {
-        console.log(rslt)
+        console.log("_____")
         //res.send(rslt)
         obj = JSON.parse(JSON.stringify(rslt[0]))
         o_id = JSON.parse(JSON.stringify(rslt[0].id))
