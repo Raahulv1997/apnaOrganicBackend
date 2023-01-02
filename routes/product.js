@@ -395,22 +395,46 @@ function product_status_update(req,res){
 
 
 function product_images(req,res){
-  //console.log(req.body)
-  var base64_type=req.body.product_images
-  console.log(base64_type)
-  base64_type.forEach((item,ind) => {
-    var imgBase64 = item.img_64
-    console.log(item.img_64)
 
+  var base64_images=req.body
+  let iterations = base64_images;
+
+  for (item of base64_images){
+    var imgBase64 = item.img_64
+    try {
     var base64Data = imgBase64.replace("data:image/png;base64,", "");
-    // Store Image into Server
-    fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
-      if(null){
-        console.log("Image Saved Successfully."); 
-      }else{
-        console.log(err); 
-      }
-    });
-  });
+    var name_str = ""+item.product_image_name+""+item.vendor_id+""
+    fs.writeFileSync("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+name_str+".png", base64Data, 'base64');
+    }catch (err) {
+      console.log(err)
+  }
+console.log(item.vendor_id)
+  connection.query('INSERT INTO `product_images`(`product_id`, `product_verient_id`, `vendor_id`, `product_image_name`, `product_image_path`, `image_position`) VALUES ("'+item.product_id+'", "'+item.product_verient_id+'", "'+item.vendor_id+'", "'+item.product_image_name+'", "/public/products_images/'+name_str+'", "'+item.image_position+'")', (err, rows, fields) => {
+    if (err) {
+      console.log(err)
+      //res.status(500).send(err)
+    } else {
+      console.log(rows)
+    }})
+
+    if (!--iterations){
+      res.status(200).send("added_succecfully")
+    }    
+  }
 }
-module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product, product_images,product_status_update};
+
+function product_images_get(req,res){
+console.log(req.query)
+var {product_id,product_verient_id}=req.query
+
+connection.query('SELECT * FROM product_images WHERE `product_id`="123" ORDER BY `product_verient_id`', (err, rows, fields) => {
+  if (err) {
+    console.log(err)
+    //res.status(500).send(err)
+  } else {
+    console.log(rows)
+    res.status(200).send(rows)
+  }})
+
+}
+module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product, product_images,product_status_update,product_images_get};

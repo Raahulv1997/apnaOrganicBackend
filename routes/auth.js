@@ -360,7 +360,7 @@ function user_forgot_password(req,res){
               console.log(error);
             }
         } else {
-          res.status(500).send({ "message": "User Not Found" })
+          res.status(500).send({"message": "User Not Found" })
         }
 
       }
