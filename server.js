@@ -11,7 +11,7 @@ require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
 
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
-const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product,product_status_update} = require("./routes/product.js")
+const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product,product_images,product_status_update} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details,user_login,change_user_password,user_forgot_password} = require("./routes/auth.js")
 const {add_to_cart,cart, cart_update,remove_cart,cart_list} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests,brand_list} = require("./routes/admin.js")
@@ -34,7 +34,7 @@ const {publish_blog} = require("./routes/cron_.js")
 const {add_banner,update_banner,banner_list,banner_delete,cahange_banner_status} = require("./routes/banner.js")
 
 //__________+++___________testing______________+++_______________
-//const {multer_image} = require("./routes/testxl.js")
+const {multer_image} = require("./routes/testxl.js")
 
 
 
@@ -114,6 +114,7 @@ app.post("/products_varient_add",products_varient_add)
 app.get("/product_details",product)
 app.get("/products_pricing",products_pricing)
 app.put("/product_status_update",product_status_update)
+app.post("/multer_image",product_images)
 //________________user-sign-up_______________________
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
@@ -230,22 +231,23 @@ app.put("/update_banner",upload.single('image'),update_banner)
 app.post("/banner_list",banner_list)
 app.put("/banner_delete",banner_delete)
 app.put("/cahange_banner_status",cahange_banner_status)
+
 //___________________invalid_url_error_______________
 
 //__________+++___________testing______________+++_______________
-//app.post("/multer_image",upload.array('image',2),multer_image)
-app.post('/multer_image', (req, res, next) => {
-  console.log("form___________")
+app.post("/multer_image",multer_image)
+// app.post('/multer_image', (req, res, next) => {
+//   console.log("form___________")
 
-  const form = formidable({ multiples: true });
+//   const form = formidable({ multiples: true });
 
-  form.parse(req, (err, fields, files) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.json(files);
-  })
+//   form.parse(req, (err, fields, files) => {
+//     if (err) {
+//       next(err);
+//       return;
+//     }
+//     res.json(files);
+//   })
 
 
 //--------------------------------------------------
@@ -268,7 +270,7 @@ app.post('/multer_image', (req, res, next) => {
 //           return res.send("Successfully uploaded")
 //       })
 // })
- });
+ //});
 
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})

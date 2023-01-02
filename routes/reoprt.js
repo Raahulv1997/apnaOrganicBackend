@@ -72,7 +72,7 @@ console.log(str_revenue)
       res.status(200).send(err)
     } else {
       console.log("second_query__")
-      console.log(rslt)
+      console.log("_____")
       Object.assign(revenuearr[0], { "return_total": rslt[0].return_total })
 
     }

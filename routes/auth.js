@@ -55,7 +55,7 @@ function signup(req, res) {
               //     console.log("/_otp_error" + err);
               //     res.send(err)
               //   } else {
-              //     console.log(rows);
+              //     console.log("_____");
               //     res.send(rows);
               //   }
               // })
@@ -121,7 +121,7 @@ async function otp_verify(req,res){
             console.log(err)
           }else{
             console.log("otp_result")
-            console.log(rows)
+            console.log("_____")
             if(rows!=''){
     
               var userauth = JSON.parse(JSON.stringify(rows));
@@ -136,7 +136,7 @@ async function otp_verify(req,res){
                       console.log("error"+err)
                       res.status(500).send(err)
                     }else{
-                      console.log(rows)
+                      console.log("_____")
                       res.status(202).send(rows)
                       console.log('insert user')
                       signup_condition=false;
@@ -153,7 +153,7 @@ async function otp_verify(req,res){
                       console.log("error"+err)
                       res.status(500).send(err)
                     }else{
-                      console.log(rows)
+                      console.log("_____")
                       res.status(202).send(rows)
                       console.log('update user')
                       otp_verify_condition=false;
@@ -305,7 +305,7 @@ function user_forgot_password(req,res){
         res.status(500).send(err)
       } else {
         if (rows != '') {
-          console.log(rows);
+          console.log("_____");
           console.log("redirect login page");
           var umail = JSON.parse(JSON.stringify(rows));
           var useremail = umail[0].email;
@@ -323,7 +323,7 @@ function user_forgot_password(req,res){
                   console.log("/_otp_error" + err);
                   res.status(500).send(err)
                 } else {
-                  console.log(rows);
+                  console.log("_____");
                   res.status(200).send(OTP);
                 }
               })
