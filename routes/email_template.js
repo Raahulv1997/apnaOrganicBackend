@@ -110,7 +110,6 @@ function email_template_status(req,res){
       }
     })
   }
-  
   function email_template_get(req,res){
     console.log(req.query.id)
     connection.query('SELECT * FROM email_template WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
@@ -125,4 +124,6 @@ function email_template_status(req,res){
   }
   
   module.exports={add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status,email_template_get}
+
+  
 
