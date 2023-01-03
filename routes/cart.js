@@ -36,7 +36,7 @@ function remove_cart(req,res){
       res.status(502).send(err)
     }else{
      console.log(results.affectedRows)
-     results.affectedRows=='1'?res.status(201).send("successfully removed data from wishlist"):res.status(500).send("invalid input data ")
+     results.affectedRows=='1'?res.status(201).send("successfully removed data from wishlist"):res.status(500).send({"message":"invalid input data "})
      
     }
   })
@@ -51,7 +51,7 @@ function remove_cart(req,res){
             res.status(500).send(err)
           } else {
            // rows!=''?res.send(rows):res.send("faild updates")
-           rows.affectedRows=='1'?res.status(201).send("updated successfully"):res.status(500).send("invalid input data ")
+           rows.affectedRows=='1'?res.status(201).send("updated successfully"):res.status(500).send({"message":"invalid input data "})
 
             console.log("_____") 
           }})   

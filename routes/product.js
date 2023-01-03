@@ -208,22 +208,22 @@ function productpost(req, res) {
       console.log("/_products_post_error" + err)
       res.status(500).send(err)
     } else {
-      //___add-images______________________________________________________________________________________
+      // //___add-images______________________________________________________________________________________
       
-      console.log(base64_type)
-      base64_type.forEach((item,ind) => {
-        var imgBase64 = item.img_64
-        console.log(item.img_64)
-        var base64Data = imgBase64.replace("data:image/png;base64,", "");
-        // Store Image into Server
-        fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
-          if(null){
-            console.log("Image Saved Successfully."); 
-          }else{
-            console.log(err); 
-          }
-        });
-      });
+      // console.log(base64_type)
+      // base64_type.forEach((item,ind) => {
+      //   var imgBase64 = item.img_64
+      //   console.log(item.img_64)
+      //   var base64Data = imgBase64.replace("data:image/png;base64,", "");
+      //   // Store Image into Server
+      //   fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
+      //     if(null){
+      //       console.log("Image Saved Successfully."); 
+      //     }else{
+      //       console.log(err); 
+      //     }
+      //   });
+      // });
       //__add-product-varient______________________________________________________________________________
       var p_id = JSON.parse(rows.insertId)
       console.log("p_id______" + p_id)
@@ -250,7 +250,7 @@ function products_varient_update(req, res) {
   var { id, product_id, colors, size, mrp, product_price, sale_price, discount, manufacturing_date, expire_date, special_offer, featured_product, unit, quantity, product_status, unit_quantity } = req.body
   console.log(req.body)
   console.log(colors)
-  connection.query('UPDATE products_pricing SET colors="' + colors + '",size="' + size + '",mrp=' + mrp + ',product_price=' + product_price + ',sale_price=' + sale_price + ',discount=' + discount + ',manufacturing_date="' + manufacturing_date + '",expire_date="' + expire_date + '",special_offer=' + special_offer + ',featured_product=' + featured_product + ',unit="' + unit + '",unit_quantity="' + unit_quantity + '",product_status="' + product_status + '",quantity=' + quantity + '  WHERE id=' + id + ' AND product_id=' + product_id + '', (err, rows, fields) => {
+  connection.query('UPDATE products_pricing SET colors="' + colors + '",size="' + size + '",mrp=' + mrp + ',product_price=' + product_price + ',sale_price=' + sale_price + ',discount=' + discount + ',manufacturing_date="' + manufacturing_date + '",expire_date="' + expire_date + '",special_offer=' + special_offer + ',featured_product=' + featured_product + ',unit="' + unit + '",unit_quantity="' + unit_quantity + '",product_status="' + product_status + '",quantity=' + quantity + '  WHERE id =' + id + ' AND product_id=' + product_id + '', (err, rows, fields) => {
     if (err) {
       console.log("/products_update" + err)
       res.status(500).send(err)
@@ -388,7 +388,7 @@ function product_status_update(req,res){
       res.status(500).send(err)
     } else {
       console.log("successfully_products_updated")
-      res.status(202).send("successfully_products_updated")
+      res.status(202).send({"message":"successfully_products_updated"})
     }
   })
 }

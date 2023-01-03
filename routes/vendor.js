@@ -1,4 +1,7 @@
 const connection = require('../db')
+const fs  = require('fs');
+const path=require("path")
+
 var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z]{2,4})+$/;
 
 
@@ -128,47 +131,27 @@ function vendors(req,res){
 // }
 
 
-// function vendor_register(req,res){
-//  var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,shop_logo,status,multiple_document_upload,document_name,availability}=req.body;
-//  console.log(req.body)
-//  var documents1 = JSON.stringify(multiple_document_upload)
-//  var document_name1 = JSON.stringify(document_name)
-
-//    connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `multiple_document_upload`, `document_name`, `availability`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+shop_logo+"','"+status+"','"+documents1+"','"+document_name1+"','"+availability+"')",async (err, rows, fields) => {
-//     if(err){
-//       console.log("error"+err)
-//       res.send(err)
-//     }else{
-//       console.log("_____")
-//       res.send({"message":"Create vendor Profile"})
-  
-//     }
-//   })
-// }
 
 function vendor_register(req,res){
   var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
   console.log("_________+++++_________________vendor_register______________++++++_______________")
   console.log(req.body)
 
-  if(req.files == undefined || req.files == '' ){
+  if(req.file == undefined || req.file == '' ){
    image="no image"
  }else{
-   var image = "public/catgory_images/"+req.files[0].filename;
+   var image = "public/catgory_images/"+req.file.filename;
    console.log(image)
  }
-  var documents1 = JSON.stringify("public/catgory_images/"+req.files[1].filename)
- // var logo = JSON.stringify("public/catgory_images/"+req.files[2].filename)
   var document_name1 = JSON.stringify(document_name)
   console.log(document_name1)
-  console.log(documents1)
 
 var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
   console.log(typeof social_media_links_new)
   console.log(social_media_links_new)
 //res.send([newar])
  //return false
-    connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `multiple_document_upload`, `document_name`, `availability`,`social_media_links`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+image+"','"+status+"','"+documents1+"','"+document_name1+"','"+availability+"','"+social_media_links_new+"')",async (err, rows, fields) => {
+    connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `document_name`, `availability`,`social_media_links`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+image+"','"+status+"','"+document_name1+"','"+availability+"','"+social_media_links_new+"')",async (err, rows, fields) => {
      if(err){
        console.log("error"+err)
        res.status(500).send(err)
@@ -278,5 +261,44 @@ function content_manager(req,res){
     }
   })
 }
-// module.exports={vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update,vendors}
-module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager}
+
+
+function vendor_documents_upload(req,res){
+
+  var base64_images=req.body
+  let iterations = base64_images;
+// console.log(req.body)
+  for (item of base64_images){
+    var imgBase64 = item.img_64
+    try {
+      // console.log(path.join(__dirname,'../'))
+    var base64Data = imgBase64.replace("data:image/png;base64,", "");
+    var name_str = ""+item.documents_name+""+item.vendor_id+""
+    fs.writeFileSync(path.join(__dirname,'../')+"/public/vendor_documents/"+name_str+"."+item.type_of_file+"", base64Data, 'base64');
+    }catch (err) {
+      console.log(err)
+  }
+console.log(item.vendor_id)
+  connection.query('INSERT INTO `vendors_documents`( `vendor_id`, `documents_name`, `documents_path`, `documents_position`) VALUES ('+item.vendor_id+',"'+item.documents_name+'","/public/vendor_documents/'+name_str+'.'+item.type_of_file+'","'+item.documents_position+'")', (err, rows, fields) => {
+    if (err) {
+      console.log(err)
+      res.status(200).send(err)
+    } else {
+      console.log(rows)
+    }})
+
+    if (!--iterations){
+      res.status(200).send("added_succecfully")
+    }    
+  }
+}
+
+
+
+
+
+
+
+
+
+module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload}

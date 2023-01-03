@@ -4,7 +4,8 @@ var max_invoice_no1 = 0
 
 
 async function orders(req, res) {
-  var totalcount=0
+  
+  var totalcount=0;
   var order_count = 0;
   var percentage;
   var { user_id, status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon,shipping_charges,discount_coupon_value } = req.body
