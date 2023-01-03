@@ -11,7 +11,7 @@ require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
 
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
-const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get} = require("./routes/product.js")
+const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details,user_login,change_user_password,user_forgot_password} = require("./routes/auth.js")
 const {add_to_cart,cart, cart_update,remove_cart,cart_list} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests,brand_list} = require("./routes/admin.js")
@@ -32,7 +32,7 @@ const {latest_product } = require("./routes/latest_product.js")
 const {add_blog,blogs,update_blog,update_blog_status,delete_blog} = require("./routes/blog.js")
 const {publish_blog} = require("./routes/cron_.js")
 const {add_banner,update_banner,banner_list,banner_delete,cahange_banner_status} = require("./routes/banner.js")
-const {add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status} = require("./routes/email_template")
+const {add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status,email_template_get} = require("./routes/email_template")
 //__________+++___________testing______________+++_______________
 const {multer_image} = require("./routes/testxl.js")
 
@@ -113,7 +113,9 @@ app.get("/product_details",product)
 app.get("/products_pricing",products_pricing)
 app.put("/product_status_update",product_status_update)
 app.post("/product_images",product_images)
-app.get("/product_images_get",product_images_get)
+app.get("/product_images_get_all_veriant",product_images_get_all_veriant)
+app.get("/product_images_get_singal_veriant",product_images_get_singal_veriant)
+app.put("/product_image_delete",product_image_delete)
 //________________user-sign-up_______________________
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
@@ -238,7 +240,7 @@ app.put("/update_email_template",update_email_template)
 app.post("/email_template_list",email_template_list)
 app.post("/email_template_remove",email_template_remove)
 app.put("/email_template_status",email_template_status)
-
+app.get("/email_template_get",email_template_get)
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})

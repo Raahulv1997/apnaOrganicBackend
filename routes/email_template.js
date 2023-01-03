@@ -110,7 +110,20 @@ function email_template_status(req,res){
       }
     })
   }
+  function email_template_get(req,res){
+    console.log(req.query.id)
+    connection.query('SELECT * FROM email_template WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
+      if(err){
+        console.log("/email_template_error"+err)
+        res.status(500).send(err)
+      }else{
+        //console.log("_____")
+        res.status(200).send(rows)
+      }
+    })
+  }
   
+  module.exports={add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status,email_template_get}
+
   
-  module.exports={add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status}
 

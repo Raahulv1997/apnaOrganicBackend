@@ -78,7 +78,7 @@ function signup(req, res) {
                     if(err){
                       return console.log('errrr',err);
                     }else{
-                      return res.status(200).send("Send otp in Gmail Succesfully");
+                      return res.status(200).send({"message":"Send otp in Gmail Succesfully"});
                     }
                   })
               }
@@ -120,8 +120,8 @@ async function otp_verify(req,res){
           if(err){
             console.log(err)
           }else{
-            console.log("otp_result")
-            console.log("_____")
+            console.log("otp_result____________________")
+            console.log(rows)
             if(rows!=''){
     
               var userauth = JSON.parse(JSON.stringify(rows));
@@ -137,9 +137,20 @@ async function otp_verify(req,res){
                       res.status(500).send(err)
                     }else{
                       console.log("_____")
-                      res.status(202).send(rows)
-                      console.log('insert user')
-                      signup_condition=false;
+                      if(rows!=''){
+                        connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
+                          if(err){
+                            console.log("error"+err)
+                            res.status(500).send(err)
+                          }else{
+                            rows.affectedRows=='1'?console.log({"message":"successfully delete "}):console.log({"message":"invalid input data"})
+      
+                          }
+                        })
+                        res.status(202).send(rows)
+                        signup_condition=false;
+                      }
+
                     }
                   })
                 }
@@ -153,10 +164,23 @@ async function otp_verify(req,res){
                       console.log("error"+err)
                       res.status(500).send(err)
                     }else{
-                      console.log("_____")
-                      res.status(202).send(rows)
-                      console.log('update user')
-                      otp_verify_condition=false;
+                      if(rows!=''){
+                        connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
+                          if(err){
+                            console.log("error"+err)
+                            res.status(500).send(err)
+                          }else{
+                            if(rows.affectedRows=='1'){
+                              // res.status(202).send(rows)
+                              console.log({"message":"successfully delete "})
+                            }else{
+                              console.log({"message":"invalid input data "})
+                            }
+                          }
+                        })
+                        res.status(202).send(rows)
+                        otp_verify_condition=false;
+                      }
                     }
                   }) 
                 }
@@ -211,7 +235,7 @@ connection.query("SELECT `user_id`,`first_name`,`last_name`,`email`,`phone_no`,`
       console.log("_____")
       res.status(200).send(rows)
     }else{
-      res.status(401).send("invalid user id")
+      res.status(401).send({"message":"invalid user id"})
     }
   }
 })
@@ -245,7 +269,7 @@ console.log(password_salt)
                     validPassword ?res.send({"user_id":results[0].user_id,"user_email":results[0].email}) : res.send(false)
                     
             }else{
-                res.send("check_credintials") 
+                res.send({"message":"check_credintials"}) 
             }
             
         }
@@ -360,7 +384,7 @@ function user_forgot_password(req,res){
               console.log(error);
             }
         } else {
-          res.status(500).send({"message": "User Not Found" })
+          res.status(500).send({ "message": "User Not Found" })
         }
 
       }
@@ -372,7 +396,4 @@ function user_forgot_password(req,res){
   
   }
 module.exports = {signup,otp_verify, user_register,user_details, user_login, change_user_password, user_forgot_password }
-
-
-
 

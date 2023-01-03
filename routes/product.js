@@ -210,20 +210,20 @@ function productpost(req, res) {
     } else {
       //___add-images______________________________________________________________________________________
       
-      console.log(base64_type)
-      base64_type.forEach((item,ind) => {
-        var imgBase64 = item.img_64
-        console.log(item.img_64)
-        var base64Data = imgBase64.replace("data:image/png;base64,", "");
-        // Store Image into Server
-        fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
-          if(null){
-            console.log("Image Saved Successfully."); 
-          }else{
-            console.log(err); 
-          }
-        });
-      });
+      // console.log(base64_type)
+      // base64_type.forEach((item,ind) => {
+      //   var imgBase64 = item.img_64
+      //   console.log(item.img_64)
+      //   var base64Data = imgBase64.replace("data:image/png;base64,", "");
+      //   // Store Image into Server
+      //   fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
+      //     if(null){
+      //       console.log("Image Saved Successfully."); 
+      //     }else{
+      //       console.log(err); 
+      //     }
+      //   });
+      // });
       //__add-product-varient______________________________________________________________________________
       var p_id = JSON.parse(rows.insertId)
       console.log("p_id______" + p_id)
@@ -409,7 +409,7 @@ function product_images(req,res){
       console.log(err)
   }
 console.log(item.vendor_id)
-  connection.query('INSERT INTO `product_images`(`product_id`, `product_verient_id`, `vendor_id`, `product_image_name`, `product_image_path`, `image_position`) VALUES ("'+item.product_id+'", "'+item.product_verient_id+'", "'+item.vendor_id+'", "'+item.product_image_name+'", "/public/products_images/'+name_str+'", "'+item.image_position+'")', (err, rows, fields) => {
+  connection.query('INSERT INTO `product_images`(`product_id`, `product_verient_id`, `vendor_id`, `product_image_name`, `product_image_path`, `image_position`) VALUES ("'+item.product_id+'", "'+item.product_verient_id+'", "'+item.vendor_id+'", "'+item.product_image_name+'", "http://192.168.29.108:5000/products_images/'+name_str+'.png", "'+item.image_position+'")', (err, rows, fields) => {
     if (err) {
       console.log(err)
       //res.status(500).send(err)
@@ -423,11 +423,11 @@ console.log(item.vendor_id)
   }
 }
 
-function product_images_get(req,res){
+function product_images_get_all_veriant(req,res){
 console.log(req.query)
-var {product_id,product_verient_id}=req.query
-
-connection.query('SELECT * FROM product_images WHERE `product_id`="123" ORDER BY `product_verient_id`', (err, rows, fields) => {
+var {product_id}=req.query
+//SELECT id ,(SELECT GROUP_CONCAT(product_image_path) FROM product_images WHERE product_images.product_verient_id = products_pricing.id group by product_verient_id) as all_images FROM `products_pricing` WHERE products_pricing.product_id ='product_id'
+connection.query('SELECT id ,(SELECT GROUP_CONCAT(product_image_path) FROM product_images WHERE product_images.product_verient_id = products_pricing.id group by product_verient_id) as all_images FROM `products_pricing` WHERE products_pricing.product_id ="'+product_id+'"', (err, rows, fields) => {
   if (err) {
     console.log(err)
     //res.status(500).send(err)
@@ -435,6 +435,51 @@ connection.query('SELECT * FROM product_images WHERE `product_id`="123" ORDER BY
     console.log(rows)
     res.status(200).send(rows)
   }})
-
 }
-module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product, product_images,product_status_update,product_images_get};
+
+function product_image_delete(req,res){
+  console.log(req.body)
+var {product_image_id,product_image_name,vendor_id}=req.body
+var img_name_dlt= ""+product_image_name+""+vendor_id+".png"
+console.log(img_name_dlt)
+
+  connection.query('DELETE FROM `product_images` WHERE product_image_id ="'+product_image_id+'"', (err, rows, fields) => {
+    if (err) {
+      console.log(err)
+      res.status(200).send(err)
+    } else {
+      console.log(rows)
+      if(rows.affectedRows=='1'){
+        fs.unlink("public/products_images/"+img_name_dlt,function(err){
+          if(err) return res.status(200).send({"message":err,"check":false});;
+          console.log('file deleted successfully');
+          res.status(200).send({"message":"file deleted successfully","check":true});
+      }); 
+      }else{
+        res.status(200).send({"message":"invalid 'product_image_id'"+product_image_id+" ","check":false});
+      }
+      //res.status(200).send(rows)
+    }})
+
+
+
+  
+}
+
+function product_images_get_singal_veriant(req,res){
+  console.log(req.body)
+
+  console.log(req.query)
+var {product_id,product_verient_id}=req.query
+connection.query('SELECT * FROM product_images WHERE product_id ="'+product_id+'" AND product_verient_id ="'+product_verient_id+'" ', (err, rows, fields) => {
+  if (err) {
+    console.log(err)
+    res.status(200).send(err)
+  } else {
+    console.log(rows)
+    res.status(200).send(rows)
+  }})
+}
+
+
+module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product, product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete};
