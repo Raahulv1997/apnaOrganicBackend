@@ -140,7 +140,7 @@ function vendor_register(req,res){
   if(req.file == undefined || req.file == '' ){
    image="no image"
  }else{
-   var image = "public/catgory_images/"+req.file.filename;
+   var image = "http://192.168.29.108:5000/catgory_images/"+req.file.filename;
    console.log(image)
  }
   var document_name1 = JSON.stringify(document_name)
@@ -220,20 +220,21 @@ function vendor_list(req,res){
 }
 
 function vendor_update(req,res){
-    var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,status,document_name,availability}=req.body;
+    var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
     console.log(req.body)
 
-    if(req.files == undefined || req.files == '' ){
+    if(req.file == undefined || req.file == '' ){
       image="no image"
     }else{
-      var image = "public/catgory_images/"+req.files[0].filename;
+      var image = "http://192.168.29.108:5000/catgory_images/"+req.file.filename;
       console.log(image)
     }
-     var documents1 = JSON.stringify("public/catgory_images/"+req.files[1].filename)
      var document_name1 = JSON.stringify(document_name)
-     console.log(documents1)
+     var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
+     console.log(typeof social_media_links_new)
+     console.log(social_media_links_new)
    
-      connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+image+"',`status`='"+status+"',`multiple_document_upload`='"+documents1+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"' WHERE id='"+id+"'",async (err, rows, fields) => {
+      connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+image+"',`status`='"+status+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"',`social_media_links`='"+social_media_links_new+"'  WHERE id='"+id+"'",async (err, rows, fields) => {
        if(err){
          console.log("error"+err)
        res.status(500).send(err)
@@ -266,7 +267,7 @@ function content_manager(req,res){
 function vendor_documents_upload(req,res){
 
   var base64_images=req.body
-  let iterations = base64_images;
+  let iterations = base64_images.length-1;
 // console.log(req.body)
   for (item of base64_images){
     var imgBase64 = item.img_64
@@ -279,7 +280,7 @@ function vendor_documents_upload(req,res){
       console.log(err)
   }
 console.log(item.vendor_id)
-  connection.query('INSERT INTO `vendors_documents`( `vendor_id`, `documents_name`, `documents_path`, `documents_position`) VALUES ('+item.vendor_id+',"'+item.documents_name+'","/public/vendor_documents/'+name_str+'.'+item.type_of_file+'","'+item.documents_position+'")', (err, rows, fields) => {
+  connection.query('INSERT INTO `vendors_documents`( `vendor_id`, `documents_name`, `documents_path`, `documents_position`) VALUES ('+item.vendor_id+',"'+item.documents_name+'","http://192.168.29.108:5000/vendor_documents/'+name_str+'.'+item.type_of_file+'","'+item.documents_position+'")', (err, rows, fields) => {
     if (err) {
       console.log(err)
       res.status(200).send(err)
@@ -288,17 +289,23 @@ console.log(item.vendor_id)
     }})
 
     if (!--iterations){
-      res.status(200).send("added_succecfully")
+       res.status(200).send("added_succecfully")
     }    
   }
 }
 
+function vendor_documents_get(req,res){
+  console.log(req.query)
+  // var {product_id}=req.query
+  connection.query('SELECT * FROM vendors_documents WHERE `vendor_id`='+req.query.vendor_id+' ', (err, rows, fields) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send(err)
+    } else {
+      console.log(rows)
+      res.status(200).send(rows)
+    }})
+  }
 
 
-
-
-
-
-
-
-module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload}
+module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload,vendor_documents_get}

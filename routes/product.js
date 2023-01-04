@@ -397,7 +397,7 @@ function product_status_update(req,res){
 function product_images(req,res){
 
   var base64_images=req.body
-  let iterations = base64_images;
+  let iterations = base64_images.length-1;
 
   for (item of base64_images){
     var imgBase64 = item.img_64
