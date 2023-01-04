@@ -293,12 +293,18 @@ console.log(item.vendor_id)
   }
 }
 
+function vendor_document_delete(req,res){
+console.log(req.body)
+var {vendor_id,vendor_doc_id}=req.body
+connection.query('DELETE FROM `vendors_documents` WHERE `vendor_id`="'+vendor_id+'" AND vendor_doc_id='+vendor_doc_id+'',async (err, rows, fields) => {
+  if(err){
+    console.log("error"+err)
+  res.status(200).send(err)
+  }else{
+    console.log("_____")
+    rows.affectedRows == '1' ? res.status(200).send({ "message": "deleted_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+  }
+})
+}
 
-
-
-
-
-
-
-
-module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload}
+module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload,vendor_document_delete}

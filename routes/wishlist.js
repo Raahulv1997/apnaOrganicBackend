@@ -45,10 +45,10 @@ function wishlist(req,res){
   connection.query("SELECT * FROM `wishlist_view1` WHERE user_id = '"+req.query.user_id+"'",(err,results)=>{
     if(err){
       console.log(err)
-      res.status(502).send(err)
+      res.status(200).send(err)
     }else{
      console.log(results.affectedRows)
-     results!=''?res.status(201).send(results):res.status(500).send("invalid url")
+     results!=''?res.status(201).send(results):res.status(200).send("invalid url")
     }
 })
 }
