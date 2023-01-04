@@ -17,7 +17,7 @@ const {add_to_cart,cart, cart_update,remove_cart,cart_list} = require("./routes/
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests,brand_list} = require("./routes/admin.js")
 const {orders,order_deteils,orders_list,order_status_change,users_orders} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
-const {vendors,vendor_register,vendor_list,vendor_update,content_manager,vendor_documents_upload,vendor_documents_get} = require("./routes/vendor")
+const {vendors,vendor_register,vendor_list,vendor_update,content_manager,vendor_documents_upload,vendor_documents_get,vendor_document_delete} = require("./routes/vendor")
 // const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
 const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
@@ -169,6 +169,7 @@ app.put("/vendor_update",upload.array('image',2),vendor_update)
 app.put("/content_manager",content_manager)
 app.post("/vendor_documents_upload",vendor_documents_upload)
 app.get("/vendor_documents_get",vendor_documents_get)
+app.put("/vendor_document_delete",vendor_document_delete)
 
 //__________________bulk_upload___________________
 app.post("/product_bulk_uploads",imageUpload.single('bulk_xls'),product_bulk_uploads)
