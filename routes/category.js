@@ -35,7 +35,7 @@ function add_category(req, res) {
   if (req.file == undefined || req.file == '') {
     image = "no image"
   } else {
-    var image = "public/catgory_images/" + req.file.filename;
+    var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
     console.log(image)
   }
 //if(level>1){
@@ -60,7 +60,7 @@ function update_category(req, res) {
   if (req.file == undefined || req.file == '') {
     image = "no image"
   } else {
-    var image = "public/catgory_images/" + req.file.filename;
+    var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
     console.log(image)
   }
 

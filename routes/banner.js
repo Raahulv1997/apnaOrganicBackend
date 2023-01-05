@@ -7,7 +7,7 @@ function add_banner(req,res) {
     if (req.file == undefined || req.file == '') {
         image = "no image"
     } else {
-        var image = "public/catgory_images/" + req.file.filename;
+        var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
         console.log(image)
     }
 
@@ -19,7 +19,7 @@ function add_banner(req,res) {
             res.status(201).send("add banner Succecsfully")
         }
     })
-}
+}   
 
 function update_banner(req, res) {
     console.log("______banner____")
@@ -29,7 +29,7 @@ function update_banner(req, res) {
     if (req.file == undefined || req.file == '') {
         image = "no image"
     } else {
-        var image = "public/catgory_images/" + req.file.filename;
+        var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
         console.log(image)
     }
     connection.query('UPDATE `banner` SET `image`="'+image+'",`title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {

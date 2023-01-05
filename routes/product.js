@@ -459,11 +459,8 @@ console.log(img_name_dlt)
         res.status(200).send({"message":"invalid 'product_image_id'"+product_image_id+" ","check":false});
       }
       //res.status(200).send(rows)
-    }})
-
-
-
-  
+    }
+  }) 
 }
 
 function product_images_get_singal_veriant(req,res){
@@ -481,5 +478,24 @@ connection.query('SELECT * FROM product_images WHERE product_id ="'+product_id+'
   }})
 }
 
+function change_porduct_cover_image(req,res){
+  console.log(req.body)
+  var {product_image_id,product_id,product_verient_id}=req.body
+  connection.query('UPDATE `product_images` SET `image_position` = "0" WHERE product_id ="'+product_id+'" AND product_verient_id ="'+product_verient_id+'" ', (err, rows, fields) => {
+    if (err) {
+      console.log(err)
+      res.status(200).send(err)
+    } else {
+      connection.query('UPDATE `product_images` SET `image_position` = "cover" WHERE product_image_id ='+product_image_id+'', (err, rows, fields) => {
+        if (err) {
+          console.log(err)
+          res.status(200).send(err)
+        } else {
+          rows.affectedRows=='1'?res.status(200).send(rows):res.status(200).send({"message":"invalid_data"})
+        }
+      })
+    }
+  })
+}
 
-module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product, product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete};
+module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product, product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image};

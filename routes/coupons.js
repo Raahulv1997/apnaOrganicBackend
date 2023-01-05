@@ -46,7 +46,7 @@ function coupons_add(req,res){
   if(req.file == undefined || req.file == '' ){
     image="no image"
   }else{
-    var image = "public/catgory_images/"+req.file.filename;
+    var image = "http://192.168.29.108:5000/catgory_images/"+req.file.filename;
     console.log(image)
   }
   
@@ -68,7 +68,7 @@ function coupon_update(req,res){
    if(req.file == undefined || req.file == '' ){
     image="no image"
   }else{
-    var image = "public/catgory_images/"+req.file.filename;
+    var image = "http://192.168.29.108:5000/catgory_images/"+req.file.filename;
     console.log(image)
   }
    connection.query('UPDATE `coupons` SET `campaign_name`="'+campaign_name+'",`code`="'+code+'",`product_type`="'+product_type+'",`start_date`="'+start_date+'",`end_date`="'+end_date+'",`minimum_amount`="'+minimum_amount+'",`percentage`="'+percentage+'",`status`="'+status+'",`image`="'+image+'"  WHERE `id`='+id+' ',(err,rows,fields)=>{

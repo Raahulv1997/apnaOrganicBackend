@@ -45,7 +45,7 @@ function remove_cart(req,res){
   function cart_update(req,res){
     var {id,quantity} = req.body
     console.log(req.body)
-      connection.query('UPDATE `cart_view` SET `quantity`='+quantity+'  WHERE id='+id+'', (err, rows, fields) => {
+      connection.query('UPDATE `cart` SET `quantity`='+quantity+'  WHERE id='+id+'', (err, rows, fields) => {
           if (err) {
             console.log(err)
             res.status(500).send(err)
