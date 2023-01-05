@@ -304,7 +304,7 @@ function products_varient_add(req, res) {
   console.log(req.body)
   console.log(colors)
   if (product_id != '') {
-    connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + product_id + ',"' + colors + '","' + size + '",' + mrp + ',' + product_price + ',' + sale_price + ',' + discount + ',"' + manufacturing_date + '","' + expire_date + '",' + special_offer + ',' + featured_product + ',"' + unit + '",' + unit_quantity + ',' + quantity + ',' + product_status + ')', (err, rows, fields) => {
+    connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + product_id + ',"' + colors + '","' + size + '",' + mrp + ',' + product_price + ',' + sale_price + ',' + discount + ',"' + manufacturing_date + '","' + expire_date + '",' + special_offer + ',' + featured_product + ',"' + unit + '",' + unit_quantity + ',' + quantity + ',"'+ product_status +'")', (err, rows, fields) => {
       if (err) {
         console.log("/products_update" + err)
         res.status(500).send(err)

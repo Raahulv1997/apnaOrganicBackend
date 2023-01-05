@@ -35,6 +35,7 @@ const {add_banner,update_banner,banner_list,banner_delete,cahange_banner_status}
 const {add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status,email_template_get} = require("./routes/email_template")
 //__________+++___________testing______________+++_______________
 const {multer_image} = require("./routes/testxl.js")
+const {gmail_send} = require("./routes/gmail_send")
 
 
 var corsOptions = {
@@ -236,6 +237,9 @@ app.post("/banner_list",banner_list)
 app.put("/banner_delete",banner_delete)
 app.put("/cahange_banner_status",cahange_banner_status)
 
+  //_________gmail_send________
+  app.post("/gmail_send",gmail_send)
+
 
 //___________________Email_Template_______________
 app.post("/add_email_template",add_email_template)
@@ -248,6 +252,7 @@ app.get("/email_template_get",email_template_get)
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
+
 
 
 
