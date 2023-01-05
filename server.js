@@ -11,7 +11,7 @@ require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
 
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
-const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete} = require("./routes/product.js")
+const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details,user_login,change_user_password,user_forgot_password} = require("./routes/auth.js")
 const {add_to_cart,cart, cart_update,remove_cart,cart_list} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_status_change,vendor_availability,vendor_requests,brand_list} = require("./routes/admin.js")
@@ -116,6 +116,7 @@ app.post("/product_images",product_images)
 app.get("/product_images_get_all_veriant",product_images_get_all_veriant)
 app.get("/product_images_get_singal_veriant",product_images_get_singal_veriant)
 app.put("/product_image_delete",product_image_delete)
+app.put("/change_porduct_cover_image",change_porduct_cover_image)
 //________________user-sign-up_______________________
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
@@ -158,7 +159,7 @@ app.get("/invoice_list",invoice_list)
 app.post("/invoice_search",invoice_search)
 app.get("/invoice_details",invoice_details)
 
-//______________vendor_________________
+//______________vendor____________________
 
 app.get("/vendors",vendors)
 // app.post("/vendor_signup",vendor_signup)
@@ -166,6 +167,7 @@ app.get("/vendors",vendors)
 // app.post("/vendor_register",vendor_register)
 app.post("/vendor_register",upload.single('image'),vendor_register)
 app.put("/vendor_update",upload.array('image',2),vendor_update)
+//app.put("/vendor_status_change",vendor_status_change)
 app.put("/content_manager",content_manager)
 app.post("/vendor_documents_upload",vendor_documents_upload)
 app.get("/vendor_documents_get",vendor_documents_get)

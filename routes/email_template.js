@@ -1,8 +1,18 @@
 const connection = require('../db')
 
 function add_email_template(req,res){
+  console.log("add_email_template_____________")
     console.log(req.body)
      var {type,email_type,email_name,email_text,text_msg,test_email,status}=req.body;
+  //    connection.query(`INSERT INTO email_template(type, email_type, email_name, email_text, text_msg, test_email, status) VALUES ("'${type}'","'${email_type}'","'${email_name}'","'${email_text}'","'${text_msg}'","'${test_email}'","'${status}'")`,(err,results)=>{
+  //     if(err){
+  //       console.log(err)
+  //       res.status(502).send(err)
+  //     }else{
+  //      res.status(200).send(results)
+  //      console.log("_____"+results)       
+  //     }
+  // })
     connection.query('INSERT INTO `email_template`(`type`, `email_type`, `email_name`, `email_text`, `text_msg`, `test_email`, `status`) VALUES ("'+type+'","'+email_type+'","'+email_name+'","'+email_text+'","'+text_msg+'","'+test_email+'","'+status+'")',(err,results)=>{
         if(err){
           console.log(err)

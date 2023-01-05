@@ -248,6 +248,21 @@ function vendor_update(req,res){
        }
      })
 }
+
+// function vendor_status_change(req,res){
+//   console.log("add_email_template_____________")
+//     console.log(req.body)
+//      var {vendor_id,status}=req.body;
+//     connection.query('UPDATE `vendor` SET `status` = "'+status+'" WHERE `id`='+vendor_id+'',(err,results)=>{
+//         if(err){
+//           console.log(err)
+//           res.status(200).send(err)
+//         }else{
+         
+//          rows.affectedRows == '1' ? res.status(200).send({ "message": "status_successfully" }) : res.status(200).send({ "message": "faild" })
+//         }
+//     })
+// }
 //UPDATE `vendor` SET `show_product_rating`='1' WHERE `id`='1'
 function content_manager(req,res){
   console.log(req.body)
