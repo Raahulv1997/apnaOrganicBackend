@@ -13,7 +13,7 @@ function vendors(req,res){
     connection.query('SELECT * FROM vendor WHERE 1  ',(err,rows,fields)=>{
       if(err){
       res.status(500).send(err)
-      }else{
+      }else{ 
         res.status(200).send(rows)
       }
     })

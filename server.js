@@ -36,6 +36,7 @@ const {add_email_template,update_email_template,email_template_list,email_templa
 
 //__________+++___________testing______________+++_______________
 const {multer_image} = require("./routes/testxl.js")
+const {gmail_send} = require("./routes/gmail_send")
 
 
 var corsOptions = {
@@ -239,6 +240,9 @@ app.post("/banner_list",banner_list)
 app.put("/banner_delete",banner_delete)
 app.put("/cahange_banner_status",cahange_banner_status)
 
+  //_________gmail_send________
+  app.post("/gmail_send",gmail_send)
+
 
 //___________________Email_Template_______________
 app.post("/add_email_template",add_email_template)
@@ -247,10 +251,12 @@ app.post("/email_template_list",email_template_list)
 app.post("/email_template_remove",email_template_remove)
 app.put("/email_template_status",email_template_status)
 app.get("/email_template_get",email_template_get)
+
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
+
 
 
 
