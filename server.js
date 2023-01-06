@@ -250,6 +250,7 @@ app.post("/email_template_list",email_template_list)
 app.post("/email_template_remove",email_template_remove)
 app.put("/email_template_status",email_template_status)
 app.get("/email_template_get",email_template_get)
+
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
