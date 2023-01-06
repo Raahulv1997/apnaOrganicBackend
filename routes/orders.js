@@ -192,7 +192,7 @@ function orders_list(req, res) {
         connection.query('SELECT * FROM orders_view WHERE `created_on` >= DATE_SUB(CURDATE(), INTERVAL ' + created_on + ' DAY) ORDER BY id DESC', (err, rows, fields) => {
           if (err) {
             console.log("/orders_list_error" + err)
-            res.status(500).send(err)
+            res.status(200).send(err)
 
           } else {
             res.status(200).send(rows)
@@ -204,7 +204,7 @@ function orders_list(req, res) {
       connection.query('SELECT * FROM `orders_view` WHERE  `status` LIKE "%' + status + '%"  AND `created_on` >= DATE_SUB(CURDATE(), INTERVAL ' + created_on + ' DAY) ORDER BY id DESC', (err, rows, fields) => {
         if (err) {
           console.log("/orders_list_error" + err)
-          res.status(500).send(err)
+          res.status(200).send(err)
         } else {
           res.status(200).send(rows)
         }
@@ -219,34 +219,30 @@ function order_status_change(req, res) {
  var {user_id,id,status_change}=req.body
 //____________________________________________________________________________1
   //console.log(req.body.id)
-  connection.query('UPDATE `orders` SET `status`= "' + status_change + '" WHERE `id` = ' + id + '', (err, rows, fields) => {
+  connection.query('UPDATE `orders` SET `status`= "' + status_change + '" WHERE `id` = '+id+ '', (err, rows, fields) => {
     if (err) {
       console.log("/order_status_change_error" + err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
-      if (rows != '') {
+      console.log(rows.affectedRows)
+      if (rows.affectedRows=='1') {
         //res.status(200).send(rows)
 //____________________________________________________________________________2
-
-       
-        return false 
         connection.query('SELECT `email` FROM users WHERE `user_id`=' + user_id + '', (err, rslt) => {
           if (err) {
             console.log({ "error": err })
           } else {
             var user_e_address = rslt[0].email
-            console.log(user_e_address)
-            connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "order_placed"', (err, rows) => {
+            connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "'+status_change+'"', (err, rows) => {
               if (err) {
                 console.log({ "error": err })
               } else {
-                console.log(rows[0].email_text)
                 var html_data = rows[0].email_text;
                 const mail_configs = {
                   from: 'ashish.we2code@gmail.com',
                   to: user_e_address,
                   subject: 'Apna Organic Store',
-                  text: "your placed request pending",
+                  text: "apna organic",
                   html: html_data
                 }
                 nodemailer.createTransport({
@@ -260,7 +256,7 @@ function order_status_change(req, res) {
                     if (err) {
                       return console.log({ "email_error": err });
                     } else {
-                      return res.status(200).send({ "message": "Send mail Succesfully", "order": "order_count_" + order_count + "" });
+                      return res.status(200).send({ "email_message": "status mail sent to user succesfully", "status_message": "change order status succesfully " });
                     }
                   })
               }
