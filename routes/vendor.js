@@ -1,4 +1,5 @@
 const connection = require('../db')
+const nodemailer = require("nodemailer")
 const fs  = require('fs');
 const path=require("path")
 
@@ -154,11 +155,51 @@ var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
     connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `document_name`, `availability`,`social_media_links`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+image+"','"+status+"','"+document_name1+"','"+availability+"','"+social_media_links_new+"')",async (err, rows, fields) => {
      if(err){
        console.log("error"+err)
-       res.status(500).send(err)
+       res.status(200).send(err)
      }else{
        console.log("_____")
-       res.status(200).send(rows)
-   
+       //res.status(200).send(rows)
+       connection.query('SELECT `admin_email` FROM admin_login_details WHERE `admin_type`="super_admin"', (err, rslt) => {
+        if (err) {
+          console.log({ "error": err })
+        } else {
+          var user_e_address = rslt[0].admin_email
+          console.log(user_e_address)
+          connection.query('SELECT * FROM `email_template` WHERE  `email_type` = "Shipped"', (err, rows) => {
+            if (err) {
+              console.log({ "error": err })
+            } else {
+              if(rows!=''){
+              console.log(rows[0].email_text)
+              var html_data = rows[0].email_text;
+              const mail_configs = {
+                from: 'ashish.we2code@gmail.com',
+                to: user_e_address,
+                subject: 'Apna Organic Store',
+                text: "your placed request pending",
+                html: html_data
+              }
+              nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                  user: 'ashish.we2code@gmail.com',
+                  pass: 'nczaguozpagczmjv'
+                }
+              })
+                .sendMail(mail_configs, (err) => {
+                  if (err) {
+                    return console.log({ "email_error": err });
+                  } else {
+                    return res.status(200).send({ "message": "Sent mail to super_admin Succesfully", "message_for_vendor":"sent your request to admin" });
+                  }
+                })
+              }else{
+                res.send({"message":"status not define"})
+              }
+            }
+          })
+        }
+      })
      }
    })
  }
@@ -222,6 +263,7 @@ function vendor_list(req,res){
 function vendor_update(req,res){
     var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
     console.log(req.body)
+    console.log(req.file)
 
     if(req.file == undefined || req.file == '' ){
       image="no image"
@@ -249,21 +291,60 @@ function vendor_update(req,res){
      })
 }
 
-// function vendor_status_change(req,res){
-//   console.log("add_email_template_____________")
-//     console.log(req.body)
-//      var {vendor_id,status}=req.body;
-//     connection.query('UPDATE `vendor` SET `status` = "'+status+'" WHERE `id`='+vendor_id+'',(err,results)=>{
-//         if(err){
-//           console.log(err)
-//           res.status(200).send(err)
-//         }else{
-         
-//          rows.affectedRows == '1' ? res.status(200).send({ "message": "status_successfully" }) : res.status(200).send({ "message": "faild" })
-//         }
-//     })
-// }
-//UPDATE `vendor` SET `show_product_rating`='1' WHERE `id`='1'
+function vendor_status_change(req,res){
+  console.log(req.body.id)
+  var {status_change,id}=req.body
+  connection.query('UPDATE `vendor` SET `status`= "'+status_change+'" WHERE `id` = '+id+'',(err,rows,fields)=>{
+    if(err){
+      console.log("/vendor_update_error"+err)
+      res.send(err)
+    }else{
+      if(rows.affectedRows=='1'){
+        //res.send(rows)
+        console.log("succesfully updated vendor status")
+        connection.query('SELECT `email` FROM vendor WHERE `id`='+id+'', (err, rslt) => {
+          if (err) {
+            console.log({ "error": err })
+          } else {
+            var user_e_address = rslt[0].email
+            console.log(user_e_address)
+            connection.query('SELECT * FROM `email_template` WHERE `email_type` = "'+status_change+'"', (err, rows) => {
+              if (err) {
+                console.log({ "error": err })
+              } else {
+                var html_data = rows[0].email_text;
+                const mail_configs = {
+                  from: 'ashish.we2code@gmail.com',
+                  to: user_e_address,
+                  subject: 'Apna Organic Store',
+                  text: "apna organic",
+                  html: html_data
+                }
+                nodemailer.createTransport({
+                  service: 'gmail',
+                  auth: {
+                    user: 'ashish.we2code@gmail.com',
+                    pass: 'nczaguozpagczmjv'
+                  }
+                })
+                  .sendMail(mail_configs, (err) => {
+                    if (err) {
+                      return console.log({ "email_error": err });
+                    } else {
+                      return res.status(200).send({ "email_message": "status mail sent to user succesfully", "status_message": "vendor status change succesfully " });
+                    }
+                  })
+              }
+            })
+          }
+        })
+      }else{
+        console.log("not update vendor status")
+        res.send("not update vendor status")
+      }
+    }
+  })
+}
 function content_manager(req,res){
   console.log(req.body)
   var {vendor_id,show_product_rating}=req.body
@@ -337,4 +418,4 @@ connection.query('DELETE FROM `vendors_documents` WHERE `vendor_id`="'+vendor_id
 })
 }
 
-module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload,vendor_documents_get,vendor_document_delete}
+module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload,vendor_documents_get,vendor_document_delete,vendor_status_change}

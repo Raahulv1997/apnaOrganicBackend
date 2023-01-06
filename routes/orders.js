@@ -62,33 +62,38 @@ async function orders(req, res) {
                     } else {
                       var user_e_address = rslt[0].email
                       console.log(user_e_address)
-                      connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "order_placed"', (err, rows) => {
+                      connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "Shipped"', (err, rows) => {
                         if (err) {
                           console.log({ "error": err })
                         } else {
-                          console.log(rows[0].email_text)
-                          var html_data = rows[0].email_text;
-                          const mail_configs = {
-                            from: 'ashish.we2code@gmail.com',
-                            to: user_e_address,
-                            subject: 'Apna Organic Store',
-                            text: "your placed request pending",
-                            html: html_data
-                          }
-                          nodemailer.createTransport({
-                            service: 'gmail',
-                            auth: {
-                              user: 'ashish.we2code@gmail.com',
-                              pass: 'nczaguozpagczmjv'
+                          if(rows!=''){
+                            console.log(rows[0].email_text)
+                            var html_data = rows[0].email_text;
+                            const mail_configs = {
+                              from: 'ashish.we2code@gmail.com',
+                              to: user_e_address,
+                              subject: 'Apna Organic Store',
+                              text: "your placed request pending",
+                              html: html_data
                             }
-                          })
-                            .sendMail(mail_configs, (err) => {
-                              if (err) {
-                                return console.log({ "email_error": err });
-                              } else {
-                                return res.status(200).send({ "message": "Send mail Succesfully", "order": "order_count_" + order_count + "" });
+                            nodemailer.createTransport({
+                              service: 'gmail',
+                              auth: {
+                                user: 'ashish.we2code@gmail.com',
+                                pass: 'nczaguozpagczmjv'
                               }
                             })
+                              .sendMail(mail_configs, (err) => {
+                                if (err) {
+                                  return console.log({ "email_error": err });
+                                } else {
+                                  return res.status(200).send({ "message": "Send mail Succesfully", "order": "order_count_" + order_count + "" });
+                                }
+                              })
+                          }else{
+                            res.send({"message":"status not define"})
+                          }
+                          
                         }
                       })
                     }
@@ -213,7 +218,6 @@ function orders_list(req, res) {
 
   }
 }
-
 
 function order_status_change(req, res) {
  var {user_id,id,status_change}=req.body
