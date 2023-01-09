@@ -137,6 +137,11 @@ function vendor_register(req,res){
   var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
   console.log("_________+++++_________________vendor_register______________++++++_______________")
   console.log(req.body)
+  var document_name1 = JSON.stringify(document_name)
+  console.log(document_name1)
+  var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
+  console.log(typeof social_media_links_new)
+  console.log(social_media_links_new)
 
   if(req.file == undefined || req.file == '' ){
    image="no image"
@@ -144,12 +149,7 @@ function vendor_register(req,res){
    var image = "http://192.168.29.108:5000/catgory_images/"+req.file.filename;
    console.log(image)
  }
-  var document_name1 = JSON.stringify(document_name)
-  console.log(document_name1)
 
-var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
-  console.log(typeof social_media_links_new)
-  console.log(social_media_links_new)
 //res.send([newar])
  //return false
     connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `document_name`, `availability`,`social_media_links`) VALUES ('"+email+"','"+owner_name+"','"+shop_name+"','"+mobile+"','"+shop_address+"','"+gstn+"','"+geolocation+"','"+store_type+"','"+image+"','"+status+"','"+document_name1+"','"+availability+"','"+social_media_links_new+"')",async (err, rows, fields) => {
@@ -264,31 +264,44 @@ function vendor_update(req,res){
     var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
     console.log(req.body)
     console.log(req.file)
+    var document_name1 = JSON.stringify(document_name)
+    var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
+    console.log(typeof social_media_links_new)
+    console.log(social_media_links_new)
+
 
     if(req.file == undefined || req.file == '' ){
-      image="no image"
+      // image="no image"
+      connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`status`='"+status+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"',`social_media_links`='"+social_media_links_new+"'  WHERE id='"+id+"'",async (err, rows, fields) => {
+        if(err){
+          console.log("error"+err)
+        res.status(500).send(err)
+        }else{
+          if(rows!=''){
+           console.log("_____")
+           res.status(200).send({"message":"Updated Vendor Profile"})
+         }else{
+           res.status(500).send({"message":"Error Plaese Give Valid Data "})
+         }
+        }
+      })
     }else{
       var image = "http://192.168.29.108:5000/catgory_images/"+req.file.filename;
       console.log(image)
-    }
-     var document_name1 = JSON.stringify(document_name)
-     var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
-     console.log(typeof social_media_links_new)
-     console.log(social_media_links_new)
-   
       connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+image+"',`status`='"+status+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"',`social_media_links`='"+social_media_links_new+"'  WHERE id='"+id+"'",async (err, rows, fields) => {
-       if(err){
-         console.log("error"+err)
-       res.status(500).send(err)
-       }else{
-         if(rows!=''){
-          console.log("_____")
-          res.status(200).send({"message":"Updated Vendor Profile"})
+        if(err){
+          console.log("error"+err)
+        res.status(500).send(err)
         }else{
-          res.status(500).send({"message":"Error Plaese Give Valid Data "})
+          if(rows!=''){
+           console.log("_____")
+           res.status(200).send({"message":"Updated Vendor Profile"})
+         }else{
+           res.status(500).send({"message":"Error Plaese Give Valid Data "})
+         }
         }
-       }
-     })
+      })
+    }
 }
 
 function vendor_status_change(req,res){
@@ -363,7 +376,7 @@ function content_manager(req,res){
 function vendor_documents_upload(req,res){
 
   var base64_images=req.body
-  let iterations = base64_images.length-1;
+  let iterations = base64_images.length;
 // console.log(req.body)
   for (item of base64_images){
     var imgBase64 = item.img_64

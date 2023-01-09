@@ -27,18 +27,26 @@ function update_banner(req, res) {
     var { banner_id, image, title, description, banner_url, size, banner_location} = req.body;
 
     if (req.file == undefined || req.file == '') {
-        image = "no image"
+        // image = "no image"
+        connection.query('UPDATE `banner` SET `title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
+          if (err) {
+            res.status(500).send(err)
+          } else {
+            rows.affectedRows == '1' ? res.status(200).send({ "message": "update_status_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+          }
+        })
     } else {
         var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
         console.log(image)
+        connection.query('UPDATE `banner` SET `image`="'+image+'",`title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
+          if (err) {
+            res.status(500).send(err)
+          } else {
+            rows.affectedRows == '1' ? res.status(200).send({ "message": "update_status_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+          }
+        })
     }
-    connection.query('UPDATE `banner` SET `image`="'+image+'",`title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
-        if (err) {
-          res.status(500).send(err)
-        } else {
-          rows.affectedRows == '1' ? res.status(200).send({ "message": "update_status_successfully" }) : res.status(200).send({ "message": "invalid_id" })
-        }
-      })
+
   }
 
 
