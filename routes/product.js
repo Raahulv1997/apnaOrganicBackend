@@ -23,11 +23,11 @@ function products_search(req, res) {
   }
   if (price_to != '' && price_from !='' && srch != '' ) {
     //console.log("trueeeee")
-    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
+    newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
     condition_flag = false;
   } else {
     if(price_to != '' && price_from !=''){
-      newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
+      newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
       condition_flag = false;  
     }
 
@@ -206,7 +206,7 @@ function productpost(req, res) {
   connection.query("INSERT INTO `products`(`product_title_name`, `product_slug`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `seo_tag`, `other_introduction`, `add_custom_input`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `gst`, `cgst`, `sgst`, `value_added_tax`, `variety`, vendor_id, `shop`,`show_product_rating`) VALUES ('" + product_title_name + "','" + product_slug + "','" + store_name + "','" + product_description + "','" + product_type + "','" + brand + "','" + category + "','" + parent_category + "','" + seo_tag + "','" + other_introduction + "','" + add_custom_input1 + "','" + wholesale_sales_tax + "','" + manufacturers_sales_tax + "','" + retails_sales_tax + "','" + gst + "', '" + cgst + "','" + sgst + "','" + value_added_tax + "'," + variety + ",'" + vendor_id + "', '" + shop + "',"+show_product_rating+")", (err, rows, fields) => {
     if (err) {
       console.log("/_products_post_error" + err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       // //___add-images______________________________________________________________________________________
       
@@ -235,7 +235,7 @@ function productpost(req, res) {
         connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"' + item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","' + item.unit_quantity + '",' + item.quantity + ',"' + item.product_status + '")', (err, rows, fields) => {
           if (err) {
             console.log("/_products_post_error" + err)
-            res.status(500).send(err)
+            res.status(200).send(err)
           } else {
             console.log("successfully_added_data_on_price_table")
 
@@ -253,7 +253,7 @@ function products_varient_update(req, res) {
   connection.query('UPDATE products_pricing SET colors="' + colors + '",size="' + size + '",mrp=' + mrp + ',product_price=' + product_price + ',sale_price=' + sale_price + ',discount=' + discount + ',manufacturing_date="' + manufacturing_date + '",expire_date="' + expire_date + '",special_offer=' + special_offer + ',featured_product=' + featured_product + ',unit="' + unit + '",unit_quantity="' + unit_quantity + '",product_status="' + product_status + '",quantity=' + quantity + '  WHERE id =' + id + ' AND product_id=' + product_id + '', (err, rows, fields) => {
     if (err) {
       console.log("/products_update" + err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       console.log("successfully_updated_data_on_price_table")
       res.status(202).send(rows)
@@ -271,7 +271,7 @@ function products_update(req, res) {
   connection.query("UPDATE `products` SET `product_title_name`='" + product_title_name + "',`product_slug`='" + product_slug + "',`brand`='" + brand + "',`store_name`='" + store_name + "',`product_description`='" + product_description + "',`product_type`='" + product_type + "',`category`=" + category + ",`parent_category`='" + parent_category + "',`seo_tag`='" + seo_tag + "',`variety`=" + variety + ",`other_introduction`='" + other_introduction + "',`add_custom_input`='" + add_custom_input1 + "',`wholesale_sales_tax`='" + wholesale_sales_tax + "',`manufacturers_sales_tax`='" + manufacturers_sales_tax + "',`retails_sales_tax`='" + retails_sales_tax + "',`gst`='" + gst + "' ,`cgst`='" + cgst + "' ,`sgst`='" + sgst + "',`value_added_tax`='" + value_added_tax + "' ,`is_active`='" + is_active + "' WHERE `id`=" + id + "", (err, rows, fields) => {
     if (err) {
       console.log("/products_update" + err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       console.log("successfully_updated_data_on_products_table")
       res.status(202).send(rows)
@@ -288,14 +288,14 @@ function products_delete(req, res) {
     connection.query('UPDATE products_pricing SET is_delete= "' + is_delete + '" WHERE id=' + id + ' AND product_id=' + product_id + '', (err, rows, fields) => {
       if (err) {
         console.log(err)
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         console.log("successfully_products_deleted")
         res.status(202).send(rows)
       }
     })
   } else {
-    res.status(500).send("not deleted product")
+    res.status(200).send("not deleted product")
   }
 }
 
@@ -307,7 +307,7 @@ function products_varient_add(req, res) {
     connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + product_id + ',"' + colors + '","' + size + '",' + mrp + ',' + product_price + ',' + sale_price + ',' + discount + ',"' + manufacturing_date + '","' + expire_date + '",' + special_offer + ',' + featured_product + ',"' + unit + '",' + unit_quantity + ',' + quantity + ',"'+ product_status +'")', (err, rows, fields) => {
       if (err) {
         console.log("/products_update" + err)
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         console.log("successfully_add_data_on_price_table")
         res.status(202).send(rows)
@@ -324,7 +324,7 @@ function products_pricing(req, res) {
   if (req.query.id == 'all') {
     connection.query('SELECT * FROM products_pricing WHERE 1  ', (err, rows, fields) => {
       if (err) {
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         res.status(200).send(rows)
       }
@@ -333,7 +333,7 @@ function products_pricing(req, res) {
     connection.query('SELECT * FROM products_pricing WHERE id =' + req.query.id + ' AND product_id =' + req.query.product_id + ' ', (err, rows, fields) => {
       if (err) {
         console.log("/product_error" + err)
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         //console.log("_____")
         res.status(200).send(rows)
@@ -349,7 +349,7 @@ function product(req, res) {
   connection.query('SELECT * FROM `products` WHERE id =' + req.query.id + '', (err, rows, fields) => {
     if (err) {
       console.log("/product_error" + err)
-      //res.status(500).send(err)
+      //res.status(200).send(err)
     } else {
       if (rows != '') {
         product_details = rows[0]
@@ -357,7 +357,7 @@ function product(req, res) {
         connection.query('SELECT * FROM products_pricing WHERE product_id =' + req.query.id + '', (err, row, fields) => {
           if (err) {
             console.log("/product_error" + err)
-            res.status(500).send(err)
+            res.status(200).send(err)
           } else {
             if (row != '') {
               {
@@ -365,12 +365,12 @@ function product(req, res) {
                 res.status(200).send(product_details)
               }
             } else {
-              res.status(500).send("error")
+              res.status(200).send("error")
             }
           }
         })
       } else {
-        res.status(500).send("error")
+        res.status(200).send("error")
       }
 
     }
@@ -385,7 +385,7 @@ function product_status_update(req,res){
   connection.query('UPDATE products_pricing SET `product_status`="'+product_status+'"  WHERE id=' + id + ' AND product_id='+ product_id +' ', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       console.log("successfully_products_updated")
       res.status(202).send({"message":"successfully_products_updated"})
@@ -397,7 +397,7 @@ function product_status_update(req,res){
 function product_images(req,res){
 
   var base64_images=req.body
-  let iterations = base64_images.length-1;
+  let iterations = base64_images.length;
 
   for (item of base64_images){
     var imgBase64 = item.img_64
@@ -412,7 +412,7 @@ console.log(item.vendor_id)
   connection.query('INSERT INTO `product_images`(`product_id`, `product_verient_id`, `vendor_id`, `product_image_name`, `product_image_path`, `image_position`) VALUES ("'+item.product_id+'", "'+item.product_verient_id+'", "'+item.vendor_id+'", "'+item.product_image_name+'", "http://192.168.29.108:5000/products_images/'+name_str+'.png", "'+item.image_position+'")', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      //res.status(500).send(err)
+      //res.status(200).send(err)
     } else {
       console.log(rows)
     }})
@@ -430,7 +430,7 @@ var {product_id}=req.query
 connection.query('SELECT id ,(SELECT GROUP_CONCAT(product_image_path) FROM product_images WHERE product_images.product_verient_id = products_pricing.id group by product_verient_id) as all_images FROM `products_pricing` WHERE products_pricing.product_id ="'+product_id+'"', (err, rows, fields) => {
   if (err) {
     console.log(err)
-    //res.status(500).send(err)
+    //res.status(200).send(err)
   } else {
     console.log(rows)
     res.status(200).send(rows)

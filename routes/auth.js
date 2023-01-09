@@ -14,7 +14,7 @@ function signup(req, res) {
     connection.query("SELECT * FROM `users` WHERE email = '" + edata + "'",async (err, rows, fields) => {
       if (err) {
         console.log("/signup_error" + err)
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         if (rows != '') {
           console.log("_____");
@@ -36,7 +36,7 @@ function signup(req, res) {
               connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
                 if (err) {
                   console.log("/_otp_error" + err);
-                  res.status(500).send(err)
+                  res.status(200).send(err)
                 } else {
                   console.log("_____");
                   // res.status(200).send(OTP);
@@ -127,21 +127,21 @@ async function otp_verify(req,res){
               var userauth = JSON.parse(JSON.stringify(rows));
               var user_otp = userauth[0].otp;
               console.log( otp_ver +"=="+ user_otp)
-              if(otp_ver === user_otp){
+              if(otp_ver == user_otp){
                 console.log("otp verification successfully")
                 //res.send({"message":"otp verification successfully"})
                 if(signup_condition){
                   connection.query("INSERT INTO `users`( `email`, `password`) VALUES ('"+email_otp+"','"+password_salt+"')",async (err, rows, fields) => {
                     if(err){
                       console.log("error"+err)
-                      res.status(500).send(err)
+                      res.status(200).send(err)
                     }else{
                       console.log("_____")
                       if(rows!=''){
                         connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
                           if(err){
                             console.log("error"+err)
-                            res.status(500).send(err)
+                            res.status(200).send(err)
                           }else{
                             rows.affectedRows=='1'?console.log({"message":"successfully delete "}):console.log({"message":"invalid input data"})
       
@@ -162,13 +162,13 @@ async function otp_verify(req,res){
                   connection.query('UPDATE `users` SET `password`="'+password_salt+'" WHERE `email`="'+email_otp+'" ',async (err, rows, fields) => {
                     if(err){
                       console.log("error"+err)
-                      res.status(500).send(err)
+                      res.status(200).send(err)
                     }else{
                       if(rows!=''){
                         connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
                           if(err){
                             console.log("error"+err)
-                            res.status(500).send(err)
+                            res.status(200).send(err)
                           }else{
                             if(rows.affectedRows=='1'){
                               // res.status(202).send(rows)
@@ -186,11 +186,11 @@ async function otp_verify(req,res){
                 }
                 
               }else{
-                res.status(500).send({"message":"otp does not match"})
+                res.status(200).send({"message":"please check credential"})
               }
              
             }else{
-              res.status(500).send({"message":"email does not match"})
+              res.status(200).send({"message":"please check credential"})
             }
           }
         })
@@ -215,10 +215,10 @@ console.log(first_name+last_name+email+phone_no+ gender+date_of_birth+address+ad
  connection.query("UPDATE `users` SET `first_name`='"+first_name+"',`last_name`='"+last_name+"',`phone_no`='"+phone_no+"',`gender`='"+gender+"',`date_of_birth`= '"+date_of_birth+"',`address`='"+address+"',`address2`='"+address2+"' WHERE email='"+email+"'",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
-    res.status(500).send(err)
+    res.status(200).send(err)
   }else{
     console.log("_____")
-    rows.affectedRows=='1'?res.status(202).send({"message":"updated user profile"}):res.status(500).send({"message":"error"})
+    rows.affectedRows=='1'?res.status(202).send({"message":"updated user profile"}):res.status(200).send({"message":"error"})
 
   }
 })
@@ -229,7 +229,7 @@ console.log(req.query)
 connection.query("SELECT `user_id`,`first_name`,`last_name`,`email`,`phone_no`,`gender`,`date_of_birth`,`address`,`address2` FROM `users` WHERE `user_id` = "+req.query.user_id+"",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
-    res.status(500).send(err)
+    res.status(200).send(err)
   }else{
     if(rows!=''){
       console.log("_____")
@@ -326,11 +326,9 @@ function user_forgot_password(req,res){
     connection.query("SELECT * FROM `users` WHERE email = '" + edata + "'",async (err, rows, fields) => {
       if (err) {
         console.log("/signup_error" + err)
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         if (rows != '') {
-          console.log("_____");
-          console.log("redirect login page");
           var umail = JSON.parse(JSON.stringify(rows));
           var useremail = umail[0].email;
           console.log(useremail);
@@ -345,10 +343,10 @@ function user_forgot_password(req,res){
               connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
                 if (err) {
                   console.log("/_otp_error" + err);
-                  res.status(500).send(err)
+                  res.status(200).send(err)
                 } else {
                   console.log("_____");
-                  res.status(200).send(OTP);
+                  res.status(200).send({"message":"send otp on your mail"});
                 }
               })
             return OTP
@@ -384,7 +382,7 @@ function user_forgot_password(req,res){
               console.log(error);
             }
         } else {
-          res.status(500).send({ "message": "User Not Found" })
+          res.status(200).send({ "message": "User Not Found" })
         }
 
       }

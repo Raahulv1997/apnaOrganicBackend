@@ -22,17 +22,23 @@ function add_banner(req,res) {
 }   
 
 function update_banner(req, res) {
-    console.log("______banner____")
-    console.log(req.body)
-    var { banner_id, image, title, description, banner_url, size, banner_location} = req.body;
+  console.log("______banner____")
+  console.log(req.body)
+  var { banner_id, image, title, description, banner_url, size, banner_location} = req.body;
 
-    if (req.file == undefined || req.file == '') {
-        image = "no image"
-    } else {
-        var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
-        console.log(image)
-    }
-    connection.query('UPDATE `banner` SET `image`="'+image+'",`title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
+  if (req.file == undefined || req.file == '') {
+      // image = "no image"
+      connection.query('UPDATE `banner` SET `title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          rows.affectedRows == '1' ? res.status(200).send({ "message": "update_status_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+        }
+      })
+  } else {
+      var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
+      console.log(image)
+      connection.query('UPDATE `banner` SET `image`="'+image+'",`title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
         if (err) {
           res.status(500).send(err)
         } else {
@@ -40,6 +46,8 @@ function update_banner(req, res) {
         }
       })
   }
+
+}
 
 
 
@@ -75,7 +83,7 @@ function update_banner(req, res) {
     if(is_deleted=='0'){
         connection.query('UPDATE `banner` SET `is_deleted`="'+is_deleted+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
             if (err) {
-              res.status(500).send(err)
+              res.status(200).send(err)
             } else {
               rows.affectedRows == '1' ? res.status(200).send({ "message": "deleted_successfully" }) : res.status(200).send({ "message": "invalid_id" })
             }
@@ -91,7 +99,7 @@ function update_banner(req, res) {
     var {status,banner_id}=req.body
         connection.query('UPDATE `banner` SET `status`="'+status+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
             if (err) {
-              res.status(500).send(err)
+              res.status(200).send(err)
             } else {
               rows.affectedRows == '1' ? res.status(200).send({ "message": "change_status_successfully" }) : res.status(200).send({ "message": "invalid_id" })
             }

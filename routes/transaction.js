@@ -16,7 +16,7 @@ const stripe = require('stripe')(secretKey);
     //       res.status(502).send(err)
     //     }else{
     //      console.log("_____")
-    //      results!=''?res.status(200).send(results):res.status(500).send("invalid input data ")
+    //      results!=''?res.status(200).send(results):res.status(200).send("invalid input data ")
          
     //     }
     // })
@@ -57,10 +57,10 @@ async function payment(req,res){
     connection.query("INSERT INTO `transaction`(`payment_id`, `order_id`, `invoice_no`, `amount`, `method`, `status`, `name`, `c_number`, `exp_month`, `exp_year`, `receipt_url`, `currency`, `brand`, `country`) VALUES ('"+id+"','"+req.body.order_id+"', '"+req.body.invoice_no+"', '"+amount+"', '"+payment_method_details.type+"', '"+status+"' , '"+source.name+"', '"+source.last4+"', '"+source.exp_month+"', '"+source.exp_year+"', '"+receipt_url+"', '"+currency+"', '"+payment_method_details.card.brand+"', '"+payment_method_details.card.country+"')", (err, rows, fields) => {
       if (err) {
         console.log("/transaction_details_error" + err)
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         //console.log("_____")
-        rows ==''?res.status(500).send(err):res.status(200).send(rows)
+        rows ==''?res.status(200).send(err):res.status(200).send(rows)
         
       }
     })
@@ -69,7 +69,7 @@ async function payment(req,res){
    else
     {
        console.log("this is faild trans");
-       res.status(500).send('failed');
+       res.status(200).send('failed');
    }
 }
 
@@ -153,7 +153,7 @@ function transaction_list(req,res){
       connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
           console.log("/transaction_list_error"+err)
-          res.status(500).send(err)
+          res.status(200).send(err)
         }else{
           res.status(200).send(rows)
         }
@@ -162,7 +162,7 @@ function transaction_list(req,res){
 connection.query('SELECT * FROM `transaction` WHERE 1 ORDER BY id DESC',(err,rows,fields)=>{
     if(err){
       console.log("/transaction_list_error"+err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     }else{
       res.status(200).send(rows)
     }
@@ -175,7 +175,7 @@ function transaction_details(req,res){
     if (req.query.id == 'all') {
         connection.query('SELECT * FROM transaction WHERE 1  ', (err, rows, fields) => {
           if (err) {
-            res.status(500).send(err)
+            res.status(200).send(err)
           } else {
             res.status(200).send(rows)
           }
@@ -184,7 +184,7 @@ function transaction_details(req,res){
         connection.query('SELECT * FROM transaction WHERE id =' + req.query.id + ' ', (err, rows, fields) => {
           if (err) {
             console.log("/transaction_details_error" + err)
-            res.status(500).send(err)
+            res.status(200).send(err)
           } else {
             //console.log("_____")
             res.status(200).send(rows)

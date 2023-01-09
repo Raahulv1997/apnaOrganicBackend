@@ -17,7 +17,7 @@ const {add_to_cart,cart, cart_update,remove_cart,cart_list} = require("./routes/
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_availability,vendor_requests,brand_list} = require("./routes/admin.js")
 const {orders,order_deteils,orders_list,order_status_change,users_orders} = require("./routes/orders.js")
 const {invoice_list,invoice_search,invoice_details} = require("./routes/invoice_list.js")
-const {vendors,vendor_register,vendor_list,vendor_update,content_manager,vendor_documents_upload,vendor_documents_get,vendor_document_delete,vendor_status_change} = require("./routes/vendor")
+const {vendors,vendor_register,vendor_list,vendor_update,content_manager,vendor_documents_upload,vendor_documents_get,vendor_document_delete,vendor_status_change,vendor_signup, vendor_otp_verify} = require("./routes/vendor")
 // const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
 const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
@@ -161,10 +161,9 @@ app.post("/invoice_search",invoice_search)
 app.get("/invoice_details",invoice_details)
 
 //______________vendor____________________
-
 app.get("/vendors",vendors)
-// app.post("/vendor_signup",vendor_signup)
-// app.post("/vendor_otp_verify",vendor_otp_verify)
+app.post("/vendor_signup",vendor_signup)
+app.post("/vendor_otp_verify",vendor_otp_verify)
 // app.post("/vendor_register",vendor_register)
 app.post("/vendor_register",upload.single('image'),vendor_register)
 app.put("/vendor_update",upload.single('image'),vendor_update)

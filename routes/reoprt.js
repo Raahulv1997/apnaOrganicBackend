@@ -93,7 +93,7 @@ console.log(str_revenue)
   //       Object.assign(revenuearr[0], { net_sale, total_amount_with_shipping})
   //       //res.status(200).send(revenuearr)
   //     } else {
-  //       // res.status(500).send("error")
+  //       // res.status(200).send("error")
   //       console.log('error')
   //     }
   //   }
@@ -102,7 +102,7 @@ console.log(str_revenue)
   connection.query('SELECT DISTINCT order_id,(SELECT SUM(orders.discount_coupon_value) FROM orders WHERE orders.id=orders_view.order_id) as count FROM `orders_view` WHERE status="delivered" AND discount_coupon!="" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59" ' + str_revenue + '', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       if (rows != '') {
         rows.forEach((item, index) => {
@@ -118,7 +118,7 @@ console.log(str_revenue)
   connection.query('SELECT DISTINCT date(date_format(`created_on`, "%Y-%m-%d")) as uniquedates ,SUM(`sale_price`) gross_amount,SUM(`gst`) total_gst, SUM(DISTINCT `shipping_charges`) total_shipping_charges,SUM(`discount_coupon`) discount , (SUM(`sale_price`) - SUM(`discount_coupon`)) net_sales,(SUM(`sale_price`) + SUM(DISTINCT `shipping_charges`)) total_sales from orders_view WHERE (`created_on` BETWEEN "'+ req.body.from_date +' 00:00:00" AND "'+ req.body.to_date +' 23:59:59")   ' +str_revenue+'  GROUP BY date(date_format(`created_on`, "%Y-%m-%d")) ORDER by date(date_format(`created_on`, "%Y-%m-%d")) DESC', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       if (rows != '') {
         console.log("_____")
@@ -278,7 +278,7 @@ function products_report(req, res) {
   connection.query('SELECT COUNT(DISTINCT `order_id`) as order_count,SUM(`product_price`) net_sales,COUNT(product_id) as product_count FROM orders_view WHERE status="delivered" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59" AND NOT `status` = "return"  ' + str_revenue + '', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      //res.status(500).send(err)
+      //res.status(200).send(err)
     } else {
       rows != '' ? products_report_arr.push(rows) : console.log('products_report_error')
     }
@@ -287,7 +287,7 @@ function products_report(req, res) {
   connection.query('SELECT product_id, COUNT(DISTINCT order_id) as order_count,SUM(product_price) net_sales,COUNT(product_id) as product_count, (SELECT products.product_title_name FROM products WHERE orders_view.product_id = products.id) as product_name, (SELECT (SELECT category.category_name FROM category WHERE products.category=category.id) FROM products WHERE orders_view.product_id = products.id) as category_name FROM orders_view WHERE `status`="delivered" AND NOT `status` = "return" AND `created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59"  ' + str_revenue + ' GROUP BY product_id', (err, rows, fields) => {
     if (err) {
       console.log(err)
-     // res.status(500).send(err)
+     // res.status(200).send(err)
     } else {
       if (rows != '') {
         products_report_arr.push(rows)
@@ -554,7 +554,7 @@ function taxes_report(req, res) {
   connection.query('SELECT DISTINCT `gst`,COUNT(DISTINCT `order_id`) order_count,SUM(`total_gst`) order_taxes FROM orders_view  WHERE  `status`="delivered"  AND (`created_on` BETWEEN "' + req.body.from_date + ' 00:00:00" AND "' + req.body.to_date + ' 23:59:59 ")  ' + str_revenue + '  GROUP by gst', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       if (rows != '') {
         taxes_report_arr.push(rows)

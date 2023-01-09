@@ -7,12 +7,12 @@ function invoice_list(req,res){
     connection.query('SELECT * FROM `orders` WHERE 1',async (err,rslt)=>{
         if(err){
         console.log(err)
-        res.status(500).send(err)
+        res.status(200).send(err)
         }else{
              if(rslt!=''){
               res.status(200).send(rslt)
              }else{
-              res.status(500).send(err)
+              res.status(200).send(err)
               
             }
         }
@@ -41,7 +41,7 @@ function invoice_search (req,res){
     connection.query('SELECT * FROM `orders` WHERE  1 ORDER BY id DESC',(err,rows,fields)=>{
             if(err){
               console.log("/invoice_search_error"+err)
-              res.status(500).send(err)
+              res.status(200).send(err)
             }else{
             res.status(200).send(rows)
             }
@@ -51,7 +51,7 @@ function invoice_search (req,res){
             connection.query('SELECT * FROM `orders` WHERE `vendor_id` = '+search+' ORDER BY id DESC',(err,rows,fields)=>{
                 if(err){
                   console.log("/invoice_search_error"+err)
-                  res.status(500).send(err)
+                  res.status(200).send(err)
                 }else{
                  res.status(200).send(rows)
                 }
@@ -62,7 +62,7 @@ function invoice_search (req,res){
             connection.query('SELECT * FROM orders WHERE (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 23:59:59") ORDER BY id DESC',(err,rows,fields)=>{
                 if(err){
                   console.log("/invoice_search_error"+err)
-                  res.status(500).send(err)
+                  res.status(200).send(err)
                 }else{
                 res.status(200).send(rows)
                 }
@@ -73,7 +73,7 @@ function invoice_search (req,res){
         connection.query('SELECT * FROM `orders` WHERE  `vendor_id` = '+search+'  AND (`order_date` BETWEEN "'+from_date+'" AND "'+to_date+' 23:59:59") ORDER BY id DESC',(err,rows,fields)=>{
             if(err){
               console.log("/invoice_search_error"+err)
-              res.status(500).send(err)
+              res.status(200).send(err)
             }else{
              res.status(200).send(rows)
             }
@@ -89,7 +89,7 @@ function invoice_details(req,res){
     connection.query('SELECT * FROM `orders` WHERE `invoice_no` ='+req.query.invoice_no+'',(err,rslt)=>{
         if(err){
         console.log(err)
-        res.status(500).send(err)
+        res.status(200).send(err)
       }else{
             if(rslt!=""){
             //  console.log("_____")
@@ -101,14 +101,14 @@ function invoice_details(req,res){
               connection.query("SELECT * FROM `order_products` WHERE `order_id` = '"+o_id+"'",(err,rows,fields)=>{
                 if(err){
                   console.log(err)
-                  res.status(500).send(err)
+                  res.status(200).send(err)
                 }else{
                   if(rows!=''){
                     obj["product_types"] = JSON.parse(JSON.stringify(rows))
                   console.log(obj)
                   res.status(200).send(obj)
                   }else{
-                    res.status(500).send(err)
+                    res.status(200).send(err)
                   }
                   
                   //rows!=''?res.send(rows):res.send("error")
@@ -116,7 +116,7 @@ function invoice_details(req,res){
                 }
               }) 
             }else{
-              res.status(500).send("Wrong Id")
+              res.status(200).send("Wrong Id")
             }
         }
     })

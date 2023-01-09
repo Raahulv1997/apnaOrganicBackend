@@ -9,7 +9,7 @@ function user_products_search(req, res) {
 //       res.status(502).send(err)
 //     }else{
 //      //console.log("_____")
-//      results!=''?res.status(200).send(results):res.status(500).send("invalid input data ")
+//      results!=''?res.status(200).send(results):res.status(200).send("invalid input data ")
      
 //     }
 // })
@@ -41,11 +41,11 @@ if(u_id!==''){
   }
   if (price_to != '' && price_from !='' && srch != '' ) {
     //console.log("trueeeee")
-    newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
+    newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
     condition_flag = false;
   } else {
     if(price_to != '' && price_from !=''){
-      newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
+      newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
       condition_flag = false;  
     }
 
@@ -235,11 +235,11 @@ newstr +='(`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE 
 }
 if (price_to != '' && price_from !='' && srch != '' ) {
  //console.log("trueeeee")
- newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
+ newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
  condition_flag = false;
 } else {
  if(price_to != '' && price_from !=''){
-   newstr += '(`product_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
+   newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
    condition_flag = false;  
  }
 

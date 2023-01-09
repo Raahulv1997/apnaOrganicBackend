@@ -7,7 +7,7 @@ function add_complaint(req,res){
    connection.query("INSERT INTO `comaplains_support`(`order_id`, `subject`, `description`) VALUES ('"+order_id+"','"+subject+"','"+description+"')",async (err, rows, fields) => {
     if(err){
       console.log("error"+err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     }else{
       console.log("_____")
       res.status(201).send({"Message":"Complaint Added"})
@@ -27,10 +27,10 @@ function complaint_details(req,res){
     connection.query(quy,async (err, rows, fields) => {
         if(err){
           console.log("error"+err)
-          res.status(500).send(err)
+          res.status(200).send(err)
         }else{
           console.log("_____")
-          rows!=''?res.status(200).send(rows):res.status(500).send("Not Found Complaints")
+          rows!=''?res.status(200).send(rows):res.status(200).send("Not Found Complaints")
         }
     })
 }
@@ -41,9 +41,9 @@ function complaint_update(req,res){
     connection.query("UPDATE `comaplains_support` SET `assigned_to`='"+assigned_to+"',`resolve_date`='"+resolve_date+"',`status_`='"+status_+"',`resolve_description`='"+resolve_description+"' WHERE `id`= "+id+"",async (err, rows, fields) => {
         if(err){
           console.log("error"+err)
-          res.status(500).send(err)
+          res.status(200).send(err)
         }else{
-            rows!=''?resstatus(200).send("Succesfully Update Complaint"):res.status(500).send("Faild Complaint Update")          
+            rows!=''?resstatus(200).send("Succesfully Update Complaint"):res.status(200).send("Faild Complaint Update")          
         }
     })
 }
@@ -85,7 +85,7 @@ function complaint_search(req,res){
       connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
           console.log("/complaint_error"+err)
-          res.status(500).send(err)
+          res.status(200).send(err)
         }else{
           res.status(200).send(rows)
         }
@@ -94,7 +94,7 @@ function complaint_search(req,res){
 connection.query('SELECT * FROM `comaplains_support` WHERE 1 ORDER BY id DESC ',(err,rows,fields)=>{
     if(err){
       console.log("/complaint_error"+err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     }else{
       res.status(200).send(rows)
     }
