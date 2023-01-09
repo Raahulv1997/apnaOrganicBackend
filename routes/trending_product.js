@@ -9,14 +9,14 @@ function trending_product(req,res){
           res.status(502).send(err)
         }else{
          console.log("_____")
-        //  results!=''?res.status(200).send(results):res.status(500).send("Invalid Input Data ")
+        //  results!=''?res.status(200).send(results):res.status(200).send("Invalid Input Data ")
         results.forEach((item, index) => {
             console.log(item.product_id)
             var count_id=item.product_id
             connection.query('SELECT * FROM products WHERE id ='+count_id+' ',(err,results)=>{
                 if(err){
                   console.log("/product_error"+err)
-                  res.status(500).send(err)
+                  res.status(200).send(err)
                 }else{
                   console.log("_____")
                   all_res_data.push(results)

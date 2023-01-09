@@ -30,7 +30,7 @@ function update_email_template(req,res){
 
     connection.query('UPDATE `email_template` SET `type`="'+type+'",`email_type`="'+email_type+'",`email_name`="'+email_name+'",`email_text`="'+email_text+'",`text_msg`="'+text_msg+'",`test_email`="'+test_email+'",`status`="'+status+'"  WHERE `id`="'+id+'" ', (err, rows, fields) => {
         if (err) {
-          res.status(500).send(err)
+          res.status(200).send(err)
         } else {
           rows.affectedRows == '1' ? res.status(200).send({ "message": "update_email_template_successfully" }) : res.status(200).send({ "message": "invalid_id" })
         }
@@ -75,7 +75,7 @@ function email_template_list(req,res){
           connection.query(''+stringsearch+' ',(err,rows,fields)=>{
             if(err){
               console.log("/email_template_list_error"+err)
-              res.status(500).send(err)
+              res.status(200).send(err)
             }else{
               res.status(200).send(rows)
             }
@@ -84,7 +84,7 @@ function email_template_list(req,res){
     connection.query('SELECT * FROM `email_template` WHERE 1 ',(err,rows,fields)=>{
         if(err){
           console.log("/email_template_list_error"+err)
-          res.status(500).send(err)
+          res.status(200).send(err)
         }else{
           res.status(200).send(rows)
         }
@@ -99,7 +99,7 @@ function email_template_remove(req,res){
         if(is_deleted == '0'){
             connection.query('UPDATE `email_template` SET `is_deleted`="'+is_deleted+'" WHERE `id`='+id+'', (err, rows, fields) => {
                 if (err) {
-                  res.status(500).send(err)
+                  res.status(200).send(err)
                 } else {
                   rows.affectedRows == '1' ? res.status(200).send({ "message": "Deleted_successfully" }) : res.status(200).send({ "message": "invalid_id" })
                 }
@@ -114,7 +114,7 @@ function email_template_status(req,res){
     var {status,id}=req.body
     connection.query('UPDATE `email_template` SET `status`="'+status+'" WHERE `id`='+id+'', (err, rows, fields) => {
       if (err) {
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         rows.affectedRows == '1' ? res.status(200).send({ "message": "status_update_successfully" }) : res.status(200).send({ "message": "invalid_id" })
       }
@@ -125,7 +125,7 @@ function email_template_status(req,res){
     connection.query('SELECT * FROM email_template WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
       if(err){
         console.log("/email_template_error"+err)
-        res.status(500).send(err)
+        res.status(200).send(err)
       }else{
         //console.log("_____")
         res.status(200).send(rows)

@@ -7,13 +7,13 @@ function add_blog(req, res) {
   if (req.file == undefined || req.file == '') {
     image = "no image"
   } else {
-    var image = "public/catgory_images/" + req.file.filename;
+    var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
     console.log(image)
   }
 
   connection.query('INSERT INTO `blog`(`admin_id`, `image`, `title`, `description`, `category`, `product_tag`,`publish_date`) VALUES ("' + admin_id + '","' + image + '","' + title + '","' + description + '","' + category + '","' + product_tag + '","' + publish_date + '")', (err, rows, fields) => {
     if (err) {
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       console.log("add blog Succecsfully")
       res.status(201).send("add blog Succecsfully")
@@ -25,7 +25,7 @@ function blogs(req, res) {
   var query_flg = false
   var { id, recent, category, product_tag, for_ } = req.body
 if(for_=='user'){
-  var str_blog = 'SELECT * FROM `blog` WHERE is_delete=1 AND status="Published"'
+  var str_blog = 'SELECT * FROM `blog` WHERE is_delete=1 AND status="published"'
 }
 if(for_=='admin'){
   var str_blog = 'SELECT * FROM `blog` WHERE is_delete=1'
@@ -72,19 +72,27 @@ function update_blog(req, res) {
   console.log(req.body)
   var { id, admin_id, title, description, category, product_tag, publish_date } = req.body;
   if (req.file == undefined || req.file == '') {
-    image = "no image"
+    // image = "no image"
+    connection.query('UPDATE `blog` SET `title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '" WHERE admin_id="'+admin_id+'" AND id="'+id+'"', (err, rows, fields) => {
+      if (err) {
+        res.status(200).send(err)
+      } else {
+        rows.affectedRows == '1' ? res.status(200).send({ "message": "update_blog_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+      }
+    })
   } else {
-    var image = "public/catgory_images/" + req.file.filename;
+    var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
     console.log(image)
+    console.log("pass+++++++")
+    connection.query('UPDATE `blog` SET `image`="' + image + '",`title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '" WHERE admin_id="'+admin_id+'" AND id="'+id+'"', (err, rows, fields) => {
+      if (err) {
+        res.status(200).send(err)
+      } else {
+        rows.affectedRows == '1' ? res.status(200).send({ "message": "update_blog_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+      }
+    })
   }
-      console.log("pass+++++++")
-        connection.query('UPDATE `blog` SET `image`="' + image + '",`title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '" WHERE admin_id="'+admin_id+'" AND id="'+id+'"', (err, rows, fields) => {
-          if (err) {
-            res.status(500).send(err)
-          } else {
-            rows.affectedRows == '1' ? res.status(200).send({ "message": "update_blog_successfully" }) : res.status(200).send({ "message": "invalid_id" })
-          }
-        })
+
  
 }
 
@@ -93,7 +101,7 @@ function update_blog_status(req, res) {
   console.log("pass+++++++")
   connection.query('UPDATE `blog` SET `status`="' + req.body.status + '" WHERE id=' + req.body.id + '', (err, rows, fields) => {
     if (err) {
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       rows.affectedRows == '1' ? res.status(200).send({ "message": "update_status_successfully" }) : res.status(200).send({ "message": "invalid_id" })
     }
@@ -106,7 +114,7 @@ function delete_blog(req, res) {
   if (req.body.is_delete == '0') {
     connection.query('UPDATE `blog` SET `is_delete`="' + req.body.is_delete + '" WHERE id=' + req.body.id + '', (err, rows, fields) => {
       if (err) {
-        res.status(500).send(err)
+        res.status(200).send(err)
       } else {
         rows.affectedRows == '1' ? res.status(200).send({ "message": "delete_blog_successfully" }) : res.status(200).send({ "message": "invalid_id" })
       }

@@ -9,7 +9,7 @@ function gmail_send(req, res) {
 
     connection.query('SELECT * FROM email_template WHERE id=' + id + ' AND email_type="' + email_type + '"  ', (err, rows, fields) => {
         if (err) {
-            res.status(500).send(err)
+            res.status(200).send(err)
         } else {
             console.log(rows[0].email_text)
             var html_data = rows[0].email_text;

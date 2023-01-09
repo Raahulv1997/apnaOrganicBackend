@@ -3,7 +3,7 @@ function coupon(req,res){
     if(req.query.coupon_id == 'all'){
         connection.query('SELECT * FROM coupons WHERE 1  ',(err,rows,fields)=>{
           if(err){
-            res.status(500).send(err)
+            res.status(200).send(err)
           }else{
             res.status(200).send(rows)
           }
@@ -12,7 +12,7 @@ function coupon(req,res){
         connection.query('SELECT * FROM coupons WHERE id ='+req.query.coupon_id+' ',(err,rows,fields)=>{
           if(err){
             console.log("/Coupouns_error"+err)
-            res.status(500).send(err)
+            res.status(200).send(err)
           }else{
             //console.log("_____")
             res.status(200).send(rows)
@@ -52,7 +52,7 @@ function coupons_add(req,res){
   
   connection.query('INSERT INTO `coupons`(`campaign_name`, `code`, `product_type`, `start_date`, `end_date`, `minimum_amount`, `percentage`, `status`,`image`) VALUES ("'+campaign_name+'","'+code+'","'+product_type+'","'+start_date+'","'+end_date+'","'+minimum_amount+'","'+percentage+'","'+status+'","'+image+'")',(err,rows,fields)=>{
       if(err){
-        res.status(500).send(err)
+        res.status(200).send(err)
       }else{
         console.log("Coupon Data Insert Succecsfully")
         res.status(201).send("Coupon Data Insert Succecsfully")
@@ -61,8 +61,7 @@ function coupons_add(req,res){
   }
 
 
-
-function coupon_update(req,res){
+  function coupon_update(req,res){
     console.log(req.body)
    var {campaign_name,code,product_type,start_date,end_date,minimum_amount,percentage,status,id}=req.body;
    if(req.file == undefined || req.file == '' ){
@@ -90,7 +89,6 @@ function coupon_update(req,res){
   }
   
 }
-
 function coupons_list(req,res){
     console.log(req.body)
     var {campaign_name,code,status}=req.body;
@@ -127,7 +125,7 @@ function coupons_list(req,res){
       connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
           console.log("/Coupouns_error"+err)
-          res.status(500).send(err)
+          res.status(200).send(err)
         }else{
           res.status(200).send(rows)
         }
@@ -136,7 +134,7 @@ function coupons_list(req,res){
 connection.query('SELECT * FROM `coupons` WHERE 1 ORDER BY id DESC',(err,rows,fields)=>{
     if(err){
       console.log("/Coupouns_error"+err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     }else{
       res.status(200).send(rows)
     }
@@ -153,14 +151,14 @@ if(is_active == '0'){
   connection.query('UPDATE vendor SET is_active= "'+is_active+'" WHERE id='+id+' ', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       console.log("successfully_products_deleted")
       res.status(200).send("Successfully Products Deleted")
     }
   })
 }else{
- res.status(500).send("Not Deleted Product")
+ res.status(200).send("Not Deleted Product")
 }     
 }
 

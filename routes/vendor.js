@@ -2,9 +2,10 @@ const connection = require('../db')
 const nodemailer = require("nodemailer")
 const fs  = require('fs');
 const path=require("path")
+const bcrypt = require("bcrypt")
+
 
 var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z]{2,4})+$/;
-
 
 function vendors(req,res){
     // console.log(typeof req.query.category)
@@ -12,7 +13,7 @@ function vendors(req,res){
   if(req.query.id == 'all'){
     connection.query('SELECT * FROM vendor WHERE 1  ',(err,rows,fields)=>{
       if(err){
-      res.status(500).send(err)
+      res.status(200).send(err)
       }else{ 
         res.status(200).send(rows)
       }
@@ -21,7 +22,7 @@ function vendors(req,res){
     connection.query('SELECT * FROM vendor WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
       if(err){
         console.log("/vendors_error"+err)
-      res.status(500).send(err)
+      res.status(200).send(err)
       }else{
         var slink = JSON.parse(JSON.stringify(rows[0].social_media_links))
         var slink1= JSON.parse(slink)
@@ -36,102 +37,175 @@ function vendors(req,res){
 
 
 
+var signup_condition=false;
+var otp_verify_condition=false;
 
-// function vendor_signup(req, res) {
-//     var email_data = req.body.email;
-//     var rst = regex.test(email_data);
-//     if (rst) {
-//       connection.query("SELECT * FROM `vendor` WHERE email = '" + email_data + "'",async (err, rows, fields) => {
-//         if (err) {
-//           console.log("/signup_error" + err)
-//         res.status(500).send(err)
-//         } else {
-//           if (rows != '') {
-//             console.log("_____");
-//             console.log("redirect login page");
-//             var umail = JSON.parse(JSON.stringify(rows));
-//             var useremail = umail[0].email;
-//             console.log(useremail);
-//             res.send({"message":"User Already Exist. Please Login"})
-//           } else {
-//             console.log("send________otp")
+function vendor_signup(req, res) {
+    var email_data = req.body.email;
+    var rst = regex.test(email_data);
+    if (rst) {
+      connection.query("SELECT * FROM `vendor` WHERE email = '" + email_data + "'",async (err, rows, fields) => {
+        if (err) {
+          console.log("/signup_error" + err)
+        res.status(200).send(err)
+        } else {
+          if (rows != '') {
+            console.log("_____");
+            console.log("redirect login page");
+            var umail = JSON.parse(JSON.stringify(rows));
+            var useremail = umail[0].email;
+            console.log(useremail);
+            res.send({"message":"Vendor of this e-mail:'"+useremail+"' Already Exist. Please Login","response":false})
+          } else {
+            console.log("send________otp")
   
-//             function generateOTP() {
-//               var digits = '0123456789';
-//               let OTP = '';
-//               for (let o = 0; o < 6; o++ ) {
-//                   OTP += digits[Math.floor(Math.random() * 10)];
-//               }
-//                 connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+email_data+'","'+OTP+'")', (err, rows, fields) => {
-//                   if (err) {
-//                     console.log("/_otp_error" + err);
-//                   res.status(500).send(err)
-//                   } else {
-//                     console.log("_____");
-//                     res.send(OTP);
-//                   }
-//                 })
-//               return OTP
-//           }
-//            console.log(generateOTP()) 
-//           }
-//         }
-//       })
-//     } else {
-//       res.status(513).send({ "message": "invalid address" })
-//     }
-//   }
+            function generateOTP() {
+              var digits = '0123456789';
+              var OTP = '';
+              for (let o = 0; o < 6; o++ ) {
+                  OTP += digits[Math.floor(Math.random() * 10)];
+              }
+                connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+email_data+'","'+OTP+'")', (err, rows, fields) => {
+                  if (err) {
+                    console.log("/_otp_error" + err);
+                  res.status(200).send(err)
+                  } else {
+                    console.log("_____");
+                   // res.send({"message":"send otp on your mail"});
+
+                    const mail_configs={
+                      from:'ashish.we2code@gmail.com',
+                      to:email_data,
+                      subject:'Apna Organic Store',
+                      text:"One-time-password "+ OTP
+                    }
+      
+                       nodemailer.createTransport({
+                        service:'gmail',
+                        auth:{
+                            user:'ashish.we2code@gmail.com',
+                            pass:'nczaguozpagczmjv'
+                        }
+                      })
+                      .sendMail(mail_configs,(err)=>{
+                        if(err){
+                          return console.log('errrr',err);
+                        }else{
+                          return res.status(200).send({"message":"Send otp in Gmail Succesfully"});
+                        }
+                      })
+
+                  }
+                })
+              return OTP
+          }
+           console.log(generateOTP()) 
+          }
+        }
+        signup_condition = true;
+      })
+    } else {
+      res.status(513).send({ "message": "invalid address" })
+    }
+  }
 
 
-// function vendor_otp_verify(req,res){
-// console.log(req.body)
-//   var email_otp = req.body.email
-//   var otp_ver = req.body.otp
-//   var cheked_email = regex.test(email_otp);
-//   console.log("--------------------------otp_verify--------------------------")
-//   console.log(email_otp)
-//   console.log(otp_ver)
-//   if(cheked_email){
-//     console.log("email_true")
-//     connection.query("SELECT * FROM `users_otp` WHERE email = '" + email_otp + "'",async (err, rows, fields) => {
-//       if(err){
-//         console.log(err)
-//       }else{
-//         console.log("_____")
-//         if(rows!=''){
 
-//           var userauth = JSON.parse(JSON.stringify(rows));
-//           var user_otp = userauth[0].otp;
-//           console.log( otp_ver +"=="+ user_otp)
-//           if(otp_ver === user_otp){
-//             console.log("otp verification successfully")
-//             //res.send({"message":"otp verification successfully"})
+  async function vendor_otp_verify(req,res){
+    console.log(req.body)
+      var email_otp = req.body.email
+      var password_ = req.body.password
+      var otp_ver = req.body.otp
+      var cheked_email = regex.test(email_otp);
+      const salt = await bcrypt.genSalt(10);
+      const password_salt = await bcrypt.hash(password_, salt);
+      console.log(password_salt)
+      if(cheked_email){
+        console.log("email_true")
+        connection.query("SELECT * FROM `users_otp` WHERE email = '" + email_otp + "'",async (err, rows, fields) => {
+          if(err){
+            console.log(err)
+          }else{
+            console.log("otp_result____________________")
+            console.log(rows)
+            if(rows!=''){
+    
+              var userauth = JSON.parse(JSON.stringify(rows));
+              var user_otp = userauth[0].otp;
+              console.log( otp_ver +"=="+ user_otp)
+              if(otp_ver == user_otp){
+                console.log("otp verification successfully")
+                //res.send({"message":"otp verification successfully"})
+                if(signup_condition){
+                  connection.query("INSERT INTO `vendor`( `email`, `password`) VALUES ('"+email_otp+"','"+password_salt+"')",async (err, rows, fields) => {
+                    if(err){
+                      console.log("error"+err)
+                      res.status(200).send(err)
+                    }else{
+                      console.log("_____")
+                      if(rows!=''){
+                        connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
+                          if(err){
+                            console.log("error"+err)
+                            res.status(200).send(err)
+                          }else{
+                            rows.affectedRows=='1'?console.log({"message":"successfully delete "}):console.log({"message":"invalid input data"})
+      
+                          }
+                        })
+                        res.status(202).send(rows)
+                        signup_condition=false;
+                      }
 
-//             connection.query("INSERT INTO `vendor`( `email`) VALUES ('"+email_otp+"')",async (err, rows, fields) => {
-//               if(err){
-//                 console.log("error"+err)
-//               }else{
-//                 console.log("_____")
-//                 res.send(rows)
-//               }
-//             })  
-//           }else{
-//             res.send({"message":"otp does not match"})
-//           }
-         
-//         }else{
-//           res.send({"message":"email does not match"})
-//         }
-//       }
-//     })
-//   }else{
-//     console.log("email_false")
-//     res.status(513).send({ "message": "invalid address" })
-//   }
+                    }
+                  })
+                }
+                else{
+                  console.log('otp veification error')
+                }
 
-// }
-
-
+                if(otp_verify_condition){
+                  connection.query('UPDATE `vendor` SET `password`="'+password_salt+'" WHERE `email`="'+email_otp+'" ',async (err, rows, fields) => {
+                    if(err){
+                      console.log("error"+err)
+                      res.status(200).send(err)
+                    }else{
+                      if(rows!=''){
+                        connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
+                          if(err){
+                            console.log("error"+err)
+                            res.status(200).send(err)
+                          }else{
+                            if(rows.affectedRows=='1'){
+                              // res.status(202).send(rows)
+                              console.log({"message":"successfully delete "})
+                            }else{
+                              console.log({"message":"invalid input data "})
+                            }
+                          }
+                        })
+                        res.status(202).send(rows)
+                        otp_verify_condition=false;
+                      }
+                    }
+                  }) 
+                }
+                
+              }else{
+                res.status(200).send({"message":"please check credential"})
+              }
+             
+            }else{
+              res.status(200).send({"message":"please check credential"})
+            }
+          }
+        })
+      }else{
+        console.log("email_false")
+        res.status(513).send({ "message": "invalid address" })
+      }
+    
+ }
 
 function vendor_register(req,res){
   var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
@@ -243,7 +317,7 @@ function vendor_list(req,res){
           connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
             if(err){
               console.log("/vendor_error"+err)
-            res.status(500).send(err)
+            res.status(200).send(err)
             }else{
               res.status(200).send(rows)
             }
@@ -252,7 +326,7 @@ function vendor_list(req,res){
     connection.query('SELECT * FROM `vendor` WHERE 1 ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
           console.log("/vendor_error"+err)
-        res.status(500).send(err)
+        res.status(200).send(err)
         }else{
           res.status(200).send(rows)
         }
@@ -261,47 +335,47 @@ function vendor_list(req,res){
 }
 
 function vendor_update(req,res){
-    var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
-    console.log(req.body)
-    console.log(req.file)
-    var document_name1 = JSON.stringify(document_name)
-    var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
-    console.log(typeof social_media_links_new)
-    console.log(social_media_links_new)
+  var {owner_name,shop_name,mobile,id,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
+  console.log(req.body)
+  console.log(req.file)
+  var document_name1 = JSON.stringify(document_name)
+  var  social_media_links_new= JSON.stringify(JSON.parse(social_media_links))
+  console.log(typeof social_media_links_new)
+  console.log(social_media_links_new)
 
 
-    if(req.file == undefined || req.file == '' ){
-      // image="no image"
-      connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`status`='"+status+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"',`social_media_links`='"+social_media_links_new+"'  WHERE id='"+id+"'",async (err, rows, fields) => {
-        if(err){
-          console.log("error"+err)
-        res.status(500).send(err)
-        }else{
-          if(rows!=''){
-           console.log("_____")
-           res.status(200).send({"message":"Updated Vendor Profile"})
-         }else{
-           res.status(500).send({"message":"Error Plaese Give Valid Data "})
-         }
-        }
-      })
-    }else{
-      var image = "http://192.168.29.108:5000/catgory_images/"+req.file.filename;
-      console.log(image)
-      connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+image+"',`status`='"+status+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"',`social_media_links`='"+social_media_links_new+"'  WHERE id='"+id+"'",async (err, rows, fields) => {
-        if(err){
-          console.log("error"+err)
-        res.status(500).send(err)
-        }else{
-          if(rows!=''){
-           console.log("_____")
-           res.status(200).send({"message":"Updated Vendor Profile"})
-         }else{
-           res.status(500).send({"message":"Error Plaese Give Valid Data "})
-         }
-        }
-      })
-    }
+  if(req.file == undefined || req.file == '' ){
+    // image="no image"
+    connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`status`='"+status+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"',`social_media_links`='"+social_media_links_new+"'  WHERE id='"+id+"'",async (err, rows, fields) => {
+      if(err){
+        console.log("error"+err)
+      res.status(500).send(err)
+      }else{
+        if(rows!=''){
+         console.log("_____")
+         res.status(200).send({"message":"Updated Vendor Profile"})
+       }else{
+         res.status(500).send({"message":"Error Plaese Give Valid Data "})
+       }
+      }
+    })
+  }else{
+    var image = "http://192.168.29.108:5000/catgory_images/"+req.file.filename;
+    console.log(image)
+    connection.query("UPDATE `vendor` SET `owner_name`='"+owner_name+"',`shop_name`='"+shop_name+"',`mobile`='"+mobile+"',`shop_address`='"+shop_address+"',`gstn`='"+gstn+"',`geolocation`='"+geolocation+"',`store_type`='"+store_type+"',`shop_logo`='"+image+"',`status`='"+status+"',`document_name`= '"+document_name1+"',`availability`='"+availability+"',`social_media_links`='"+social_media_links_new+"'  WHERE id='"+id+"'",async (err, rows, fields) => {
+      if(err){
+        console.log("error"+err)
+      res.status(500).send(err)
+      }else{
+        if(rows!=''){
+         console.log("_____")
+         res.status(200).send({"message":"Updated Vendor Profile"})
+       }else{
+         res.status(500).send({"message":"Error Plaese Give Valid Data "})
+       }
+      }
+    })
+  }
 }
 
 function vendor_status_change(req,res){
@@ -325,6 +399,7 @@ function vendor_status_change(req,res){
               if (err) {
                 console.log({ "error": err })
               } else {
+                if(rows)
                 var html_data = rows[0].email_text;
                 const mail_configs = {
                   from: 'ashish.we2code@gmail.com',
@@ -364,7 +439,7 @@ function content_manager(req,res){
   connection.query('UPDATE `vendor` SET `show_product_rating`='+show_product_rating+' WHERE `id`='+vendor_id+'',async (err, rows, fields) => {
     if(err){
       console.log("error"+err)
-    res.status(500).send(err)
+    res.status(200).send(err)
     }else{
       console.log("_____")
       rows.affectedRows == '1' ? res.status(200).send({ "message": "deleted_successfully" }) : res.status(200).send({ "message": "invalid_id" })
@@ -382,7 +457,7 @@ function vendor_documents_upload(req,res){
     var imgBase64 = item.img_64
     try {
       // console.log(path.join(__dirname,'../'))
-    var base64Data = imgBase64.replace("data:image/png;base64,", "");
+    var base64Data = imgBase64.replace("data:image/png;base64,", ""); 
     var name_str = ""+item.documents_name+""+item.vendor_id+""
     fs.writeFileSync(path.join(__dirname,'../')+"/public/vendor_documents/"+name_str+"."+item.type_of_file+"", base64Data, 'base64');
     }catch (err) {
@@ -409,7 +484,7 @@ function vendor_documents_get(req,res){
   connection.query('SELECT * FROM vendors_documents WHERE `vendor_id`='+req.query.vendor_id+' ', (err, rows, fields) => {
     if (err) {
       console.log(err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     } else {
       console.log(rows)
       res.status(200).send(rows)
@@ -431,4 +506,70 @@ connection.query('DELETE FROM `vendors_documents` WHERE `vendor_id`="'+vendor_id
 })
 }
 
-module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload,vendor_documents_get,vendor_document_delete,vendor_status_change}
+function vendor_forgot_password(req,res){
+  var edata = req.body.email;
+  var rst = regex.test(edata);
+  if (rst) {
+    connection.query("SELECT * FROM `vendor` WHERE email = '" + edata + "'",async (err, rows, fields) => {
+      if (err) {
+        console.log("/signup_error" + err)
+        res.status(200).send(err)
+      } else {
+        if (rows != '') {
+          var umail = JSON.parse(JSON.stringify(rows));
+          var useremail = umail[0].email;
+          console.log(useremail);
+          // console.log({"message":"User Already Exist. Please Login"});
+          //res.status(200).send(false)
+          function generateOTP() {
+            var digits = '0123456789';
+            OTP = '';
+            for (let o = 0; o < 6; o++ ) {
+                OTP += digits[Math.floor(Math.random() * 10)];
+            }
+              connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
+                if (err) {
+                  console.log("/_otp_error" + err);
+                  res.status(200).send(err)
+                } else {
+                  console.log("_____");
+                  // res.status(200).send({"message":"send otp on your mail"});
+                  const mail_configs={
+                    from:'ashish.we2code@gmail.com',
+                    to:edata,
+                    subject:'Apna Organic Store',
+                    text:"One-time-password "+ OTP
+                  }
+    
+                     nodemailer.createTransport({
+                      service:'gmail',
+                      auth:{
+                          user:'ashish.we2code@gmail.com',
+                          pass:'nczaguozpagczmjv'
+                      }
+                    })
+                    .sendMail(mail_configs,(err)=>{
+                      if(err){
+                        return console.log('errrr',err);
+                      }else{
+                        return res.status(200).send({"message":"send otp on your mail"});
+                      }
+                    })
+                }
+              })
+            return OTP
+        }
+
+        console.log(generateOTP()) 
+        } else {
+          res.status(200).send({ "message": "User Not Found" })
+        }
+      }
+      otp_verify_condition = true;
+    })
+  } else {
+    res.status(513).send({ "message": "invalid address" })
+  }
+}
+
+module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload,vendor_documents_get,vendor_document_delete,vendor_status_change,vendor_signup,vendor_otp_verify,vendor_forgot_password}

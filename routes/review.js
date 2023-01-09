@@ -8,7 +8,7 @@ function review_rating(req,res){
   var {user_id,product_id,product_name,user_name,category_type,review_rating,comment,review_date}=req.body;                                                           
   connection.query('INSERT INTO  `review`( `user_id`, `user_name`, `product_id`,`product_name`,`category_type`,`review_date`,`review_rating`, `comment`) VALUES ("'+user_id+'","'+user_name+'","'+product_id+'","'+product_name+'","'+category_type+'","'+review_date+'","'+review_rating+'","'+comment+'")',(err,rows,fields)=>{
       if(err){
-    res.status(500).send(err)
+    res.status(200).send(err)
       }else{
           console.log("review_rating Data Insert Succecsfully")
         res.status(201).send("Review Rating Data Insert Succecsfully")
@@ -22,7 +22,7 @@ function review_approved(req,res){
     var {id,status,note}=req.body;
     connection.query('UPDATE `review` SET `status`="'+status+'",`note`="'+note+'"  WHERE `id`="'+id+'" ',(err,rows,fields)=>{
         if(err){
-      res.status(500).send(err)
+      res.status(200).send(err)
         }else{
             console.log("review_approved update Succecsfully")
           res.status(200).send("Review Approved Update Succecsfully")
@@ -68,7 +68,7 @@ function review_list(req,res){
       connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
           console.log("/review_error"+err)
-      res.status(500).send(err)
+      res.status(200).send(err)
         }else{
           res.status(200).send(rows)
         }
@@ -77,7 +77,7 @@ function review_list(req,res){
 connection.query('SELECT * FROM `review` WHERE 1 ORDER BY id DESC',(err,rows,fields)=>{
     if(err){
       console.log("/review_error"+err)
-      res.status(500).send(err)
+      res.status(200).send(err)
     }else{
       res.status(200).send(rows)
     }
@@ -90,12 +90,12 @@ console.log(req.query)
 connection.query("SELECT * FROM `review` WHERE `id` ="+req.query.id+"",(err,rows,fields)=>{
   if(err){
     console.log(err)
-    res.status(500).send(err)
+    res.status(200).send(err)
   }else{
     if(rows!=''){
       res.status(200).send(rows)
     }else{
-      res.status(500).send("error")
+      res.status(200).send("error")
     }
   }
 })

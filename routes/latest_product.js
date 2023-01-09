@@ -8,7 +8,7 @@ function latest_product(req,res){
           res.status(502).send(err)
         }else{
          console.log("_____")
-         results!=''?res.status(200).send(results):res.status(500).send(" No Products Data ")
+         results!=''?res.status(200).send(results):res.status(200).send(" No Products Data ")
         }
     })
 }

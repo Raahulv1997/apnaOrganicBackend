@@ -16,11 +16,11 @@ function add_wishlist(req,res){
         res.status(502).send(err)
       }else{
        console.log("_____")
-       results!=''?res.status(200).send(results):res.status(500).send("Invalid Input Data ")
+       results!=''?res.status(200).send(results):res.status(200).send("Invalid Input Data ")
       }
       })
          }else{
-          res.status(500).send("Already add in wishlist")
+          res.status(200).send("Already add in wishlist")
          }       
         }
     })
@@ -34,7 +34,7 @@ function remove_product_from_wishlist(req,res){
           res.status(502).send(err)
         }else{
          console.log(results.affectedRows)
-         results.affectedRows=='1'?res.status(201).send("Successfully Removed Data From Wishlist"):res.status(500).send("invalid input data ")
+         results.affectedRows=='1'?res.status(201).send("Successfully Removed Data From Wishlist"):res.status(200).send("invalid input data ")
          
         }
     })
@@ -48,7 +48,7 @@ function wishlist(req,res){
       res.status(200).send(err)
     }else{
      console.log(results.affectedRows)
-     results!=''?res.status(201).send(results):res.status(200).send("invalid url")
+     results!=''?res.status(201).send(results):res.status(200).send({"message":"empty"})
     }
 })
 }
