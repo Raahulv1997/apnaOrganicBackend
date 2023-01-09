@@ -1,5 +1,6 @@
 const connection = require('../db')
 const nodemailer = require("nodemailer")
+const bcrypt = require("bcrypt")
 const fs  = require('fs');
 const path=require("path")
 
@@ -106,15 +107,15 @@ function vendor_signup(req, res) {
   }
 
 
-function vendor_otp_verify(req,res){
+async function vendor_otp_verify(req,res){
 console.log(req.body)
   var email_otp = req.body.email
   var password_ = req.body.password
   var otp_ver = req.body.otp
   var cheked_email = regex.test(email_otp);
-  console.log("--------------------------otp_verify--------------------------")
-  console.log(email_otp)
-  console.log(otp_ver)
+  const salt = await bcrypt.genSalt(10);
+  const password_salt = await bcrypt.hash(password_, salt);
+  console.log(password_salt)
   if(cheked_email){
     console.log("email_true")
     connection.query("SELECT * FROM `users_otp` WHERE email = '"+email_otp+"'",async (err, rows, fields) => {
@@ -130,15 +131,30 @@ console.log(req.body)
           if(otp_ver == user_otp){
             console.log("otp verification successfully")
             //res.send({"message":"otp verification successfully"})
-
-            connection.query("INSERT INTO `vendor`( `email`,`password`) VALUES ('"+email_otp+"','"+password_+"')",async (err, rows, fields) => {
-              if(err){
-                console.log("error"+err)
-              }else{
-                console.log("_____")
-                res.send(rows)
+            connection.query("SELECT * FROM `vendor` WHERE email = '" + email_otp + "'",async (err, rows, fields) => {
+              if (err) {
+                console.log("/signup_error" + err)
+              res.status(200).send(err)
+              } else {
+                if (rows != '') {
+                  console.log("_____");
+                  console.log("redirect login page");
+                  var umail = JSON.parse(JSON.stringify(rows));
+                  var useremail = umail[0].email;
+                  console.log(useremail);
+                  res.send({"message":"Vendor of this e-mail:'"+email_otp+"' Already Exist. Please Login","response":false})
+                } else {
+                  connection.query("INSERT INTO `vendor`( `email`,`password`) VALUES ('"+email_otp+"','"+password_salt+"')",async (err, rows, fields) => {
+                    if(err){
+                      console.log("error"+err)
+                    }else{
+                      console.log("_____")
+                      res.send(rows)
+                    }
+                  })  
+                }
               }
-            })  
+            })
           }else{
             res.send({"message":"otp does not match"})
           }
@@ -154,6 +170,77 @@ console.log(req.body)
   }
 
 }
+
+
+async function vendor_login(req,res){
+console.log(req.body)
+var {email,password}=req.body
+connection.query('SELECT `id`, `email` , `password` FROM `vendor`  WHERE `email` ="'+email+'"',async (err,results)=>{
+  if(err){
+    console.log(err)
+    res.send(err)
+  }else{
+      if(results != ''){
+          
+              console.log("_____")
+             // return false
+              var psw =  JSON.parse(JSON.stringify(results[0].password))
+              console.log(typeof psw)
+              const validPassword = await bcrypt.compare(password,psw);
+              console.log(validPassword)
+              validPassword ?res.send({"id":results[0].id,"vendor_email":results[0].email}) : res.send({"message":"please fill valid credintials"})
+              
+      }else{
+          res.send({"message":"check_credintials"}) 
+      }
+}})
+}
+
+
+
+function change_vendor_password(req,res){
+  var {email,password,new_password} = req.body
+if(email != '' && password != '' && new_password != ''){
+    console.log("fill all")
+    connection.query('SELECT `email` , `password` FROM `vendor`  WHERE `email` ="'+email+'"',async (err,results)=>{
+        if(err){
+          console.log(err)
+          res.send(err)
+        }else{
+            if(results != ''){
+                    console.log("_____")
+                    var psw =  JSON.parse(JSON.stringify(results[0].password))
+                    console.log(typeof psw)
+                    const validPassword = await bcrypt.compare(password,psw);
+                    console.log(validPassword)
+                    if(validPassword) { 
+                        const salt = await bcrypt.genSalt(10);
+                        password_salt = await bcrypt.hash(new_password, salt);
+                        console.log(password_salt)
+                        connection.query('UPDATE `vendor` SET `password`= "'+password_salt+'" WHERE `email` = "'+email+'"',async (err,results)=>{
+                            if(err){
+                            console.log(err)
+                            res.send(err)
+                            }else{
+                                console.log("password_updated")
+                                res.send({"message":"new_password_updated","response":true})
+                            }
+                        })
+                    }else{
+                         res.send({"message":"check credentials"})
+                        }
+            }else{
+                res.send({"message":"invalid credentials"}) 
+            }
+        }
+})
+}else{
+    console.log("plaese fill all input")
+}
+}
+
+
+
 
 function vendor_register(req,res){
   var {owner_name,shop_name,mobile,email,shop_address,gstn,geolocation,store_type,status,document_name,availability,social_media_links}=req.body;
@@ -454,4 +541,4 @@ connection.query('DELETE FROM `vendors_documents` WHERE `vendor_id`="'+vendor_id
 })
 }
 
-module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload,vendor_documents_get,vendor_document_delete,vendor_status_change,vendor_signup,vendor_otp_verify}
+module.exports={vendor_register,vendor_list,vendor_update,vendors,content_manager,vendor_documents_upload,vendor_documents_get,vendor_document_delete,vendor_status_change,vendor_signup,vendor_otp_verify,vendor_login,change_vendor_password}
