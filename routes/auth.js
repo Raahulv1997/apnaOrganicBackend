@@ -40,54 +40,32 @@ function signup(req, res) {
                 } else {
                   console.log("_____");
                   // res.status(200).send(OTP);
+                  const mail_configs={
+                    from:'ashish.we2code@gmail.com',
+                    to:edata,
+                    subject:'Apna Organic Store',
+                    text:"One-time-password "+ OTP
+                  }
+    
+                     nodemailer.createTransport({
+                      service:'gmail',
+                      auth:{
+                          user:'ashish.we2code@gmail.com',
+                          pass:'nczaguozpagczmjv'
+                      }
+                    })
+                    .sendMail(mail_configs,(err)=>{
+                      if(err){
+                        return console.log('errrr',err);
+                      }else{
+                        return res.status(200).send({"message":"Send otp in Gmail Succesfully"});
+                      }
+                    })
                 }
               })
             return OTP
         }
          console.log(generateOTP()) 
-            try {
-               console.log(edata)
-              // const resp = await Auth(edata, "apnaorganicstore");
-              // console.log(resp);
-              // // res.json({"message":"Sent Otp On Your Email"})
-              // connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+resp.mail+'","'+resp.OTP+'")', (err, rows, fields) => {
-              //   if (err) {
-              //     console.log("/_otp_error" + err);
-              //     res.send(err)
-              //   } else {
-              //     console.log("_____");
-              //     res.send(rows);
-              //   }
-              // })
-              if(OTP != ''){
-                const mail_configs={
-                  from:'ashish.we2code@gmail.com',
-                  to:edata,
-                  subject:'Apna Organic Store',
-                  text:"One-time-password "+ OTP
-                }
-  
-                   nodemailer.createTransport({
-                    service:'gmail',
-                    auth:{
-                        user:'ashish.we2code@gmail.com',
-                        pass:'nczaguozpagczmjv'
-                    }
-                  })
-                  .sendMail(mail_configs,(err)=>{
-                    if(err){
-                      return console.log('errrr',err);
-                    }else{
-                      return res.status(200).send({"message":"Send otp in Gmail Succesfully"});
-                    }
-                  })
-              }
-
-
-              }
-              catch (error) {
-              console.log(error);
-            }
         }
 
       }
@@ -346,52 +324,42 @@ function user_forgot_password(req,res){
                   res.status(200).send(err)
                 } else {
                   console.log("_____");
-                  res.status(200).send({"message":"send otp on your mail"});
+                  // res.status(200).send({"message":"send otp on your mail"});
+                  const mail_configs={
+                    from:'ashish.we2code@gmail.com',
+                    to:edata,
+                    subject:'Apna Organic Store',
+                    text:"One-time-password "+ OTP
+                  }
+    
+                     nodemailer.createTransport({
+                      service:'gmail',
+                      auth:{
+                          user:'ashish.we2code@gmail.com',
+                          pass:'nczaguozpagczmjv'
+                      }
+                    })
+                    .sendMail(mail_configs,(err)=>{
+                      if(err){
+                        return console.log('errrr',err);
+                      }else{
+                        return res.status(200).send({"message":"send otp on your mail"});
+                      }
+                    })
                 }
               })
             return OTP
         }
 
         console.log(generateOTP()) 
-            try {
-               console.log(edata)
-              const mail_configs={
-                from:'ashish.we2code@gmail.com',
-                to:edata,
-                subject:'Apna Organic Store',
-                text:"One-time-password "+ OTP
-              }
-
-                 nodemailer.createTransport({
-                  service:'gmail',
-                  auth:{
-                      user:'ashish.we2code@gmail.com',
-                      pass:'nczaguozpagczmjv'
-                  }
-                })
-                .sendMail(mail_configs,(err)=>{
-                  if(err){
-                    return console.log('errrr',err);
-                  }else{
-                    return console.log('email sent')
-                  }
-                })
-
-              }
-              catch (error) {
-              console.log(error);
-            }
         } else {
           res.status(200).send({ "message": "User Not Found" })
         }
-
       }
       otp_verify_condition = true;
     })
   } else {
     res.status(513).send({ "message": "invalid address" })
-  }
-  
+  } 
   }
 module.exports = {signup,otp_verify, user_register,user_details, user_login, change_user_password, user_forgot_password }
-
