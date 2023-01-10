@@ -1,5 +1,6 @@
 const fs  = require('fs');
 const connection = require('../db')
+const jsStringEscape = require('js-string-escape')
 
 function products_search(req, res) {
   var condition_flag = true;
@@ -201,6 +202,13 @@ function productpost(req, res) {
 
   var { product_title_name, product_slug, store_name, product_description, product_type, brand, category, parent_category, seo_tag, other_introduction, add_custom_input, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, gst, value_added_tax, id, variety, vendor_id, shop ,show_product_rating,cgst,sgst} = postdata[0]
 
+  var product_title_name=jsStringEscape(product_title_name)
+  var product_slug=jsStringEscape(product_slug)
+  var product_description=jsStringEscape(product_description)
+  var seo_tag=jsStringEscape(seo_tag)
+  var other_introduction=jsStringEscape(other_introduction)
+  var shop=jsStringEscape(shop)
+    
   var add_custom_input1 = JSON.stringify(add_custom_input)
   console.log(add_custom_input1)
   connection.query("INSERT INTO `products`(`product_title_name`, `product_slug`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `seo_tag`, `other_introduction`, `add_custom_input`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `gst`, `cgst`, `sgst`, `value_added_tax`, `variety`, vendor_id, `shop`,`show_product_rating`) VALUES ('" + product_title_name + "','" + product_slug + "','" + store_name + "','" + product_description + "','" + product_type + "','" + brand + "','" + category + "','" + parent_category + "','" + seo_tag + "','" + other_introduction + "','" + add_custom_input1 + "','" + wholesale_sales_tax + "','" + manufacturers_sales_tax + "','" + retails_sales_tax + "','" + gst + "', '" + cgst + "','" + sgst + "','" + value_added_tax + "'," + variety + ",'" + vendor_id + "', '" + shop + "',"+show_product_rating+")", (err, rows, fields) => {
@@ -231,7 +239,7 @@ function productpost(req, res) {
       console.log("successfully_add_data_on_new_products")
       product_catagory.forEach((item, index) => {
         console.log(index)
-
+        console.log(item.sale_price)
         connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"' + item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","' + item.unit_quantity + '",' + item.quantity + ',"' + item.product_status + '")', (err, rows, fields) => {
           if (err) {
             console.log("/_products_post_error" + err)
@@ -262,13 +270,18 @@ function products_varient_update(req, res) {
 }
 
 function products_update(req, res) {
-  var { id, product_title_name, product_slug, store_name, product_description, product_type, category, parent_category, seo_tag, other_introduction, add_custom_input, brand, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, value_added_tax, variety, gst, cgst, sgst, is_active } = req.body
+  var { id, product_title_name, product_slug, store_name, product_description, product_type, category, parent_category, seo_tag, other_introduction, add_custom_input, brand, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, value_added_tax, variety, gst, cgst, sgst } = req.body
   console.log("_______products_update________")
   console.log(req.body)
-
+  var product_title_name=jsStringEscape(product_title_name)
+  var product_slug=jsStringEscape(product_slug)
+  var product_description=jsStringEscape(product_description)
+  var seo_tag=jsStringEscape(seo_tag)
+  var other_introduction=jsStringEscape(other_introduction)
+  var shop=jsStringEscape(shop)
   var add_custom_input1 = JSON.stringify(add_custom_input)
   console.log(add_custom_input1)
-  connection.query("UPDATE `products` SET `product_title_name`='" + product_title_name + "',`product_slug`='" + product_slug + "',`brand`='" + brand + "',`store_name`='" + store_name + "',`product_description`='" + product_description + "',`product_type`='" + product_type + "',`category`=" + category + ",`parent_category`='" + parent_category + "',`seo_tag`='" + seo_tag + "',`variety`=" + variety + ",`other_introduction`='" + other_introduction + "',`add_custom_input`='" + add_custom_input1 + "',`wholesale_sales_tax`='" + wholesale_sales_tax + "',`manufacturers_sales_tax`='" + manufacturers_sales_tax + "',`retails_sales_tax`='" + retails_sales_tax + "',`gst`='" + gst + "' ,`cgst`='" + cgst + "' ,`sgst`='" + sgst + "',`value_added_tax`='" + value_added_tax + "' ,`is_active`='" + is_active + "' WHERE `id`=" + id + "", (err, rows, fields) => {
+  connection.query("UPDATE `products` SET `product_title_name`='" + product_title_name + "',`product_slug`='" + product_slug + "',`brand`='" + brand + "',`store_name`='" + store_name + "',`product_description`='" + product_description + "',`product_type`='" + product_type + "',`category`=" + category + ",`parent_category`='" + parent_category + "',`seo_tag`='" + seo_tag + "',`variety`=" + variety + ",`other_introduction`='" + other_introduction + "',`add_custom_input`='" + add_custom_input1 + "',`wholesale_sales_tax`='" + wholesale_sales_tax + "',`manufacturers_sales_tax`='" + manufacturers_sales_tax + "',`retails_sales_tax`='" + retails_sales_tax + "',`gst`='" + gst + "' ,`cgst`='" + cgst + "' ,`sgst`='" + sgst + "',`value_added_tax`='" + value_added_tax + "'  WHERE `id`=" + id + "", (err, rows, fields) => {
     if (err) {
       console.log("/products_update" + err)
       res.status(200).send(err)
