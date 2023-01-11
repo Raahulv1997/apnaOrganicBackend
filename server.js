@@ -33,6 +33,7 @@ const {add_blog,blogs,update_blog,update_blog_status,delete_blog} = require("./r
 const {publish_blog} = require("./routes/cron_.js")
 const {add_banner,update_banner,banner_list,banner_delete,cahange_banner_status} = require("./routes/banner.js")
 const {add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status,email_template_get} = require("./routes/email_template")
+const {add_notification_template,update_notification_template,notification_template_list} = require("./routes/notification_template")
 
 //__________+++___________testing______________+++_______________
 const {multer_image} = require("./routes/testxl.js")
@@ -254,6 +255,15 @@ app.post("/email_template_list",email_template_list)
 app.post("/email_template_remove",email_template_remove)
 app.put("/email_template_status",email_template_status)
 app.get("/email_template_get",email_template_get)
+
+//_____________notification_template_______________
+app.post("/add_notification_template",add_notification_template)
+app.put("/update_notification_template",update_notification_template)
+app.post("/notification_template_list",notification_template_list)
+
+
+
+
 
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){
