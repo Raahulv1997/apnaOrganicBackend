@@ -31,7 +31,7 @@ if(u_id!==''){
   var pg = req.query
   console.log(pg)
   console.log(srch)
-  var newstr = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist FROM products_view WHERE is_delete = "1" AND '
+  var newstr = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist, (SELECT is_deleted FROM fetured_product_table WHERE fetured_product_table.product_id = products_view.product_id AND fetured_product_table.start_date < NOW() AND fetured_product_table.end_date > NOW() ) as is_fetured_product FROM products_view WHERE is_delete = "1" AND '
   if(srch != ''){
   console.log("trueeeee")
   newstr +='(`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%") AND '
@@ -50,7 +50,6 @@ if(u_id!==''){
     }
 
   }
-  console.log(newstr)
     var onjkayarrry =Object.keys(catobj)
     var onjvaluarrry =Object.values(catobj)
   
@@ -62,22 +61,15 @@ if(u_id!==''){
           newstr += ' AND'
         }
         if(onjkayarrry.length-1 == i){
-                  console.log(onjvaluarrry[i])
         var arr = JSON.stringify(onjvaluarrry[i]);
         var abc="'"+arr+"'"
-        console.log(abc)
-        console.log(typeof abc)
         const id = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
-        console.log("__"+id+"__")
         newstr += ' ' + onjkayarrry[i] + ' IN ' + '(' + id + ')' 
         }else{
         console.log(onjvaluarrry[i])
         var arr = JSON.stringify(onjvaluarrry[i]);
         var abc="'"+arr+"'"
-        console.log(abc)
-        console.log(typeof abc)
         const id = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
-        console.log("__"+id+"__")
         newstr += ' ' + onjkayarrry[i] + ' IN ' + '(' + id + ')' + '___'        }
       }
       
@@ -87,7 +79,7 @@ if(u_id!==''){
       console.log("_______________ressend-1_______________")
   
       var newqry = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist FROM products_view WHERE is_delete = "1" AND (`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" )'+' '+'LIMIT'
-      console.log(newqry)
+
       var numRows;
       var queryPagination;
       var numPerPage = pg.per_page
@@ -300,8 +292,9 @@ console.log(newstr)
          }else{
            numRows = results[0].numRows;
            numPages = Math.ceil(numRows / numPerPage);
-           console.log('number of pages:', numPages);
-           //console.log(''+newqry+' '+limit+'')
+           console.log("__________________________qry___________________________");
+
+           console.log(''+newqry+' '+limit+'')
            connection.query(''+newqry+' '+limit+'',(err,results)=>{
              if(err){
                console.log(err)
@@ -341,11 +334,6 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
 }else{
  console.log("no avia")
 }
-
-
-   // console.log(typeof qry)
-   // console.log(qry)
-
     console.log("_______________ressend-2_______________")
 
     var newqry = qry+' AND is_delete = "1" '+' '+'LIMIT'

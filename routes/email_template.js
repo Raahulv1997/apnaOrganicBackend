@@ -18,6 +18,7 @@ function add_email_template(req,res){
     })
 }
 
+
 function update_email_template(req,res){
     console.log(req.body)
     var {id,type,email_type,email_name,email_text,text_msg,test_email,status}=req.body;

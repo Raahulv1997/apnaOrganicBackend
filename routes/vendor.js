@@ -27,15 +27,11 @@ function vendors(req,res){
         var slink1= JSON.parse(slink)
         delete rows[0].social_media_links;
         Object.assign(rows[0],{"social_media_links":slink1})
-        //console.log(JSON.parse())
         res.status(200).send(rows)
       }
     }) 
   }
   }
-
-
-
 var signup_condition=false;
 var otp_verify_condition=false;
 
@@ -59,7 +55,7 @@ function vendor_signup(req, res) {
             console.log("send________otp")
   
             function generateOTP() {
-              var digits = '0123456789';
+              var digits = '123456789';
               var OTP = '';
               for (let o = 0; o < 6; o++ ) {
                   OTP += digits[Math.floor(Math.random() * 10)];
@@ -112,6 +108,7 @@ function vendor_signup(req, res) {
 
   async function vendor_otp_verify(req,res){
     console.log(req.body)
+    var respo =''
       var email_otp = req.body.email
       var password_ = req.body.password
       var otp_ver = req.body.otp
@@ -143,17 +140,61 @@ function vendor_signup(req, res) {
                     }else{
                       console.log("_____")
                       if(rows!=''){
-                        connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
-                          if(err){
-                            console.log("error"+err)
-                            res.status(200).send(err)
-                          }else{
-                            rows.affectedRows=='1'?console.log({"message":"successfully delete "}):console.log({"message":"invalid input data"})
-      
+                        respo =  rows
+                        console.log("+++++++++++++++++++")
+                        console.log(rows)
+//_____________________________________________________________
+                        connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+rows.insertId+'","admin","vendor requested for approve","unread") , ("'+rows.insertId+'","vendor","please register your information in profile","unread")', (err, rows) => {
+                          if (err) {
+                            console.log({ "notification": err })
+                          } else {
+                            console.log("_______notification-send-admin__________")
                           }
                         })
-                        res.status(202).send(rows)
-                        signup_condition=false;
+                          connection.query('SELECT * FROM `email_template` WHERE  `email_type` = "Shipped"', (err, rows) => {
+                          if (err) {
+                            console.log({ "error": err })
+                          } else {
+                            if(rows!=''){
+
+                            console.log(rows[0].email_text)
+                            var html_data = rows[0].email_text;
+                            const mail_configs = {
+                              from: 'ashish.we2code@gmail.com',
+                              to: email_otp,
+                              subject: 'Apna Organic Store',
+                              text: "your reg. request pending wait for approove",
+                              html: html_data
+                            }
+                            nodemailer.createTransport({
+                              service: 'gmail',
+                              auth: {
+                                user: 'ashish.we2code@gmail.com',
+                                pass: 'nczaguozpagczmjv'
+                              }
+                            })
+                              .sendMail(mail_configs, (err) => {
+                                if (err) {
+                                  return console.log({ "email_error": err });
+                                } else {
+                                  connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
+                                    if(err){
+                                      console.log("error"+err)
+                                      res.status(200).send(err)
+                                    }else{
+                                      rows.affectedRows=='1'?console.log({"message":"successfully delete "}):console.log({"message":"invalid input data"})
+                
+                                    }
+                                  })     
+                                  signup_condition=false                            
+                                  return res.status(202).send(respo);
+                                }
+                              })
+                            }else{
+                              res.send({"message":"status not define"})
+                            }
+                          }
+                        })
                       }
 
                     }
@@ -334,6 +375,13 @@ function vendor_register(req,res){
                   if (err) {
                     return console.log({ "email_error": err });
                   } else {
+                      connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+rows.insertId+'","admin","vendor requested for approve","unread") , ("'+rows.insertId+'","vendor","please register your information in profile","unread")', (err, rows) => {
+                      if (err) {
+                        console.log({ "notification": err })
+                      } else {
+                        console.log("_______notification-send-admin_vendor__________")
+                      }
+                    })
                     return res.status(200).send({ "message": "Sent mail to super_admin Succesfully", "message_for_vendor":"sent your request to admin" });
                   }
                 })
@@ -489,6 +537,14 @@ function vendor_status_change(req,res){
                     if (err) {
                       return console.log({ "email_error": err });
                     } else {
+
+                      connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+id+'","vendor","'+status_change+'","unread")', (err, rows) => {
+                        if (err) {
+                          console.log({ "notification": err })
+                        } else {
+                          console.log("_______notification-send-admin__________")
+                        }
+                      })
                       return res.status(200).send({ "email_message": "status mail sent to user succesfully", "status_message": "vendor status change succesfully " });
                     }
                   })

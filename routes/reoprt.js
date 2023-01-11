@@ -582,59 +582,59 @@ function categories_report(req,res){
   }
 
 function stock_report(req,res){
-  var {values}=req.body;
-  console.log(values)
+ var {values}=req.body;
+ console.log(values)
 
-  if (values != "") {
-    if (values == "out of stock") {
-      console.log("out of stock")
-      var stock_value = 'SELECT `product_title_name`,`product_status`,`quantity` FROM `products_view` WHERE quantity < 1 '
-    }
-    if (values == "low stock") {
-      console.log("low stock")
-      var stock_value = 'SELECT `product_title_name`,`product_status`,`quantity` FROM `products_view` WHERE quantity < 5 AND quantity > 1'
+ if (values != "") {
+ if (values == "out of stock") {
+ console.log("out of stock")
+ var stock_value = 'SELECT `product_title_name`,`product_status`,`quantity` FROM `products_view` WHERE quantity < 1 '
+ }
+ if (values == "low stock") {
+ console.log("low stock")
+ var stock_value = 'SELECT `product_title_name`,`product_status`,`quantity` FROM `products_view` WHERE quantity < 5 AND quantity > 1'
 
-    }
-    if (values == "in stock") {
-      console.log("in stock")
-      stock_value = 'SELECT `product_title_name`,`product_status`,`quantity` FROM `products_view` WHERE quantity >= 1'
-    }
-  }
-  else {
-    var stock_value = 'SELECT `product_title_name`,`product_status`,`quantity` FROM `products_view` WHERE 1'
-  }
-  connection.query('' + stock_value + '', (err, rows, fields) => {
-    if (err) {
-      console.log(err)
-      res.status(200).send(err)
-    } else {
-      if (err) {
-        console.log(err)
-        res.status(200).send(err)
-      } else {
-        if (rows != '') {
-          console.log("_____")
-          res.status(200).send(rows)
-        } else {
-          res.status(200).send({ message: "No_Data" })
-          console.log('stock_report_error')
-        }
-      }
-    }
-  })
+ }
+ if (values == "in stock") {
+ console.log("in stock")
+ stock_value = 'SELECT `product_title_name`,`product_status`,`quantity` FROM `products_view` WHERE quantity >= 1'
+ }
+ }
+ else {
+ var stock_value = 'SELECT `product_title_name`,`product_status`,`quantity` FROM `products_view` WHERE 1'
+ }
+ connection.query('' + stock_value + '', (err, rows, fields) => {
+ if (err) {
+ console.log(err)
+ res.status(200).send(err)
+ } else {
+ if (err) {
+ console.log(err)
+ res.status(200).send(err)
+ } else {
+ if (rows != '') {
+ console.log("_____")
+ res.status(200).send(rows)
+ } else {
+ res.status(200).send({ message: "No_Data" })
+ console.log('stock_report_error')
+ }
+ }
+ }
+ })
 }
 
 function customers_report(req, res) {
-  console.log(req.body)
-  var { user_search } = req.body;
-  connection.query('SELECT first_name,last_name,`user_id`,`email`,`address`,(SELECT COUNT(`id`) FROM orders WHERE users.user_id=orders.user_id) order_count,(SELECT SUM(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) total_amount,(SELECT AVG(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) avg_value,`created_on` FROM `users` WHERE `first_name` LIKE "%' + user_search + '%" OR `email` LIKE "%' + user_search + '%"', (err, rows, fields) => {
-    if (err) {
-      console.log(err)
-      res.status(200).send(err)
-    } else {
-      rows != '' ? res.send(rows) : res.status(200).send({ message: "No_Data" })
-    }
-  })
+ console.log(req.body)
+ var { user_search } = req.body;
+ connection.query('SELECT first_name,last_name,`user_id`,`email`,`address`,(SELECT COUNT(`id`) FROM orders WHERE users.user_id=orders.user_id) order_count,(SELECT SUM(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) total_amount,(SELECT AVG(`total_amount`) FROM orders WHERE users.user_id=orders.user_id) avg_value,`created_on` FROM `users` WHERE `first_name` LIKE "%' + user_search + '%" OR `email` LIKE "%' + user_search + '%"', (err, rows, fields) => {
+ if (err) {
+ console.log(err)
+ res.status(200).send(err)
+ } else {
+ rows != '' ? res.send(rows) : res.status(200).send({ message: "No_Data" })
+ }
+ })
 }
 
 function taxes_report(req, res) {
