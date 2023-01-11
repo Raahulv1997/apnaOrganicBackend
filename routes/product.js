@@ -10,11 +10,14 @@ function products_search(req, res) {
   var srch = catobj.search;
   var price_to=catobj.price_to;
   var price_from=catobj.price_from;
-  console.log(price_to)
-  console.log(price_from)
+  var id = catobj.id;
+  var product_title_name = catobj.product_title_name;
+  var sale_price = catobj.sale_price;
+ // console.log(price_to)
+  //console.log(price_from)
   var pg = req.query
-  console.log(pg)
-  console.log(srch)
+  //console.log(pg)
+  //console.log(srch)
   var newstr = 'SELECT * from products_view WHERE '
   if (srch != '') {
     //console.log("trueeeee")
@@ -33,11 +36,23 @@ function products_search(req, res) {
     }
 
   }
+
+
+  
+ //+++++++++++++++++++shorting++++++++++++++++++++++ 
+  var ase_desc = 'id DESC'
+if(id !=''){ase_desc = 'id '+id }
+if(product_title_name !=''){ase_desc = 'product_title_name '+product_title_name  }
+if(sale_price !=''){ase_desc = 'sale_price '+sale_price  }
+console.log("+++++++++++++++++++shorting++++++++++++++++++++++ ")
+console.log(ase_desc)
+
+
   console.log(newstr)
   var onjkayarrry = Object.keys(catobj)
   var onjvaluarrry = Object.values(catobj)
 
-  for (var i = 3; i <= onjkayarrry.length - 1; i++) {
+  for (var i = 6; i <= onjkayarrry.length - 1; i++) {
 
     if (onjvaluarrry[i] != '') {
       condition_flag = false;
@@ -49,19 +64,19 @@ function products_search(req, res) {
         console.log(onjvaluarrry[i])
         var arr = JSON.stringify(onjvaluarrry[i]);
         var abc="'"+arr+"'"
-        console.log(abc)
-        console.log(typeof abc)
+        //console.log(abc)
+        //console.log(typeof abc)
         const id = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
-        console.log("__"+id+"__")
+       // console.log("__"+id+"__")
         newstr += ' ' + onjkayarrry[i] + ' IN ' + '(' + id + ')'
       } else {
-        console.log(onjvaluarrry[i])
+       // console.log(onjvaluarrry[i])
         var arr = JSON.stringify(onjvaluarrry[i]);
         var abc="'"+arr+"'"
-        console.log(abc)
-        console.log(typeof abc)
+        //console.log(abc)
+        //console.log(typeof abc)
         const id = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
-        console.log("__"+id+"__")
+       // console.log("__"+id+"__")
         newstr += ' ' + onjkayarrry[i] + ' IN ' + '(' + id + ')' + '___'
       }
     } 
@@ -71,8 +86,8 @@ function products_search(req, res) {
 
     // console.log("_______________ressend-1_______________")
 
-    var newqry = 'SELECT * FROM `products_view` WHERE `product_title_name` LIKE "%' + srch + '%" OR `product_description` LIKE "%' + srch + '%" OR `product_type` LIKE "%' + srch + '%" OR `colors` LIKE "%' + srch + '%" ' + ' ' + '  ORDER BY id DESC  LIMIT'
-    console.log(newqry)
+    var newqry = 'SELECT * FROM `products_view` WHERE `product_title_name` LIKE "%' + srch + '%" OR `product_description` LIKE "%' + srch + '%" OR `product_type` LIKE "%' + srch + '%" OR `colors` LIKE "%' + srch + '%" ' + ' ' + '  ORDER BY '+ase_desc+'  LIMIT'
+  //  console.log(newqry)
     var numRows;
     var queryPagination;
     var numPerPage = pg.per_page
@@ -84,7 +99,7 @@ function products_search(req, res) {
 
     connection.query('SELECT count(*) as numRows FROM products_view', (err, results) => {
       if (err) {
-        console.log("error:" + err)
+       // console.log("error:" + err)
         console.log(err)
         //return err
       } else {
@@ -92,9 +107,11 @@ function products_search(req, res) {
         numPages = Math.ceil(numRows / numPerPage);
         //console.log('number of pages:', numPages);
         //console.log(''+newqry+' '+limit+'')
+        console.log('++++++++++++++++++++++++++++++++++++++++++++query____1_+++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+        console.log(''+newqry+' '+limit+'')
         connection.query('' + newqry + ' ' + limit + '', (err, results) => {
           if (err) {
-            console.log(err)
+          //  console.log(err)
             res.status(502).send(err)
           } else {
             // console.log("_____")
@@ -158,8 +175,8 @@ function products_search(req, res) {
       } else {
         numRows = results[0].numRows;
         numPages = Math.ceil(numRows / numPerPage);
-        // console.log('number of pages:', numPages);
-        //console.log(''+newqry+' '+limit+'')
+        console.log('++++++++++++++++++++++++++++++++++++++++++++query__2_+++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+        console.log(''+newqry+' '+limit+'')
         connection.query('' + newqry + ' ' + limit + '', (err, results) => {
           if (err) {
             console.log(err)
@@ -196,7 +213,7 @@ function productpost(req, res) {
   console.log("---post---product--")
   var postdata = req.body
   var product_catagory = postdata[0].price
-  var base64_type=postdata[0].product_images
+ // var base64_type=postdata[0].product_images
   console.log(postdata)
   console.log(product_catagory)
 

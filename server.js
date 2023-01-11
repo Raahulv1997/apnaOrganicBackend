@@ -33,6 +33,8 @@ const {add_blog,blogs,update_blog,update_blog_status,delete_blog} = require("./r
 const {publish_blog} = require("./routes/cron_.js")
 const {add_banner,update_banner,banner_list,banner_delete,cahange_banner_status} = require("./routes/banner.js")
 const {add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status,email_template_get} = require("./routes/email_template")
+const {add_fetured_product,update_fetured_product,get_singal_fetured_product}=require("./routes/fetured_product.js")
+
 
 //__________+++___________testing______________+++_______________
 const {multer_image} = require("./routes/testxl.js")
@@ -254,6 +256,13 @@ app.post("/email_template_list",email_template_list)
 app.post("/email_template_remove",email_template_remove)
 app.put("/email_template_status",email_template_status)
 app.get("/email_template_get",email_template_get)
+//___________________fetured_product____________________
+app.post("/add_fetured_product",add_fetured_product)
+app.put("/update_fetured_product",update_fetured_product)
+app.get("/get_singal_fetured_product",get_singal_fetured_product)
+
+
+
 
 //___________________invalid_url_error_______________
 app.get("*", function(req, res){
