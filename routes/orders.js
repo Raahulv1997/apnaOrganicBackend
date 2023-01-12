@@ -5,9 +5,11 @@ var max_invoice_no1 = 0
 
 
 async function orders(req, res) {
+var  order_srting_mail=""
   var user_e_address='';
   var user_name ='';
   var address='';
+  var phone_no='';
   var order_count = 0;
   var percentage;
   var { user_id, status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon, shipping_charges, discount_coupon_value } = req.body
@@ -21,6 +23,7 @@ async function orders(req, res) {
        user_e_address = rslt[0].email;
        user_name = rslt[0].first_name;
        address = rslt[0].address;
+       phone_no = rslt[0].phone_no;
       console.log(user_e_address+""+address)
     if(address!=''){
       var orderno = Math.floor(100000 + Math.random() * 900000)
@@ -60,7 +63,15 @@ async function orders(req, res) {
                   console.log({ "error_4": err })
                 } else {
                   if (rslt != '') {
-                    order_count++
+                    order_count++ 
+                     order_srting_mail +=`<div style='display: flex;'>
+                    <div style='padding-right: 6px; display: flex; align-items: center;'><img src='${item.all_images}' width='70' height='52' /></div>
+                    <div style='width: 100%;'>
+                        <div style='display: flex; justify-content: space-between;'><strong style='display: flex;'> ${item.product_title_name}</strong><strong>Rs. ${item.sale_price}</strong></div>        
+                        Delivery by ${delivery_date}<br />   
+                        Qty: ${item.quantity}
+                    </div>
+                </div>`
                   }
                 }
               })
@@ -72,11 +83,19 @@ async function orders(req, res) {
                           console.log({ "error": err })
                         } else {
                           if(rows!=''){
+                            console.log("+++++++++++++++++++++++++order_srting_mail++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                            // console.log(order_srting_mail)
                             // console.log(rows[0].email_text)
                             var html_data = rows[0].email_text;
-                            html_data_replace = html_data.replace('{user_name}', user_name)
-                            html_data_replace = html_data_replace.replace('{user_date}', order_date)
+                            html_data_replace = html_data.replaceAll('{user_name}', user_name)
+                            html_data_replace = html_data_replace.replace('{order_date}', order_date)
                             html_data_replace = html_data_replace.replace('{order_id}', orderno)
+                            html_data_replace = html_data_replace.replaceAll('{total_amount}', total_amount)
+                            html_data_replace = html_data_replace.replace('{delivery_date}', delivery_date)
+                            html_data_replace = html_data_replace.replaceAll('{address}', address)
+                            html_data_replace = html_data_replace.replace('{contact_no}', phone_no)
+                            html_data_replace = html_data_replace.replace('{order_list}', order_srting_mail)
+
                             console.log(html_data_replace)
                             const mail_configs = {
                               from: 'ashish.we2code@gmail.com',
