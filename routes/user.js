@@ -234,8 +234,7 @@ console.log(ase_desc)
  console.log(price_from)
  console.log( catobj)
 var pg = req.query
-console.log(pg)
-console.log(srch)
+
 var newstr = 'SELECT * from products_view WHERE is_delete = "1" AND ' 
 if(srch != ''){
 console.log("trueeeee")
