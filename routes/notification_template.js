@@ -83,5 +83,46 @@ connection.query('SELECT * FROM `notification_template` WHERE 1 ',(err,rows,fiel
 }      
 }
 
+function notification_template_remove(req,res){
 
-module.exports = {add_notification_template ,update_notification_template,notification_template_list}
+  console.log(req.body)
+  var {is_deleted,id}=req.body
+  if(is_deleted == '0'){
+      connection.query('UPDATE `notification_template` SET `is_deleted`="'+is_deleted+'" WHERE `id`='+id+'', (err, rows, fields) => {
+          if (err) {
+            res.status(200).send(err)
+          } else {
+            rows.affectedRows == '1' ? res.status(200).send({ "message": "Deleted_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+          }
+        })
+  }else{
+      res.status(200).send({ "message": "invalid is_deleted data" })
+  } 
+}
+
+function notification_template_status(req,res){
+console.log(req.body)
+var {status,id}=req.body
+connection.query('UPDATE `notification_template` SET `status`="'+status+'" WHERE `id`='+id+'', (err, rows, fields) => {
+if (err) {
+  res.status(200).send(err)
+} else {
+  rows.affectedRows == '1' ? res.status(200).send({ "message": "status_update_successfully" }) : res.status(200).send({ "message": "invalid_id" })
+}
+})
+}
+function notification_template_get(req,res){
+console.log(req.query.id)
+connection.query('SELECT * FROM notification_template WHERE id ='+req.query.id+' ',(err,rows,fields)=>{
+if(err){
+  console.log("/notification_template_error"+err)
+  res.status(200).send(err)
+}else{
+  //console.log("_____")
+  res.status(200).send(rows)
+}
+})
+}
+
+
+module.exports = {add_notification_template ,update_notification_template,notification_template_list,notification_template_remove,notification_template_status,notification_template_get}
