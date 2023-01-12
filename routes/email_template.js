@@ -1,12 +1,11 @@
 const connection = require('../db')
 const jsStringEscape = require('js-string-escape')
 
-
 function add_email_template(req,res){
   console.log("add_email_template_____________")
     console.log(req.body)
      var {type,email_type,email_name,email_text,text_msg,test_email,status}=req.body;
-    //  var email_text=jsStringEscape(email_text)
+     var email_text=jsStringEscape(email_text)
 
     connection.query('INSERT INTO `email_template`(`type`, `email_type`, `email_name`, `email_text`, `text_msg`, `test_email`, `status`) VALUES ("'+type+'","'+email_type+'","'+email_name+'","'+email_text+'","'+text_msg+'","'+test_email+'","'+status+'")',(err,results)=>{
         if(err){

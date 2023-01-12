@@ -33,6 +33,7 @@ const {add_blog,blogs,update_blog,update_blog_status,delete_blog} = require("./r
 const {publish_blog} = require("./routes/cron_.js")
 const {add_banner,update_banner,banner_list,banner_delete,cahange_banner_status} = require("./routes/banner.js")
 const {add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status,email_template_get} = require("./routes/email_template")
+const {add_notification_template ,update_notification_template,notification_template_list,notification_template_remove,notification_template_status,notification_template_get} = require("./routes/notification_template")
 const {add_fetured_product,update_fetured_product,get_singal_fetured_product}=require("./routes/fetured_product.js")
 
 
@@ -253,13 +254,24 @@ app.put("/cahange_banner_status",cahange_banner_status)
 app.post("/add_email_template",add_email_template)
 app.put("/update_email_template",update_email_template)
 app.post("/email_template_list",email_template_list)
-app.post("/email_template_remove",email_template_remove)
+app.put("/email_template_remove",email_template_remove)
 app.put("/email_template_status",email_template_status)
 app.get("/email_template_get",email_template_get)
 //___________________fetured_product____________________
 app.post("/add_fetured_product",add_fetured_product)
 app.put("/update_fetured_product",update_fetured_product)
 app.get("/get_singal_fetured_product",get_singal_fetured_product)
+
+
+
+//_____________notification_template_______________
+app.post("/add_notification_template",add_notification_template)
+app.put("/update_notification_template",update_notification_template)
+app.post("/notification_template_list",notification_template_list)
+app.put("/notification_template_remove",notification_template_remove)
+app.put("/notification_template_status",notification_template_status)
+app.get("/notification_template_get",notification_template_get)
+
 
 
 

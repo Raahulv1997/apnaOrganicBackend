@@ -230,9 +230,13 @@ console.log(ase_desc)
  var sale_price = catobj.sale_price;
  var short_by_updated_on = catobj.short_by_updated_on;
  
- console.log(price_to)
- console.log(price_from)
- console.log( catobj)
+ var ase_desc = 'id DESC'
+ if(id !=''){ase_desc = 'id '+id }
+ if(product_title_name !=''){ase_desc = 'product_title_name '+product_title_name  }
+ if(sale_price !=''){ase_desc = 'sale_price '+sale_price  }
+ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
+ console.log("+++++++++++++++++++shorting++++++++++++++++++++++ ")
+ console.log(ase_desc)
 var pg = req.query
 
 var newstr = 'SELECT * from products_view WHERE is_delete = "1" AND ' 
