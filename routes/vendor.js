@@ -375,7 +375,7 @@ function vendor_register(req,res){
                   if (err) {
                     return console.log({ "email_error": err });
                   } else {
-                      connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+rows.insertId+'","admin","vendor requested for approve","unread") , ("'+rows.insertId+'","vendor","please register your information in profile","unread")', (err, rows) => {
+                      connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+rows.insertId+'","admin","vendor requested for approve","unread") , ("'+rows.insertId+'","vendor","please wait for approve profile","unread")', (err, rows) => {
                       if (err) {
                         console.log({ "notification": err })
                       } else {
@@ -507,6 +507,7 @@ function vendor_status_change(req,res){
       if(rows.affectedRows=='1'){
         //res.send(rows)
         console.log("succesfully updated vendor status")
+        
         connection.query('SELECT `email` FROM vendor WHERE `id`='+id+'', (err, rslt) => {
           if (err) {
             console.log({ "error": err })
@@ -648,7 +649,7 @@ function vendor_forgot_password(req,res){
           // console.log({"message":"User Already Exist. Please Login"});
           //res.status(200).send(false)
           function generateOTP() {
-            var digits = '0123456789';
+            var digits = '123456789';
             OTP = '';
             for (let o = 0; o < 6; o++ ) {
                 OTP += digits[Math.floor(Math.random() * 10)];

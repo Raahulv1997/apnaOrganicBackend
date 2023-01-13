@@ -10,7 +10,7 @@ function products_search(req, res) {
   var srch = catobj.search;
   var price_to=catobj.price_to;
   var price_from=catobj.price_from;
-  var id = catobj.id;
+  var id = catobj.latest_first;
   var product_title_name = catobj.product_title_name;
   var sale_price = catobj.sale_price;
   var short_by_updated_on = catobj.short_by_updated_on;
