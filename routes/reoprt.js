@@ -70,13 +70,16 @@ console.log("+++++++++++++++++____________str_revenue______1___+++++++++++++++++
       console.log(err)
       res.status(200).send(err)
     } else {
-      console.log("_____+++++++++++++++++++")
-      console.log(result[0].gross_total_amount)
-      console.log(result[0].total_gst)
-      console.log(result[0].total_shipping_charges)
-      Object.assign(revenuearr[0], { "prev_gross_total_amount":result[0].gross_total_amount })
-      Object.assign(revenuearr[0], { "prev_total_gst": result[0].total_gst })
-      Object.assign(revenuearr[0], { "prev_total_shipping_charges": result[0].total_shipping_charges })
+      if(result!=''){
+        Object.assign(revenuearr[0], { "prev_gross_total_amount":result[0].gross_total_amount })
+        Object.assign(revenuearr[0], { "prev_total_gst": result[0].total_gst })
+        Object.assign(revenuearr[0], { "prev_total_shipping_charges": result[0].total_shipping_charges })
+      }else{
+        Object.assign(revenuearr[0], { "prev_gross_total_amount":0 })
+        Object.assign(revenuearr[0], { "prev_total_gst": 0 })
+        Object.assign(revenuearr[0], { "prev_total_shipping_charges": 0 })  
+      }
+
     }
   })
 
@@ -86,9 +89,14 @@ console.log("+++++++++++++++++____________str_revenue______1___+++++++++++++++++
       console.log(err)
       res.status(200).send(err)
     } else {
-      console.log("second_query__")
-      console.log("_____")
-      Object.assign(revenuearr[0], { "return_total": rslt[0].return_total })
+      if(rslt!=''){
+        console.log("second_query__")
+        console.log("_____")
+        Object.assign(revenuearr[0], { "return_total": rslt[0].return_total })
+      }else{
+        Object.assign(revenuearr[0], { "return_total": 0 })
+      }
+  
     }
   })
 
@@ -97,10 +105,13 @@ console.log("+++++++++++++++++____________str_revenue______1___+++++++++++++++++
       console.log(err)
       res.status(200).send(err)
     } else {
-      console.log("second_query__")
-      console.log(rslts)
-      Object.assign(revenuearr[0], { "prev_return_total": rslts[0].return_total })
-
+      if(rslts!=''){
+        console.log("second_query__")
+        console.log(rslts)
+        Object.assign(revenuearr[0], { "prev_return_total": rslts[0].return_total })
+      }else{
+        Object.assign(revenuearr[0], { "prev_return_total": 0 })
+      }
     }
   })
 
@@ -115,6 +126,8 @@ console.log("+++++++++++++++++____________str_revenue______1___+++++++++++++++++
         })
        // coupon_report_arr.push()
         Object.assign(revenuearr[0], { discount_amount })
+      }else{
+        Object.assign(revenuearr[0], { "discount_amount":0 })
       }
     }
   })
@@ -224,6 +237,8 @@ function orders_report(req, res) {
       if(rows != ''){
         console.log(order_report_arr[0])
         order_report_arr.push(rows)
+      }else{
+        order_report_arr.push({"prev_order_count":0,"prev_net_sales":0,"prev_avg_order_value":0,"prev_avg_item_per_order":0})
       }
     }
   })
@@ -318,7 +333,13 @@ function products_report(req, res) {
       console.log(err)
       //res.status(200).send(err)
     } else {
-      rows != '' ? products_report_arr.push(rows) : console.log('products_report_error')
+      // rows != '' ? products_report_arr.push(rows) : console.log('products_report_error')
+      if (rows != '') {
+        products_report_arr.push(rows) 
+      }else{
+        console.log("elsee")
+        products_report_arr.push({ "prev_order_count":0, "prev_net_sales":0,"prev_product_count":0 })
+      }
     }
   })
 
@@ -410,6 +431,8 @@ function coupons_report(req, res) {
           discount_amount += parseInt(item.count);
         })
         coupon_report_arr.push({ discount_amount, orders_count })
+      }else{
+        coupon_report_arr.push({ "discount_amount":0, "orders_count":0 })
       }
     }
   })
@@ -424,8 +447,14 @@ function coupons_report(req, res) {
           prev_orders_count = index + 1
           prev_discount_amount += parseInt(item.count);
         })
-        coupon_report_arr.push({ prev_discount_amount, prev_orders_count })
+        console.log(prev_discount_amount)
+        console.log(prev_orders_count)
+        coupon_report_arr.push({ prev_discount_amount, prev_orders_count })   
+      }else{
+        console.log("elsee")
+        coupon_report_arr.push({ "prev_discount_amount":0, "prev_orders_count":0 })
       }
+      
     }
   })
 
@@ -447,45 +476,6 @@ function coupons_report(req, res) {
 }
 
 
-// function categories_report(req,res){
-// console.log(req.body)
-// var cat_str = 'SELECT SUM(`sale_price`) total_sold_product_amount, COUNT(`id`) total_sold_product_count, COUNT(DISTINCT order_id) order_count FROM `orders_view` WHERE '
-// if(req.body.parent_category ==''){
-// cat_str +="(`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')"
-// }else{
-//   var cat_arr = JSON.stringify(req.body.parent_category);
-
-// var abc="'"+cat_arr+"'"
-// const cat_string = abc.substring(abc.lastIndexOf("'[") + 2, abc.indexOf("]'"));
-// console.log("cat_string__________________________________")
-// console.log(cat_string)
-// //FIND_IN_SET('1', all_parent)
-//   cat_str += " FIND_IN_SET ("+cat_string+",parent_category) AND (`created_on` BETWEEN '" + req.body.from_date + " 00:00:00' AND '" + req.body.to_date + " 23:59:59') AND (NOT `status` = 'return')"
-// }
-
-// console.log(cat_str)
-// connection.query(cat_str, (err, rows, fields) => {
-//   if (err) {
-//     console.log(err)
-//     res.status(200).send(err)
-//   } else {
-//     rows != '' ? res.status(200).send(rows) : res.status(200).send({ message: "No_Data" })
-//   }
-// })
-
-// // SELECT (SELECT (SELECT category.category_name FROM category WHERE products.category=category.id) FROM products WHERE orders_view.product_id = products.id) as cat_name,COUNT(product_id) as product_count,COUNT(DISTINCT order_id) as order_count,SUM(`sale_price`) as total_sales  FROM orders_view GROUP BY cat_name
-
-// connection.query('SELECT (SELECT (SELECT category.category_name FROM category WHERE products.category=category.id) FROM products WHERE orders_view.product_id = products.id) as cat_name,COUNT(product_id) as product_count,COUNT(DISTINCT order_id) as order_count,SUM(`sale_price`) as total_sales  FROM orders_view GROUP BY cat_name', (err, rows, fields) => {
-//   if (err) {
-//     console.log(err)
-//     res.status(200).send(err)
-//   } else {
-//     rows != '' ? res.status(200).send(rows) : res.status(200).send({ message: "No_Data" })
-//   }
-// })
-
-
-// }
 
 function categories_report(req,res){
   console.log(req.body);
@@ -559,6 +549,8 @@ function categories_report(req,res){
         console.log(rows)
         categories_arr.push(rows) 
         //  res.send(categories_arr)
+      }else{
+        categories_arr.push({"prev_total_sold_product_amount":0,"prev_total_sold_product_count":0,"prev_order_count":0})
       }
     }
   })
@@ -578,8 +570,8 @@ function categories_report(req,res){
       }
     }
   })
+}
 
-  }
 
 function stock_report(req,res){
  var {values}=req.body;
@@ -706,7 +698,11 @@ function taxes_report(req, res) {
       console.log(err)
       res.status(200).send(err)
     } else {
-      rows != '' ? taxes_report_arr.push(rows) : console.log('No Data')
+     if(rows != '') {
+      taxes_report_arr.push(rows)
+     } else{
+      taxes_report_arr.push({"prev_order_tax":0,"prev_order_count":0,})
+     }
     }
   })
 
