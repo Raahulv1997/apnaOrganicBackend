@@ -13,6 +13,7 @@ function products_search(req, res) {
   var id = catobj.id;
   var product_title_name = catobj.product_title_name;
   var sale_price = catobj.sale_price;
+  var short_by_updated_on = catobj.short_by_updated_on;
  // console.log(price_to)
   //console.log(price_from)
   var pg = req.query
@@ -44,6 +45,7 @@ function products_search(req, res) {
 if(id !=''){ase_desc = 'id '+id }
 if(product_title_name !=''){ase_desc = 'product_title_name '+product_title_name  }
 if(sale_price !=''){ase_desc = 'sale_price '+sale_price  }
+if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
 console.log("+++++++++++++++++++shorting++++++++++++++++++++++ ")
 console.log(ase_desc)
 
@@ -52,7 +54,7 @@ console.log(ase_desc)
   var onjkayarrry = Object.keys(catobj)
   var onjvaluarrry = Object.values(catobj)
 
-  for (var i = 6; i <= onjkayarrry.length - 1; i++) {
+  for (var i = 7; i <= onjkayarrry.length - 1; i++) {
 
     if (onjvaluarrry[i] != '') {
       condition_flag = false;
@@ -155,7 +157,7 @@ console.log(ase_desc)
 
     // console.log("_______________ressend-2_______________")
 
-    var newqry = qry + ' ' + ' ORDER BY id DESC LIMIT'
+    var newqry = qry + ' ' + ' ORDER BY '+ase_desc+' LIMIT'
     // console.log('newqry-------------------------------------------------')
     console.log(newqry)
     var numRows;

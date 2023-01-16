@@ -25,6 +25,10 @@ if(u_id!==''){
     var srch = catobj.search
     var price_to=catobj.price_to;
     var price_from=catobj.price_from;
+    var id = catobj.id;
+    var product_title_name = catobj.product_title_name;
+    var sale_price = catobj.sale_price;
+    var short_by_updated_on = catobj.short_by_updated_on;
     console.log(price_to)
     console.log(price_from)
   console.log( catobj)
@@ -50,10 +54,20 @@ if(u_id!==''){
     }
 
   }
+
+
+  var ase_desc = 'id DESC'
+if(id !=''){ase_desc = 'id '+id }
+if(product_title_name !=''){ase_desc = 'product_title_name '+product_title_name  }
+if(sale_price !=''){ase_desc = 'sale_price '+sale_price  }
+if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
+console.log("+++++++++++++++++++shorting++++++++++++++++++++++ ")
+console.log(ase_desc)
+
     var onjkayarrry =Object.keys(catobj)
     var onjvaluarrry =Object.values(catobj)
   
-    for(var i=3;i<=onjkayarrry.length-1;i++){
+    for(var i=7;i<=onjkayarrry.length-1;i++){
   
       if(onjvaluarrry[i]!=''){
          condition_flag = false;
@@ -78,7 +92,7 @@ if(u_id!==''){
   
       console.log("_______________ressend-1_______________")
   
-      var newqry = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist FROM products_view WHERE is_delete = "1" AND (`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" )'+' '+'LIMIT'
+      var newqry = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist FROM products_view WHERE is_delete = "1" AND (`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" )'+' '+ ' ORDER BY '+ase_desc+ ' LIMIT'
 
       var numRows;
       var queryPagination;
@@ -145,7 +159,7 @@ if(u_id!==''){
   
        console.log("_______________ressend-2_______________")
   
-       var newqry = qry+' AND is_delete = "1" '+' '+'LIMIT'
+       var newqry = qry+' AND is_delete = "1" '+' '+' ORDER BY '+ase_desc+ ' LIMIT'
        console.log('newqry-------------------------------------------------')
        console.log(newqry)
        var numRows;
@@ -211,12 +225,20 @@ if(u_id!==''){
  var srch = catobj.search
  var price_to=catobj.price_to;
  var price_from=catobj.price_from;
- console.log(price_to)
- console.log(price_from)
- console.log( catobj)
+ var id = catobj.id;
+ var product_title_name = catobj.product_title_name;
+ var sale_price = catobj.sale_price;
+ var short_by_updated_on = catobj.short_by_updated_on;
+ 
+ var ase_desc = 'id DESC'
+ if(id !=''){ase_desc = 'id '+id }
+ if(product_title_name !=''){ase_desc = 'product_title_name '+product_title_name  }
+ if(sale_price !=''){ase_desc = 'sale_price '+sale_price  }
+ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
+ console.log("+++++++++++++++++++shorting++++++++++++++++++++++ ")
+ console.log(ase_desc)
 var pg = req.query
-console.log(pg)
-console.log(srch)
+
 var newstr = 'SELECT * from products_view WHERE is_delete = "1" AND ' 
 if(srch != ''){
 console.log("trueeeee")
@@ -240,7 +262,7 @@ console.log(newstr)
  var onjkayarrry =Object.keys(catobj)
  var onjvaluarrry =Object.values(catobj)
 
- for(var i=3;i<=onjkayarrry.length-1;i++){
+ for(var i=7;i<=onjkayarrry.length-1;i++){
 
    if(onjvaluarrry[i]!=''){
       condition_flag = false;
@@ -273,7 +295,7 @@ console.log(newstr)
 
    console.log("_______________ressend-1_______________")
 
-   var newqry = 'SELECT * FROM `products_view` WHERE is_delete = "1" AND (`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" )'+' '+' LIMIT'
+   var newqry = 'SELECT * FROM `products_view` WHERE is_delete = "1" AND (`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" )'+' '+' ORDER BY '+ase_desc+ ' LIMIT'
    console.log(newqry)
    var numRows;
    var queryPagination;
@@ -336,7 +358,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
 }
     console.log("_______________ressend-2_______________")
 
-    var newqry = qry+' AND is_delete = "1" '+' '+'LIMIT'
+    var newqry = qry+' AND is_delete = "1" '+' '+' ORDER BY '+ase_desc+ ' LIMIT'
     console.log('newqry-------------------------------------------------')
     console.log(newqry)
     var numRows;
