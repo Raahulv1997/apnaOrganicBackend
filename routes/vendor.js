@@ -512,46 +512,60 @@ function vendor_status_change(req,res){
           if (err) {
             console.log({ "error": err })
           } else {
-            var user_e_address = rslt[0].email
-            console.log(user_e_address)
-            connection.query('SELECT * FROM `email_template` WHERE `email_type` = "'+status_change+'"', (err, rows) => {
-              if (err) {
-                console.log({ "error": err })
-              } else {
-                if(rows)
-                var html_data = rows[0].email_text;
-                const mail_configs = {
-                  from: 'ashish.we2code@gmail.com',
-                  to: user_e_address,
-                  subject: 'Apna Organic Store',
-                  text: "apna organic",
-                  html: html_data
-                }
-                nodemailer.createTransport({
-                  service: 'gmail',
-                  auth: {
-                    user: 'ashish.we2code@gmail.com',
-                    pass: 'nczaguozpagczmjv'
+            if(rslt!=''){
+              var user_e_address = rslt[0].email;
+              console.log(user_e_address)
+              connection.query('SELECT  `notification_text` FROM `notification_template` WHERE  `type`="vendor" AND `notification_type`="'+status_change+'" ', (err, rows) => {
+                if (err) {
+                  console.log({ "notification": err })
+                } else {
+                  if(rows!=''){
+                    console.log(rows[0].notification_text);
+                    connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+id+'","vendor","'+rows[0].notification_text+'","unread")', (err, rows) => {
+                      if (err) {
+                        console.log({ "notification": err })
+                      } else {
+                        console.log("_______notification-send-admin__________")
+                      }
+                    })
                   }
-                })
-                  .sendMail(mail_configs, (err) => {
-                    if (err) {
-                      return console.log({ "email_error": err });
-                    } else {
 
-                      connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+id+'","vendor","'+status_change+'","unread")', (err, rows) => {
+                }
+              })
+              connection.query('SELECT * FROM `email_template` WHERE `email_type` = "'+status_change+'"', (err, rows) => {
+                if (err) {
+                  console.log({ "error": err })
+                } else {
+                  if(rows!=''){
+                    var html_data = rows[0].email_text;
+                    const mail_configs = {
+                      from: 'ashish.we2code@gmail.com',
+                      to: user_e_address,
+                      subject: 'Apna Organic Store',
+                      text: "apna organic",
+                      html: html_data
+                    }
+                    nodemailer.createTransport({
+                      service: 'gmail',
+                      auth: {
+                        user: 'ashish.we2code@gmail.com',
+                        pass: 'nczaguozpagczmjv'
+                      }
+                    })
+                      .sendMail(mail_configs, (err) => {
                         if (err) {
-                          console.log({ "notification": err })
+                          return console.log({ "email_error": err });
                         } else {
-                          console.log("_______notification-send-admin__________")
+                          return res.status(200).send({ "email_message": "status mail sent to user succesfully", "status_message": "vendor status change succesfully " });
                         }
                       })
-                      return res.status(200).send({ "email_message": "status mail sent to user succesfully", "status_message": "vendor status change succesfully " });
-                    }
-                  })
-              }
-            })
-          }
+                  }
+   
+                }
+              })
+            }
+            }
+
         })
       }else{
         console.log("not update vendor status")
@@ -560,6 +574,8 @@ function vendor_status_change(req,res){
     }
   })
 }
+
+
 function content_manager(req,res){
   console.log(req.body)
   var {vendor_id,show_product_rating}=req.body

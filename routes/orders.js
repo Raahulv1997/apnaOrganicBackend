@@ -96,7 +96,6 @@ var  order_srting_mail=""
 
                     }
                   })
-                 
 
                       connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "order"', (err, rows) => {
                         if (err) {
@@ -272,6 +271,7 @@ function orders_list(req, res) {
 }
 
 function order_status_change(req, res) {
+  var order_srting_mail="";
  var {user_id,id,status_change}=req.body
 //____________________________________________________________________________1
   //console.log(req.body.id)
@@ -283,14 +283,19 @@ function order_status_change(req, res) {
       console.log(rows.affectedRows)
       if (rows.affectedRows=='1') {
         //res.status(200).send(rows)
-
 //____________________________________________________________________________2
-        connection.query('SELECT `email` FROM users WHERE `user_id`=' + user_id + '', (err, rslt) => {
+        connection.query('SELECT * FROM users WHERE `user_id`=' + user_id + '', (err, rslt) => {
           if (err) {
             console.log({ "error": err })
           } else {
-            var user_e_address = rslt[0].email
-
+            // console.log(rslt)
+            var user_e_address = rslt[0].email;
+            var first_name = rslt[0].first_name;
+            var last_name = rslt[0].last_name;
+            var full_user_name = first_name+" "+last_name
+            var address=rslt[0].address;
+            var  phone_no = rslt[0].phone_no;
+            // SELECT * FROM `orders_view` WHERE 1
             connection.query('SELECT * FROM `notification_template` WHERE `notification_type` = "order_return"', (err, rows) => {
               if (err) {
                 console.log({ "notification": err })
@@ -310,45 +315,102 @@ function order_status_change(req, res) {
 
               }
             })
-              connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "'+status_change+'"', (err, rows) => {
+
+
+            connection.query('SELECT * FROM `orders` WHERE id="'+id+'" AND  `user_id`="' + user_id + '" ', (err, rslt) => {
               if (err) {
                 console.log({ "error": err })
               } else {
-                if(rows!=''){
-                  var html_data = rows[0].email_text;
-                const mail_configs = {
-                  from: 'ashish.we2code@gmail.com',
-                  to: user_e_address,
-                  subject: 'Apna Organic Store',
-                  text: "apna organic",
-                  html: html_data
+                if(rslt!=''){
+                  var payment_mode=rslt[0].payment_mode
+                  var shipping_charges=rslt[0].shipping_charges
+                  var order_date=rslt[0].order_date
+                  var total_amount=rslt[0].total_amount
+                  var delivery_date=rslt[0].delivery_date
+                  var payment_mode=rslt[0].payment_mode
+                 connection.query('SELECT * FROM `orders_view` WHERE order_id="'+id+'" AND  `user_id`="' + user_id + '" ', (err, rslt) => {
+                   if (err) {
+                     console.log({ "error": err })
+                   } else {
+                     if(rslt!=''){
+                      //  console.log(rslt)
+                      //  console.log(rslt)
+                       var iterations = rslt.length ;
+                       for(item of rslt){
+                        // console.log(item)
+                        order_srting_mail +=`<div style='display: flex;'>
+                    <div style='padding-right: 6px; display: flex; align-items: center;'><img src='${item.all_images}' width='70' height='52' /></div>
+                    <div style='width: 100%;'>
+                        <div style='display: flex; justify-content: space-between;'><strong style='display: flex;'> ${item.product_title_name}</strong><strong>Rs. ${item.sale_price}</strong></div>        
+                        Delivery by ${delivery_date}<br />   
+                        Qty: ${item.quantity}
+                    </div>
+                </div>`
+                       }
+                       console.log(!--iterations)
+                       if (!--iterations) {
+                        console.log("order_srting_mail")
+                        // console.log(order_srting_mail)
+
+                        connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "'+status_change+'"', (err, rows) => {
+                          if (err) {
+                            console.log({ "error": err })
+                          } else {
+                            if(rows!=''){
+                              var html_data = rows[0].email_text;
+                              data_replace = html_data.replaceAll('{user_name}', full_user_name)
+                              data_replace = data_replace.replace('{order_date}', order_date)
+                              data_replace = data_replace.replace('{order_id}', id)
+                              data_replace = data_replace.replaceAll('{total_amount}', total_amount)
+                              data_replace = data_replace.replace('{delivery_date}', delivery_date)
+                              data_replace = data_replace.replaceAll('{address}', address)
+                              data_replace = data_replace.replace('{contact_no}', phone_no)
+                              data_replace = data_replace.replace('{order_list}', order_srting_mail)
+                              data_replace = data_replace.replace('{payment_mode}', payment_mode)
+                              data_replace = data_replace.replace('{status}', status_change)
+                              
+                              console.log(data_replace)
+
+                            const mail_configs = {
+                              from: 'ashish.we2code@gmail.com',
+                              to: user_e_address,
+                              subject: 'Apna Organic Store',
+                              text: "apna organic",
+                              html: data_replace
+                            }
+                            nodemailer.createTransport({
+                              service: 'gmail',
+                              auth: {
+                                user: 'ashish.we2code@gmail.com',
+                                pass: 'nczaguozpagczmjv'
+                              }
+                            })
+                              .sendMail(mail_configs, (err) => {
+                                if (err) {
+                                  return console.log({ "email_error": err });
+                                } else {
+                                  return res.status(200).send({ "email_message": "status mail sent to user succesfully", "status_message": "change order status succesfully " });
+                                }
+                              })
+                          }
+                          else{
+                            console.log("email not send")
+                            res.status(200).send({ "email_message": "status mail not sent to user", "status_message": "change order status succesfully " });
+                          }
+                        }
+                        })
+                       }
+                     }
+                   }
+                 })
                 }
-                nodemailer.createTransport({
-                  service: 'gmail',
-                  auth: {
-                    user: 'ashish.we2code@gmail.com',
-                    pass: 'nczaguozpagczmjv'
-                  }
-                })
-                  .sendMail(mail_configs, (err) => {
-                    if (err) {
-                      return console.log({ "email_error": err });
-                    } else {
-                      return res.status(200).send({ "email_message": "status mail sent to user succesfully", "status_message": "change order status succesfully " });
-                    }
-                  })
-                }else{
-                  res.send("not match status on email_template")
-                }
-                
               }
             })
+
           }
         })
       } else {
-        console.log("Not Update Order Status")
-
-       
+        console.log("Not Update Order Status")  
       }
     }
   })
@@ -370,7 +432,3 @@ function users_orders(req, res) {
 
 
 module.exports = { orders, order_deteils, orders_list, order_status_change, users_orders }
-
-
-
-
