@@ -77,6 +77,26 @@ var  order_srting_mail=""
               })
               if (!--iterations) {
                 setTimeout(() => {
+                  connection.query('SELECT * FROM `notification_template` WHERE `notification_type` = "order_return"', (err, rows) => {
+                    if (err) {
+                      console.log({ "notification": err })
+                    } else {
+                      console.log("_______notification-send__________")
+                      if(rows!=''){
+                        connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+user_id+'","user","successfully placed order, total order- '+order_count+'","unread") , ("'+vendor_id+'","vendor","recived '+order_count+' new order","unread")', (err, rows) => {
+                          if (err) {
+                            console.log({ "notification": err })
+                          } else {
+                            console.log("_______notification-send-__________")
+                          }
+                        })
+                      }else{
+                        res.send({"message":"notification template not available"})
+                      }
+
+                    }
+                  })
+                 
 
                       connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "order"', (err, rows) => {
                         if (err) {
@@ -263,17 +283,39 @@ function order_status_change(req, res) {
       console.log(rows.affectedRows)
       if (rows.affectedRows=='1') {
         //res.status(200).send(rows)
+
 //____________________________________________________________________________2
         connection.query('SELECT `email` FROM users WHERE `user_id`=' + user_id + '', (err, rslt) => {
           if (err) {
             console.log({ "error": err })
           } else {
             var user_e_address = rslt[0].email
-            connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "'+status_change+'"', (err, rows) => {
+
+            connection.query('SELECT * FROM `notification_template` WHERE `notification_type` = "order_return"', (err, rows) => {
+              if (err) {
+                console.log({ "notification": err })
+              } else {
+                console.log("_______notification-send__________")
+                if(rows!=''){
+                  connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+user_id+'","user","'+rows[0].notification_text+'","unread")', (err, rows) => {
+                    if (err) {
+                      console.log({ "notification": err })
+                    } else {
+                      console.log("_______notification-send-__________")
+                    }
+                  })
+                }else{
+                  res.send({"message":"notification template not available"})
+                }
+
+              }
+            })
+              connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "'+status_change+'"', (err, rows) => {
               if (err) {
                 console.log({ "error": err })
               } else {
-                var html_data = rows[0].email_text;
+                if(rows!=''){
+                  var html_data = rows[0].email_text;
                 const mail_configs = {
                   from: 'ashish.we2code@gmail.com',
                   to: user_e_address,
@@ -295,6 +337,10 @@ function order_status_change(req, res) {
                       return res.status(200).send({ "email_message": "status mail sent to user succesfully", "status_message": "change order status succesfully " });
                     }
                   })
+                }else{
+                  res.send("not match status on email_template")
+                }
+                
               }
             })
           }

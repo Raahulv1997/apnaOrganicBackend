@@ -68,8 +68,15 @@ function update_fetured_product(req,res){
 }
 
 function get_singal_fetured_product(req,res){
-console.log(req.query.id)
-connection.query('SELECT * FROM fetured_product_table WHERE id = '+req.query.id+'',(err,rows,fields)=>{
+console.log(req.body)
+var {product_id, fetured_type}=req.body
+if(fetured_type !=''){
+var ftr_query = 'SELECT * FROM fetured_product_table WHERE product_id = "'+product_id+'" AND fetured_type = "'+fetured_type+'"'
+}else{
+  var ftr_query ='SELECT * FROM fetured_product_table WHERE product_id = '+product_id+''
+}
+
+connection.query(ftr_query,(err,rows,fields)=>{
   if(err){
     console.log(err)
     res.status(200).send(err)

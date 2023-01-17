@@ -257,10 +257,12 @@ app.post("/email_template_list",email_template_list)
 app.put("/email_template_remove",email_template_remove)
 app.put("/email_template_status",email_template_status)
 app.get("/email_template_get",email_template_get)
+
+
 //___________________fetured_product____________________
 app.post("/add_fetured_product",add_fetured_product)
 app.put("/update_fetured_product",update_fetured_product)
-app.get("/get_singal_fetured_product",get_singal_fetured_product)
+app.post("/get_singal_fetured_product",get_singal_fetured_product)
 
 
 
@@ -273,10 +275,7 @@ app.put("/notification_template_status",notification_template_status)
 app.get("/notification_template_get",notification_template_get)
 
 
-
-
-
-//___________________invalid_url_error_______________
+//___________________invalid_url_error____________________
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
@@ -284,7 +283,7 @@ app.get("*", function(req, res){
 
 
 
-//__________+++___________testing______________+++_______________
+//__________+++___________testing______________+++_________
 app.post("/multer_image",multer_image)
 // app.post('/multer_image', (req, res, next) => {
 //   console.log("form___________")
