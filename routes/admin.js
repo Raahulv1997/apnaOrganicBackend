@@ -23,10 +23,10 @@ console.log(password_salt)
                     console.log(typeof psw)
                     const validPassword = await bcrypt.compare(admin_password,psw);
                     console.log(validPassword)
-                    validPassword ?res.send([results,{"true":true}]) : res.send("check_credintials")
+                    validPassword ?res.send([results,{"true":true}]) : res.send("password not matched")
                     
             }else{
-                res.send("check_credintials") 
+                res.send("email not found") 
             }
             
         }
@@ -64,10 +64,10 @@ if(admin_email != '' && admin_password != '' && new_admin_password != ''){
                             }
                         })
                     }else{
-                         res.send("check_credintials")
+                         res.send("password not matched")
                         }
             }else{
-                res.send("check_credintials") 
+                res.send("email not matched") 
             }
         }
 })

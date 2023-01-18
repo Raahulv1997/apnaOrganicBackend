@@ -56,7 +56,11 @@ var  order_srting_mail=""
             var iterations = order_product.length ;
             console.log("__________iterations_________" + iterations)
             for (item of order_product) {
-              connection.query('INSERT INTO `order_products` (`order_id`, `product_id`, `mrp`, `quantity`, `gst`, `cgst`, `sgst`,`value_added_tax`, `offer_id`, `discount`, `product_price`,`product_title_name`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `other_introduction`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `variety`, `vendor_id`, `shop`, `rating`, `colors`, `size`, `sale_price`, `manufacturing_date`, `special_offer`, `product_status`, `expire_date`, `unit`, `unit_quantity`,`all_images`) VALUES ("' + orderno + '","' + item.product_id + '","' + item.mrp + '","' + item.quantity + '","' + item.gst + '","' + item.cgst + '","' + item.sgst + '","' + item.value_added_tax + '","' + item.offer_id + '","' + item.discount + '", "' + item.product_price + '","' + item.product_title_name + '", "' + item.store_name + '", "' + item.product_description + '", "' + item.product_type + '", "' + item.brand + '", "' + item.category + '", "' + item.parent_category + '", "' + item.other_introduction + '", "' + item.wholesale_sales_tax + '", "' + item.manufacturers_sales_tax + '", "' + item.retails_sales_tax + '", "' + item.variety + '", "' + item.vendor_id + '", "' + item.shop + '", "' + item.rating + '", "' + item.colors + '", "' + item.size + '", "' + item.sale_price + '", "' + item.manufacturing_date + '", "' + item.special_offer + '", "' + item.product_status + '", "' + item.expire_date + '", "' + item.unit + '", "' + item.unit_quantity + '","' + item.all_images + '")', async (err, rslt) => {
+              var order_quantity_1 = 0
+              var product_verient_id= 0
+              product_verient_id = item.id
+              order_quantity_1 = parseInt(item.order_quantity)
+              connection.query('INSERT INTO `order_products` (`order_id`, `product_id`, `mrp`, `quantity`, `gst`, `cgst`, `sgst`,`value_added_tax`, `offer_id`, `discount`, `product_price`,`product_title_name`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `other_introduction`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `variety`, `vendor_id`, `shop`, `rating`, `colors`, `size`, `sale_price`, `manufacturing_date`, `special_offer`, `product_status`, `expire_date`, `unit`, `unit_quantity`,`all_images`,`order_quantity`) VALUES ("' + orderno + '","' + item.product_id + '","' + item.mrp + '","' + item.quantity + '","' + item.gst + '","' + item.cgst + '","' + item.sgst + '","' + item.value_added_tax + '","' + item.offer_id + '","' + item.discount + '", "' + item.product_price + '","' + item.product_title_name + '", "' + item.store_name + '", "' + item.product_description + '", "' + item.product_type + '", "' + item.brand + '", "' + item.category + '", "' + item.parent_category + '", "' + item.other_introduction + '", "' + item.wholesale_sales_tax + '", "' + item.manufacturers_sales_tax + '", "' + item.retails_sales_tax + '", "' + item.variety + '", "' + item.vendor_id + '", "' + item.shop + '", "' + item.rating + '", "' + item.colors + '", "' + item.size + '", "' + item.sale_price + '", "' + item.manufacturing_date + '", "' + item.special_offer + '", "' + item.product_status + '", "' + item.expire_date + '", "' + item.unit + '", "' + item.unit_quantity + '","' + item.all_images + '","'+item.order_quantity+'")', async (err, rslt) => {
                 if (err) {
                   console.log(err)
                   // res.status(200).send(err)
@@ -64,6 +68,33 @@ var  order_srting_mail=""
                 } else {
                   if (rslt != '') {
                     order_count++ 
+
+                    //product_id // SELECT `quantity` WHERE `id`=
+                    connection.query('SELECT `quantity` FROM `products_pricing` WHERE `id`=' + product_verient_id + '', async (err, rslt) => {
+                      if (err) {
+                        console.log({ "error": err })
+                        //res.status(200).send(err)
+                      } else {
+                        if (rslt != '') {
+                          console.log("____chk__________update_quantity_________chk___________")
+                          console.log(rslt[0].quantity)
+                          console.log(order_quantity_1)
+                          var update_quantity=parseFloat(rslt[0].quantity) - order_quantity_1
+                          console.log(update_quantity)
+                         connection.query('UPDATE `products_pricing` SET `quantity`="'+update_quantity+'" WHERE `id`=' + product_verient_id + '', async (err, rows) => {
+                            if (err) {
+                              console.log({ "error": err })
+                              //res.status(200).send(err)
+                            } else {
+                              rows.affectedRows=='1'?console.log({"message":"updated"+product_verient_id}):console.log({"message":"error"})
+                            }
+                          })  
+                        }
+                      }
+                    })
+
+
+
                      order_srting_mail +=`<div style='display: flex;'>
                     <div style='padding-right: 6px; display: flex; align-items: center;'><img src='${item.all_images}' width='70' height='52' /></div>
                     <div style='width: 100%;'>
@@ -134,7 +165,7 @@ var  order_srting_mail=""
                                 if (err) {
                                   return console.log({ "email_error": err });
                                 } else {
-                                  return res.status(200).send({ "message": "Send mail Succesfully", "order": "order_count_" + order_count + "" });
+                                  return res.status(200).send({"order_id":orderno, "message": "Send mail Succesfully", "order": "order_count_" + order_count + "" });
                                 }
                               })
                           }else{
@@ -296,26 +327,37 @@ function order_status_change(req, res) {
             var address=rslt[0].address;
             var  phone_no = rslt[0].phone_no;
             // SELECT * FROM `orders_view` WHERE 1
-            connection.query('SELECT * FROM `notification_template` WHERE `notification_type` = "order_return"', (err, rows) => {
+
+
+            connection.query('SELECT * FROM `orders` WHERE `id` ='+id+'', (err, rows) => {
               if (err) {
                 console.log({ "notification": err })
               } else {
                 console.log("_______notification-send__________")
                 if(rows!=''){
-                  connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+user_id+'","user","'+rows[0].notification_text+'","unread")', (err, rows) => {
+                  var v_id=rows[0].vendor_id
+                  connection.query('SELECT * FROM `notification_template` WHERE `notification_type` = "order_return"', (err, rows) => {
                     if (err) {
                       console.log({ "notification": err })
                     } else {
-                      console.log("_______notification-send-__________")
+                      console.log("_______notification-send__________")
+                      if(rows!=''){
+                        connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+user_id+'","user","'+rows[0].notification_text+'","unread"),("'+v_id+'","vendor","'+rows[0].notification_text+'","unread")', (err, rows) => {
+                          if (err) {
+                            console.log({ "notification": err })
+                          } else {
+                            console.log("_______notification-send-__________")
+                          }
+                        })
+                      }else{
+                        res.send({"message":"notification template not available"})
+                      }
+      
                     }
                   })
-                }else{
-                  res.send({"message":"notification template not available"})
                 }
-
               }
             })
-
 
             connection.query('SELECT * FROM `orders` WHERE id="'+id+'" AND  `user_id`="' + user_id + '" ', (err, rslt) => {
               if (err) {

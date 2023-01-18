@@ -43,7 +43,7 @@ function add_category(req, res) {
 //}else{
    //newlevel = level
 //}
-  connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`category_type`,`image`,`is_active`) VALUES (' + parent_id + ',"' + all_parent_id + '",' + newlevel + ',"' + new_category + '","' + category_type + '","' + image + '",' + 0 + ')', (err, rows, fields) => {
+  connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`category_type`,`image`,`is_active`) VALUES (' + parent_id + ',"' + all_parent_id + '",' + newlevel + ',"' + new_category + '","' + category_type + '","' + image + '",' + 1 + ')', (err, rows, fields) => {
     if (err) {
       console.log("/add_category_error" + err)
       res.status(200).send(err)
@@ -111,21 +111,27 @@ function search_category(req, res) {
   console.log(req.body)
   var stringsearch = 'SELECT * FROM `category` WHERE '
   //var {category_name,category_type,level} = req.body
-
+var all_blank = true
   var catobj = req.body;
   var objvalue = Object.values(catobj)
   var objkey = Object.keys(catobj)
 
-  for (m = 0; m < objkey.length; m++) {
-    if (objvalue[m] != '') {
-      if (m == 0) {
-        stringsearch += "`" + objkey[m] + "` LIKE '%" + objvalue[m] + "%' "
-      } else {
-        stringsearch += " AND `" + objkey[m] + "` LIKE '%" + objvalue[m] + "%'"
-      }
-    }
-  }
+for (m = 0; m < objkey.length; m++) {
+if(objvalue[m]!=''){
+  stringsearch += " `" + objkey[m] + "` LIKE '%" + objvalue[m] + "%' AND"
+  all_blank = false
+}else{
+  console.log("null"+m)
+}
+}
   console.log(stringsearch)
+  var lastIndexOfSpace = stringsearch.lastIndexOf(' ');
+  stringsearch = stringsearch.slice(0, lastIndexOfSpace);
+
+if(all_blank){
+  stringsearch = 'SELECT * FROM `category` WHERE 1 '
+}
+
   connection.query('' + stringsearch + '', (err, rows, fields) => {
     if (err) {
       console.log("/category_error" + err)

@@ -311,12 +311,12 @@ function products_update(req, res) {
   })
 }
 
-function products_delete(req, res) {
+function products_delete_remove(req, res) {
   console.log("-----------products_delete------------")
 
   var { id, product_id, is_delete } = req.body
   console.log(req.body)
-  if (is_delete == '0') {
+
     connection.query('UPDATE products_pricing SET is_delete= "' + is_delete + '" WHERE id=' + id + ' AND product_id=' + product_id + '', (err, rows, fields) => {
       if (err) {
         console.log(err)
@@ -326,9 +326,7 @@ function products_delete(req, res) {
         res.status(202).send(rows)
       }
     })
-  } else {
-    res.status(200).send("not deleted product")
-  }
+
 }
 
 function products_varient_add(req, res) {
@@ -530,4 +528,4 @@ function change_porduct_cover_image(req,res){
   })
 }
 
-module.exports = { products_search, productpost, products_varient_update, products_update, products_delete, products_varient_add, products_pricing, product, product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image};
+module.exports = { products_search, productpost, products_varient_update, products_update, products_delete_remove, products_varient_add, products_pricing, product, product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image};
