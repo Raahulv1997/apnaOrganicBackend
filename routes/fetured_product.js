@@ -32,7 +32,7 @@ function add_fetured_product(req, res) {
         //     }
         //   }
         // }) 
-        res.status(200).send({ "message": "already added in '" + fetured_type + "' " })
+        res.status(200).send({ "message": "Already_Exist" })
       } else {
         connection.query('INSERT INTO `fetured_product_table`(`product_id`, `fetured_type`, `start_date`, `end_date`) VALUES ("' + product_id + '","' + fetured_type + '","' + start_date + '","' + end_date + '")', (err, rows, fields) => {
           if (err) {
@@ -67,7 +67,7 @@ function update_fetured_product(req, res) {
 
 function featured_list(req, res) {
   console.log(req.body)
-  var { product_id, fetured_type, start_date, end_date } = req.body
+  var { product_id, fetured_type} = req.body
 
   var ftr_query = 'SELECT * FROM fetured_product_table WHERE '
 
@@ -81,9 +81,6 @@ function featured_list(req, res) {
     if (product_id != '') {
       ftr_query += ' product_id = ' + product_id + ' AND'
     }
-    if (start_date != '' && end_date != '') {
-      ftr_query += ' start_date > "' + start_date + '" AND end_date < "' + end_date + '" AND'
-    }
 
     var lastIndexOfSpace = ftr_query.lastIndexOf(' ');
     ftr_query = ftr_query.slice(0, lastIndexOfSpace);
@@ -95,7 +92,7 @@ function featured_list(req, res) {
       console.log(err)
       res.status(200).send(err)
     } else {
-      rows != '' ? res.status(200).send(rows) : res.status(200).send({ "message": "invalid_data" })
+     res.status(200).send(rows)
     }
   })
 }

@@ -314,16 +314,18 @@ function products_update(req, res) {
 function products_delete_remove(req, res) {
   console.log("-----------products_delete------------")
 
-  var { id, product_id, is_delete } = req.body
+  var { varient_id, product_id, is_delete } = req.body
   console.log(req.body)
 
-    connection.query('UPDATE products_pricing SET is_delete= "' + is_delete + '" WHERE id=' + id + ' AND product_id=' + product_id + '', (err, rows, fields) => {
+    connection.query('UPDATE products_pricing SET is_delete= "' + is_delete + '" WHERE id=' + varient_id + ' AND product_id=' + product_id + '', (err, rows, fields) => {
       if (err) {
         console.log(err)
         res.status(200).send(err)
       } else {
         console.log("successfully_products_deleted")
-        res.status(202).send(rows)
+        
+        rows.affectedRows=='1'?res.status(202).send(rows):res.status(202).send({"res":"not deleted"})
+
       }
     })
 

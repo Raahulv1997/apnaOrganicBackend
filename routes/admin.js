@@ -1,12 +1,14 @@
 const connection = require('../db')
 const bcrypt = require("bcrypt")
+const nodemailer = require("nodemailer")
+
 async function admin_login(req,res){
  
 var {admin_email,admin_password} = req.body
 
-const salt = await bcrypt.genSalt(10);
-password_salt = await bcrypt.hash(admin_password, salt);
-console.log(password_salt)
+// const salt = await bcrypt.genSalt(10);
+// password_salt = await bcrypt.hash(admin_password, salt);
+// console.log(password_salt)
 
 // const validPassword = await bcrypt.compare(admin_password,'$2b$10$81UsHRVghsW.47o7dMqiQ.DsJgTfz333wDFKTYZYQOGkJhoSEr1m6');
 // console.log(validPassword)
@@ -17,14 +19,23 @@ console.log(password_salt)
           res.send(err)
         }else{
             if(results != ''){
+                    //__________bcrypt_____________________________________
                 
-                    console.log("_____")
-                    var psw =  JSON.parse(JSON.stringify(results[0].admin_password))
-                    console.log(typeof psw)
-                    const validPassword = await bcrypt.compare(admin_password,psw);
-                    console.log(validPassword)
-                    validPassword ?res.send([results,{"true":true}]) : res.send("password not matched")
-                    
+                    // console.log("_____")
+                    // var psw =  JSON.parse(JSON.stringify(results[0].admin_password))
+                    // console.log(typeof psw)
+                    // const validPassword = await bcrypt.compare(admin_password,psw);
+                    // console.log(validPassword)
+                    // validPassword ?res.send([results,{"true":true}]) : res.send("password not matched")
+
+                    //__________no_bcrypt_____________________________________
+                   var db_psw = results[0].admin_password
+                  if(db_psw == admin_password){
+                    res.send([results,{"true":true}])
+                  }else{
+                    res.send("password not matched")
+                  }
+
             }else{
                 res.send("email not found") 
             }
@@ -45,27 +56,45 @@ if(admin_email != '' && admin_password != '' && new_admin_password != ''){
           res.send(err)
         }else{
             if(results != ''){
-                    console.log("_____")
-                    var psw =  JSON.parse(JSON.stringify(results[0].admin_password))
-                    console.log(typeof psw)
-                    const validPassword = await bcrypt.compare(admin_password,psw);
-                    console.log(validPassword)
-                    if(validPassword) { 
-                        const salt = await bcrypt.genSalt(10);
-                        password_salt = await bcrypt.hash(new_admin_password, salt);
-                        console.log(password_salt)
-                        connection.query('UPDATE `admin_login_details` SET `admin_password`= "'+password_salt+'" WHERE `admin_email` = "'+admin_email+'"',async (err,results)=>{
-                            if(err){
-                            console.log(err)
-                            res.send(err)
-                            }else{
-                                console.log("password_updated")
-                                res.send("password_updated")
-                            }
-                        })
-                    }else{
-                         res.send("password not matched")
+                    //_______________________bcrypt________________
+
+                    // console.log("_____")
+                    // var psw =  JSON.parse(JSON.stringify(results[0].admin_password))
+                    // console.log(typeof psw)
+                    // const validPassword = await bcrypt.compare(admin_password,psw);
+                    // console.log(validPassword)
+                    // if(validPassword) { 
+                    //     const salt = await bcrypt.genSalt(10);
+                    //     password_salt = await bcrypt.hash(new_admin_password, salt);
+                    //     console.log(password_salt)
+                    //     connection.query('UPDATE `admin_login_details` SET `admin_password`= "'+password_salt+'" WHERE `admin_email` = "'+admin_email+'"',async (err,results)=>{
+                    //         if(err){
+                    //         console.log(err)
+                    //         res.send(err)
+                    //         }else{
+                    //             console.log("password_updated")
+                    //             res.send("password_updated")
+                    //         }
+                    //     })
+                    // }else{
+                    //      res.send("password not matched")
+                    //     }
+
+                    //_______________________ non bcrypt________________
+                    var old_pswd = results[0].admin_password 
+                    if(old_pswd == admin_password){
+                      connection.query('UPDATE `admin_login_details` SET `admin_password`= "'+new_admin_password+'" WHERE `admin_email` = "'+admin_email+'" AND `admin_password` = "'+old_pswd+'"',async (err,results)=>{
+                        if(err){
+                        console.log(err)
+                        res.send(err)
+                        }else{
+                            console.log("password_updated")
+                            res.send("password_updated")
                         }
+                      })
+                    }else{res.send("password not matched")}
+          
+
             }else{
                 res.send("email not matched") 
             }
@@ -84,12 +113,37 @@ connection.query('SELECT `admin_email`, `admin_password` FROM `admin_login_detai
         res.send(err)
     }else{
         if(results != ''){
-                
-                var saltpsw = JSON.parse(JSON.stringify(results[0].admin_password))
+                var edata = results[0].admin_email
+                var old_fr_psw = JSON.parse(JSON.stringify(results[0].admin_password))
                 // const salt = await bcrypt.genSalt(10);
                 // deco_salt = await bcrypt.hash(saltpsw, salt);
-                console.log("send_password_on_your_mail")
-                res.send(saltpsw)
+                console.log("________________email")
+                console.log(edata)
+               const mail_configs={
+                  from:'ashish.we2code@gmail.com',
+                  to:edata,
+                  subject:'Apna Organic Store',
+                  text:"your old password "+ old_fr_psw
+                }
+  
+                   nodemailer.createTransport({
+                    service:'gmail',
+                    auth:{
+                        user:'ashish.we2code@gmail.com',
+                        pass:'nczaguozpagczmjv'
+                    }
+                  })
+                  .sendMail(mail_configs,(err)=>{
+                    if(err){
+                      return console.log('errrr',err);
+                    }else{
+                      console.log("send_password_on_your_mail")
+                      return res.status(200).send({"message":"Sent your old password on Gmail Succesfully"});
+                    }
+                  })
+
+
+
 
         }else{
             console.log("invalid_mail")
@@ -118,9 +172,9 @@ function update_admin(req,res){
 async function add_admin(req,res){
 console.log(req.body)
 var {admin_email, admin_name, admin_phone, admin_type,admin_password}=req.body
-const salt = await bcrypt.genSalt(10);
-co_salt = await bcrypt.hash(admin_password, salt);
-connection.query('INSERT INTO `admin_login_details`(`admin_email`, `admin_name`, `admin_phone`, `admin_type`, `admin_password`) VALUES ("'+admin_email+'", "'+admin_name+'", "'+admin_phone+'", "'+admin_type+'","'+co_salt+'")', (err, rows, fields) => {
+// const salt = await bcrypt.genSalt(10);
+// co_salt = await bcrypt.hash(admin_password, salt);
+connection.query('INSERT INTO `admin_login_details`(`admin_email`, `admin_name`, `admin_phone`, `admin_type`, `admin_password`) VALUES ("'+admin_email+'", "'+admin_name+'", "'+admin_phone+'", "'+admin_type+'","'+admin_password+'")', (err, rows, fields) => {
     if (err) {
       console.log(err)
       res.send(err)
