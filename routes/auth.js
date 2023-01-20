@@ -2,6 +2,8 @@ const { Auth, LoginCredentials } = require("two-step-auth");
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer")
 const connection = require('../db')
+const USER_JWT_SECRET_KEY = process.env.USER_JWT_SECRET_KEY
+var jwt = require('jsonwebtoken');
 var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z]{2,4})+$/;
 
 var OTP = '';
@@ -23,7 +25,7 @@ function signup(req, res) {
           var useremail = umail[0].email;
           console.log(useremail);
           console.log({"message":"User Already Exist. Please Login"});
-          res.status(200).send(false)
+          res.status(200).send({"response":"Email Already Exist"})
         } else {
           console.log("send________otp")
 
@@ -58,6 +60,7 @@ function signup(req, res) {
                       if(err){
                         return console.log('errrr',err);
                       }else{
+                        
                         return res.status(200).send({"message":"Send otp in Gmail Succesfully"});
                       }
                     })
@@ -89,93 +92,107 @@ async function otp_verify(req,res){
       password_salt = await bcrypt.hash(password, salt);
       console.log(password_salt)
     
-    
-    console.log(email_otp)
-      console.log(otp_ver)
-      if(cheked_email){
-        console.log("email_true")
-        connection.query("SELECT * FROM `users_otp` WHERE email = '" + email_otp + "'",async (err, rows, fields) => {
-          if(err){
-            console.log(err)
-          }else{
-            console.log("otp_result____________________")
-            console.log(rows)
-            if(rows!=''){
-    
-              var userauth = JSON.parse(JSON.stringify(rows));
-              var user_otp = userauth[0].otp;
-              console.log( otp_ver +"=="+ user_otp)
-              if(otp_ver == user_otp){
-                console.log("otp verification successfully")
-                //res.send({"message":"otp verification successfully"})
-                if(signup_condition){
-                  connection.query("INSERT INTO `users`( `email`, `password`) VALUES ('"+email_otp+"','"+password_salt+"')",async (err, rows, fields) => {
-                    if(err){
-                      console.log("error"+err)
-                      res.status(200).send(err)
-                    }else{
-                      console.log("_____")
-                      if(rows!=''){
-                        connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
-                          if(err){
-                            console.log("error"+err)
-                            res.status(200).send(err)
-                          }else{
-                            rows.affectedRows=='1'?console.log({"message":"successfully delete "}):console.log({"message":"invalid input data"})
-      
-                          }
-                        })
-                        res.status(202).send(rows)
-                        signup_condition=false;
-                      }
-
-                    }
-                  })
-                }
-                else{
-                  console.log('otp veification error')
-                }
-
-                if(otp_verify_condition){
-                  connection.query('UPDATE `users` SET `password`="'+password_salt+'" WHERE `email`="'+email_otp+'" ',async (err, rows, fields) => {
-                    if(err){
-                      console.log("error"+err)
-                      res.status(200).send(err)
-                    }else{
-                      if(rows!=''){
-                        connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
-                          if(err){
-                            console.log("error"+err)
-                            res.status(200).send(err)
-                          }else{
-                            if(rows.affectedRows=='1'){
-                              // res.status(202).send(rows)
-                              console.log({"message":"successfully delete "})
-                            }else{
-                              console.log({"message":"invalid input data "})
-                            }
-                          }
-                        })
-                        res.status(202).send(rows)
-                        otp_verify_condition=false;
-                      }
-                    }
-                  }) 
-                }
-                
-              }else{
-                res.status(200).send({"message":"please check credential"})
-              }
-             
+      if(email_otp !='' && otp_ver !='' && password !=''){
+        console.log(email_otp)
+        console.log(otp_ver)
+        if(cheked_email){
+          console.log("email_true")
+          connection.query("SELECT * FROM `users_otp` WHERE email = '" + email_otp + "'",async (err, rows, fields) => {
+            if(err){
+              console.log(err)
             }else{
-              res.status(200).send({"message":"please check credential"})
+              console.log("otp_result____________________")
+              console.log(rows)
+              if(rows!=''){
+      
+                var userauth = JSON.parse(JSON.stringify(rows));
+                var user_otp = userauth[0].otp;
+                console.log( otp_ver +"=="+ user_otp)
+                
+                if(otp_ver == user_otp){
+                  console.log("otp verification successfully")
+                  //res.send({"message":"otp verification successfully"})
+                  if(signup_condition){
+                    connection.query("INSERT INTO `users`( `email`, `password`) VALUES ('"+email_otp+"','"+password_salt+"')",async (err, rows, fields) => {
+                      if(err){
+                        console.log("error"+err)
+                        res.status(200).send(err)
+                      }else{
+                        console.log("_____")
+                        if(rows!=''){
+
+                          jwt.sign({ id: rows.insertId }, USER_JWT_SECRET_KEY, function(err,token){
+                            console.log(token);
+                            if(err){
+                              console.log(err)
+                            }
+                            res.send({"user_id":rows,"user_email":rows.insertId ,"token":token})
+                            signup_condition=false;
+                          });
+                          
+                          connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
+                            if(err){
+                              console.log("error"+err)
+                              res.status(200).send(err)
+                            }else{
+                              rows.affectedRows=='1'?console.log({"message":"successfully delete "}):console.log({"message":"invalid input data"})
+        
+                            }
+                          })
+                          
+                        }
+  
+                      }
+                    })
+                  }
+                  else{
+                    console.log('otp veification error')
+                  }
+  
+                  if(otp_verify_condition){
+                    connection.query('UPDATE `users` SET `password`="'+password_salt+'" WHERE `email`="'+email_otp+'" ',async (err, rows, fields) => {
+                      if(err){
+                        console.log("error"+err)
+                        res.status(200).send(err)
+                      }else{
+                        if(rows!=''){
+                          connection.query('DELETE FROM `users_otp` WHERE email ="'+ email_otp +'" ',async (err, rows, fields) => {
+                            if(err){
+                              console.log("error"+err)
+                              res.status(200).send(err)
+                            }else{
+                              if(rows.affectedRows=='1'){
+                                // res.status(202).send(rows)
+                                console.log({"message":"successfully delete "})
+                              }else{
+                                console.log({"message":"invalid input data "})
+                              }
+                            }
+                          })
+                          res.status(202).send(rows)
+                          otp_verify_condition=false;
+                        }
+                      }
+                    }) 
+                  }
+                  
+                }else{
+                  res.status(200).send({"message":"otp not matched"})
+                }
+               
+              }else{
+                res.status(200).send({"message":"email address not matched"})
+              }
             }
-          }
-        })
+          })
+        }else{
+          console.log("email_false")
+          res.status(513).send({ "message": "invalid address" })
+        }
       }else{
-        console.log("email_false")
-        res.status(513).send({ "message": "invalid address" })
+        res.status(200).send({"response":"please fill all input fields"})
       }
+    
 
   
 }
@@ -189,8 +206,10 @@ console.log(first_name+last_name+email+phone_no+ gender+date_of_birth+address+ad
 // const salt = await bcrypt.genSalt(10);
 //  password_salt = await bcrypt.hash(password, salt);
 //  console.log(password_salt)
- //return false
- connection.query("UPDATE `users` SET `first_name`='"+first_name+"',`last_name`='"+last_name+"',`phone_no`='"+phone_no+"',`gender`='"+gender+"',`date_of_birth`= '"+date_of_birth+"',`address`='"+address+"',`address2`='"+address2+"' WHERE email='"+email+"'",async (err, rows, fields) => {
+console.log("user_reg--------------------------------------")
+console.log(req.user)
+
+ connection.query("UPDATE `users` SET `first_name`='"+first_name+"',`last_name`='"+last_name+"',`phone_no`='"+phone_no+"',`gender`='"+gender+"',`date_of_birth`= '"+date_of_birth+"',`address`='"+address+"',`address2`='"+address2+"' WHERE `user_id`='"+req.user+"'",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
     res.status(200).send(err)
@@ -203,8 +222,8 @@ console.log(first_name+last_name+email+phone_no+ gender+date_of_birth+address+ad
 
 }
 function user_details(req,res){
-console.log(req.query)
-connection.query("SELECT `user_id`,`first_name`,`last_name`,`email`,`phone_no`,`gender`,`date_of_birth`,`address`,`address2` FROM `users` WHERE `user_id` = "+req.query.user_id+"",async (err, rows, fields) => {
+// console.log(req.query)
+connection.query("SELECT `user_id`,`first_name`,`last_name`,`email`,`phone_no`,`gender`,`date_of_birth`,`address`,`address2` FROM `users` WHERE `user_id` = "+req.user+"",async (err, rows, fields) => {
   if(err){
     console.log("error"+err)
     res.status(200).send(err)
@@ -239,15 +258,25 @@ console.log(password_salt)
             if(results != ''){
                 
                     console.log("_____")
-                   // return false
+                    // return false
                     var psw =  JSON.parse(JSON.stringify(results[0].password))
                     console.log(typeof psw)
                     const validPassword = await bcrypt.compare(user_password,psw);
                     console.log(validPassword)
-                    validPassword ?res.send({"user_id":results[0].user_id,"user_email":results[0].email}) : res.send(false)
+                    if(validPassword){
+                       jwt.sign({ id: results[0].user_id }, USER_JWT_SECRET_KEY, function(err,token){
+                        console.log(token);
+                        if(err){
+                          console.log(err)
+                        }
+                        res.send({"user_id":results[0].user_id,"user_email":results[0].email,"token":token})
+                      });
+                     
+                    }else{res.send({"message":"password not matched"})}
+                   // validPassword ?res.send({"user_id":results[0].user_id,"user_email":results[0].email}) : res.send(false)
                     
             }else{
-                res.send({"message":"check_credintials"}) 
+                res.send({"message":"email not exist"}) 
             }
             
         }

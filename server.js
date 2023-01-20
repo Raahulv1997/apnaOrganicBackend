@@ -9,7 +9,7 @@ const app = express();
 const bodyParser = require("body-parser");
 require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
-
+const {fetchuser} = require("./routes/middleware/auth_by_token.js")
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete_remove,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details,user_login,change_user_password,user_forgot_password} = require("./routes/auth.js")
@@ -36,6 +36,7 @@ const {add_email_template,update_email_template,email_template_list,email_templa
 const {add_notification_template ,update_notification_template,notification_template_list,notification_template_remove,notification_template_status,notification_template_get} = require("./routes/notification_template")
 const {add_fetured_product,update_fetured_product,featured_list}=require("./routes/fetured_product.js")
 const {notification}=require("./routes/notification.js")
+
 
 
 //__________+++___________testing______________+++_______________
@@ -126,8 +127,8 @@ app.put("/change_porduct_cover_image",change_porduct_cover_image)
 //________________user-sign-up_______________________
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
-app.post("/user_register",user_register)
-app.get("/user_details",user_details)
+app.post("/user_register",fetchuser,user_register)
+app.get("/user_details",fetchuser,user_details)
 app.post("/home",user_products_search)
 //app.post("/apna_organic_home",apna_organic_home)
 app.post("/user_login",user_login)

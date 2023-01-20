@@ -59,7 +59,7 @@ function update_category(req, res) {
   var { id, parent_id, level, all_parent_id, new_category,category_type } = req.body;
   if (req.file == undefined || req.file == '') {
     // image = "no image"
-    connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '", `category_type`="'+category_type+'", `is_active`= "' + 0 + '" WHERE `id`= "' + id + '"', (err, rows, fields) => {
+    connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '", `category_type`="'+category_type+'", `is_active`= "' + 1 + '" WHERE `id`= "' + id + '"', (err, rows, fields) => {
       if (err) {
         console.log("/category_error" + err)
         res.status(500).send(err)
@@ -71,7 +71,7 @@ function update_category(req, res) {
     var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
     console.log(image)
 
-    connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '", `category_type`="'+category_type+'",`image`="' +image+ '", `is_active`= "' + 0 + '" WHERE `id`= "' + id + '"', (err, rows, fields) => {
+    connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '", `category_type`="'+category_type+'",`image`="' +image+ '", `is_active`= "' + 1 + '" WHERE `id`= "' + id + '"', (err, rows, fields) => {
       if (err) {
         console.log("/category_error" + err)
         res.status(500).send(err)
