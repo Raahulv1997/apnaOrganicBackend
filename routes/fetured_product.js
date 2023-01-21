@@ -1,34 +1,34 @@
 const connection = require('../db')
 function add_fetured_product(req, res) {
-  console.log(req.body)
+  //console.log("req.body")
   var { product_id, fetured_type, start_date, end_date } = req.body
 
   connection.query('SELECT * FROM `fetured_product_table` WHERE `product_id`="' + product_id + '" AND `fetured_type`="' + fetured_type + '" AND is_deleted="0"', (err, rows, fields) => {
     if (err) {
-      console.log("/fetured_product" + err)
+      //console.log("/fetured_product" + err)
       res.status(200).send(err)
     } else {
-      //console.log("_____")
+      ////console.log("_____")
       if (rows != '') {
         //res.status(200).send(rows)
         // connection.query('UPDATE `fetured_product_table` SET `is_deleted`="1" WHERE `product_id`="'+product_id+'" AND `fetured_type` <>" " AND is_deleted="0"',(err,rows,fields)=>{
         //   if(err){
-        //     console.log("/fetured_product"+err)
+        //     //console.log("/fetured_product"+err)
         //     res.status(200).send(err)
         //   }else{
-        //     //console.log("_____")
+        //     ////console.log("_____")
         //     if( rows!= ''){
         //       //res.status(200).send(rows)
         //       connection.query('INSERT INTO `fetured_product_table`(`product_id`, `fetured_type`, `start_date`, `end_date`) VALUES ("'+product_id+'","'+fetured_type+'","'+start_date+'","'+end_date+'")',(err,rows,fields)=>{
         //         if(err){
-        //           console.log("/fetured_product"+err)
+        //           //console.log("/fetured_product"+err)
         //           res.status(200).send(err)
         //         }else{
         //           rows!= ''?res.status(200).send(rows):res.status(200).send({"message":"error"})
         //         }
         //       }) 
         //     }else{
-        //       console.log("_____")
+        //       //console.log("_____")
         //     }
         //   }
         // }) 
@@ -36,7 +36,7 @@ function add_fetured_product(req, res) {
       } else {
         connection.query('INSERT INTO `fetured_product_table`(`product_id`, `fetured_type`, `start_date`, `end_date`) VALUES ("' + product_id + '","' + fetured_type + '","' + start_date + '","' + end_date + '")', (err, rows, fields) => {
           if (err) {
-            console.log("/fetured_product" + err)
+            //console.log("/fetured_product" + err)
             res.status(200).send(err)
           } else {
             rows != '' ? res.status(200).send(rows) : res.status(200).send({ "message": "error" })
@@ -51,22 +51,22 @@ function add_fetured_product(req, res) {
 }
 
 function update_fetured_product(req, res) {
-  console.log(req.body)
+  //console.log("req.body")
   var { id, start_date, end_date } = req.body
 
   connection.query('UPDATE `fetured_product_table` SET `start_date`="' + start_date + '",`end_date`="' + end_date + '" WHERE id = ' + id + '', (err, rows, fields) => {
     if (err) {
-      console.log(err)
+      //console.log(err)
       res.status(200).send(err)
     } else {
-      //console.log("_____")
+      ////console.log("_____")
       rows.affectedRows == '1' != '' ? res.status(200).send(rows) : res.status(200).send({ "message": "invalid_id" })
     }
   })
 }
 
 function featured_list(req, res) {
-  console.log(req.body)
+  //console.log("req.body")
   var { product_id, fetured_type} = req.body
 
   var ftr_query = 'SELECT * FROM fetured_product_table WHERE '
@@ -85,11 +85,11 @@ function featured_list(req, res) {
     var lastIndexOfSpace = ftr_query.lastIndexOf(' ');
     ftr_query = ftr_query.slice(0, lastIndexOfSpace);
   }
-  console.log(ftr_query)
+  //console.log(ftr_query)
 
   connection.query(ftr_query, (err, rows, fields) => {
     if (err) {
-      console.log(err)
+      //console.log(err)
       res.status(200).send(err)
     } else {
      res.status(200).send(rows)
@@ -100,13 +100,13 @@ function featured_list(req, res) {
 
 
 // function featured_list(req,res){
-//   console.log(req.body)
+//   //console.log("req.body")
 //   connection.query(ftr_query,(err,rows,fields)=>{
 //     if(err){
-//       console.log(err)
+//       //console.log(err)
 //       res.status(200).send(err)
 //     }else{
-//       //console.log("_____")
+//       ////console.log("_____")
 //       rows!= ''?res.status(200).send(rows):res.status(200).send({"message":"invalid_id"})
 //     }
 //   }) 

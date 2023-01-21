@@ -8,14 +8,14 @@ const stripe = require('stripe')(secretKey);
 // var Secret_Key = 'sk_test_51MD0K3SDWoTO57i2TZXcmiHXX720CQwZKgM9VT9S0V1urGTRwUQTtt7dw95R1qHBXxOlJP6nYHSnkffAEOEzQSgx00w7Q0Xykf'
 
 //function transaction(req,res){
-   // console.log(req.body)
+   // //console.log("req.body")
 // var {transaction_id,order_id,invoice_no,transaction_date,amount,method,status}=req.body
     // connection.query("INSERT INTO `transaction`(`transaction_id`, `order_id`, `invoice_no`, `transaction_date`, `amount`, `method`, `status`) VALUES ('"+transaction_id+"','"+order_id+"','"+invoice_no+"','"+transaction_date+"','"+amount+"','"+method+"','"+status+"')",(err,results)=>{
     //     if(err){
-    //       console.log(err)
+    //       //console.log(err)
     //       res.status(502).send(err)
     //     }else{
-    //      console.log("_____")
+    //      //console.log("_____")
     //      results!=''?res.status(200).send(results):res.status(200).send("invalid input data ")
          
     //     }
@@ -26,10 +26,10 @@ async function payment(req,res){
 
   //totalAmount=req.session.totalSelectedCartCost1;
  var totalAmount=req.body.totalAmount;
- console.log(totalAmount)
+ //console.log(totalAmount)
 
    const token = await createToken(req.body);
-   console.log(token);
+   //console.log(token);
    if (token.error) {
       //res.send('failed')
    }
@@ -38,28 +38,28 @@ async function payment(req,res){
    }
 
    const charge = await createCharge(token.id, totalAmount);
-   console.log(charge);
+   //console.log(charge);
    if (charge && charge.status == 'succeeded') { 
 
       //  req.session.updateShopCart = [];
       //  allCartData = [];
-      //  console.log(req.session.updateShopCart)
-      console.log("success____________________________________________________________________________________success")
-      console.log(charge)
+      //  //console.log(req.session.updateShopCart)
+      //console.log("success____________________________________________________________________________________success")
+      //console.log(charge)
    // res.send('success');
     
      var {id, amount, payment_method_details, status , source, source, source, source, receipt_url, currency, payment_method_details, payment_method_details}= charge
 
-     console.log("___________________________++++++++++++++____________________________")
-    console.log("'"+id+"','"+req.body.order_id+"', '"+req.body.invoice_no+"', '"+amount+"', '"+payment_method_details.type+"', '"+status+"' , '"+source.name+"', '"+source.last4+"', '"+source.exp_month+"', '"+source.exp_year+"', '"+receipt_url+"', '"+currency+"', '"+payment_method_details.card.brand+"', '"+payment_method_details.card.country+"'")
+     //console.log("___________________________++++++++++++++____________________________")
+    //console.log("'"+id+"','"+req.body.order_id+"', '"+req.body.invoice_no+"', '"+amount+"', '"+payment_method_details.type+"', '"+status+"' , '"+source.name+"', '"+source.last4+"', '"+source.exp_month+"', '"+source.exp_year+"', '"+receipt_url+"', '"+currency+"', '"+payment_method_details.card.brand+"', '"+payment_method_details.card.country+"'")
 
     
     connection.query("INSERT INTO `transaction`(`payment_id`, `order_id`, `invoice_no`, `amount`, `method`, `status`, `name`, `c_number`, `exp_month`, `exp_year`, `receipt_url`, `currency`, `brand`, `country`) VALUES ('"+id+"','"+req.body.order_id+"', '"+req.body.invoice_no+"', '"+amount+"', '"+payment_method_details.type+"', '"+status+"' , '"+source.name+"', '"+source.last4+"', '"+source.exp_month+"', '"+source.exp_year+"', '"+receipt_url+"', '"+currency+"', '"+payment_method_details.card.brand+"', '"+payment_method_details.card.country+"')", (err, rows, fields) => {
       if (err) {
-        console.log("/transaction_details_error" + err)
+        //console.log("/transaction_details_error" + err)
         res.status(200).send(err)
       } else {
-        //console.log("_____")
+        ////console.log("_____")
         rows ==''?res.status(200).send(err):res.status(200).send(rows)
         
       }
@@ -68,7 +68,7 @@ async function payment(req,res){
    } 
    else
     {
-       console.log("this is faild trans");
+       //console.log("this is faild trans");
        res.status(200).send('failed');
    }
 }
@@ -118,13 +118,13 @@ const createCharge = async (tokenId, amount) => {
 
 
 function transaction_list(req,res){
-    console.log(req.body)
+    //console.log("req.body")
     var {order_id,method,status}=req.body
     if(order_id != '' || method != '' || status != '' ){
 
         var stringsearch = 'SELECT * FROM `transaction` WHERE '
         var catobj=req.body;
-        console.log(catobj)
+        //console.log(catobj)
         var objvalue=Object.values(catobj)
         var objkey=Object.keys(catobj)
         for(m=0;m<objkey.length;m++){
@@ -140,19 +140,19 @@ function transaction_list(req,res){
         }
       }
       }
-      console.log(stringsearch)
+      //console.log(stringsearch)
       var lastCharOfHello=stringsearch.slice(-4);
-      console.log("________"+lastCharOfHello+"_______")
+      //console.log("________"+lastCharOfHello+"_______")
       if(lastCharOfHello == "AND "){
         var id = stringsearch.substring(stringsearch.lastIndexOf(' AND') +1, stringsearch.indexOf("  "));   
         stringsearch=id;
         }else{
            
-          console.log("no avia")
+          //console.log("no avia")
         }
       connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
-          console.log("/transaction_list_error"+err)
+          //console.log("/transaction_list_error"+err)
           res.status(200).send(err)
         }else{
           res.status(200).send(rows)
@@ -161,7 +161,7 @@ function transaction_list(req,res){
 }else{
 connection.query('SELECT * FROM `transaction` WHERE 1 ORDER BY id DESC',(err,rows,fields)=>{
     if(err){
-      console.log("/transaction_list_error"+err)
+      //console.log("/transaction_list_error"+err)
       res.status(200).send(err)
     }else{
       res.status(200).send(rows)
@@ -183,10 +183,10 @@ function transaction_details(req,res){
     } else {
         connection.query('SELECT * FROM transaction WHERE id =' + req.query.id + ' ', (err, rows, fields) => {
           if (err) {
-            console.log("/transaction_details_error" + err)
+            //console.log("/transaction_details_error" + err)
             res.status(200).send(err)
           } else {
-            //console.log("_____")
+            ////console.log("_____")
             res.status(200).send(rows)
           }
         })

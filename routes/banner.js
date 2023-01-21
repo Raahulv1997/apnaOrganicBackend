@@ -1,29 +1,29 @@
 const connection = require('../db')
 function add_banner(req,res) {
-    console.log("______banner____")
-    console.log(req.body)
+    //console.log("______banner____")
+    //console.log("req.body")
     var { image, title, description, banner_url, size, banner_location} = req.body;
 
     if (req.file == undefined || req.file == '') {
         image = "no image"
     } else {
         var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
-        console.log(image)
+        //console.log(image)
     }
 
     connection.query('INSERT INTO `banner`(`image`, `title`, `description`, `banner_url`, `size`, `banner_location`) VALUES ("'+image+'","'+title+'","'+description+'","'+banner_url+'","'+size+'","'+banner_location+'")', (err, rows, fields) => {
         if (err) {
             res.status(200).send(err)
         } else {
-            console.log("add banner Succecsfully")
+            //console.log("add banner Succecsfully")
             res.status(201).send("add banner Succecsfully")
         }
     })
 }   
 
 function update_banner(req, res) {
-  console.log("______banner____")
-  console.log(req.body)
+  //console.log("______banner____")
+  //console.log("req.body")
   var { banner_id, image, title, description, banner_url, size, banner_location} = req.body;
 
   if (req.file == undefined || req.file == '') {
@@ -37,7 +37,7 @@ function update_banner(req, res) {
       })
   } else {
       var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
-      console.log(image)
+      //console.log(image)
       connection.query('UPDATE `banner` SET `image`="'+image+'",`title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
         if (err) {
           res.status(500).send(err)
@@ -52,7 +52,7 @@ function update_banner(req, res) {
 
 
   function banner_list(req,res){
-    console.log("banner_list")
+    //console.log("banner_list")
     var {banner_id,title,banner_location}=req.body
     var banner_list_qry = '' 
 
@@ -67,18 +67,18 @@ function update_banner(req, res) {
             banner_location!=''? banner_list_qry+=' AND banner_location = "'+banner_location+'"':console.log("false")
         }    
     }
-    console.log(banner_list_qry)
+    //console.log(banner_list_qry)
     connection.query(banner_list_qry, (err, rows, fields) => {
         if (err) {
             res.status(200).send(err)
         } else {
-            console.log("_____")
+            //console.log("_____")
             res.status(200).send(rows)
         }
     }) 
   }
   function banner_delete(req,res){
-    console.log(req.body)
+    //console.log("req.body")
     var {is_deleted,banner_id}=req.body
     if(is_deleted=='0'){
         connection.query('UPDATE `banner` SET `is_deleted`="'+is_deleted+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
@@ -95,7 +95,7 @@ function update_banner(req, res) {
   }
 
   function cahange_banner_status(req,res){
-    console.log(req.body)
+    //console.log("req.body")
     var {status,banner_id}=req.body
         connection.query('UPDATE `banner` SET `status`="'+status+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
             if (err) {

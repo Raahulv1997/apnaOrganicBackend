@@ -94,7 +94,7 @@ var upload = multer({
 //   timeZone: 'Asia/Calcutta'
 // });
 
-// console.log(nDate);
+// //console.log(nDate);
 
 
 // module.exports={imageUpload}
@@ -128,7 +128,7 @@ app.put("/change_porduct_cover_image",change_porduct_cover_image)
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
 app.post("/user_register",fetchuser,user_register)
-app.get("/user_details",fetchuser,user_details)
+app.post("/user_details",fetchuser,user_details)
 app.post("/home",user_products_search)
 //app.post("/apna_organic_home",apna_organic_home)
 app.post("/user_login",user_login)
@@ -136,8 +136,8 @@ app.post("/change_user_password",change_user_password)
 app.post("/user_forgot_password",user_forgot_password)
 
 //_____________________cart__________________________
-app.post("/add_to_cart",add_to_cart)
-app.get("/cart",cart)
+app.post("/add_to_cart",fetchuser,add_to_cart)
+app.put("/cart",fetchuser,cart)
 app.put("/remove_product_from_cart",remove_cart)
 app.put("/cart_update",cart_update)
 app.get("/user_cart_list",cart_list)
@@ -291,7 +291,7 @@ app.get("*", function(req, res){
 //__________+++___________testing______________+++_________
 app.post("/multer_image",multer_image)
 // app.post('/multer_image', (req, res, next) => {
-//   console.log("form___________")
+//   //console.log("form___________")
 
 //   const form = formidable({ multiples: true });
 
@@ -307,20 +307,20 @@ app.post("/multer_image",multer_image)
 //--------------------------------------------------
 
 //   const form = new formidable.IncomingForm();
-//   console.log(form)
+//   //console.log(form)
 //   form.parse(req, function(err, fields, file){
 //       var oldPath = file.image.path;
-//       console.log("oldPath_______")
-//       console.log(oldPath)
+//       //console.log("oldPath_______")
+//       //console.log(oldPath)
 
 //       var newPath = path.join(__dirname,'/apna_backend/public/catgory_images')+ '/'+files.image.name
-//       console.log("newPath________")
-//       console.log(newPath)
+//       //console.log("newPath________")
+//       //console.log(newPath)
 //       var rawData = fs.readFileSync(oldPath)
-//       console.log(newPath)
+//       //console.log(newPath)
       
 //       fs.writeFile(newPath, rawData, function(err){
-//           if(err) console.log(err)
+//           if(err) //console.log(err)
 //           return res.send("Successfully uploaded")
 //       })
 // })
@@ -331,10 +331,10 @@ var PORT =0
 SERVER_PORT == undefined || SERVER_PORT =='' ? PORT = 5000: PORT = SERVER_PORT;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${SERVER_PORT}.`);
+  //console.log(`Server is running on port ${SERVER_PORT}.`);
   //____________________node-cron-function_______________________________________
   publish_blog()
 });
 
 // const filePath = path.join(__dirname,'/apna_backend/public/catgory_images' );
-// console.log(filePath)
+// //console.log(filePath)
