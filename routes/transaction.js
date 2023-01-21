@@ -1,4 +1,6 @@
 const connection = require('../db')
+const nodemailer = require("nodemailer")
+
 const secretKey="sk_test_51LL4P3Eu1FBdOEuwSWSMEgcb36RKi4rE1Ix4hHHGL5V7wnm68PciVXNgmjvif9H6rqBEJOEcYP59NlKUApN1xd8U003I8dLiBY";
 const stripe = require('stripe')(secretKey);
 
@@ -23,7 +25,7 @@ const stripe = require('stripe')(secretKey);
 //}
 
 async function payment(req,res){
-
+  var data_replace = '';
   //totalAmount=req.session.totalSelectedCartCost1;
  var totalAmount=req.body.totalAmount;
  console.log(totalAmount)
@@ -60,11 +62,98 @@ async function payment(req,res){
         res.status(200).send(err)
       } else {
         //console.log("_____")
-        rows ==''?res.status(200).send(err):res.status(200).send(rows)
+        // rows ==''?res.status(200).send(err):res.status(200).send(rows)
+        if (rows.affectedRows=='1') {
+          connection.query('SELECT DISTINCT(SELECT users.email FROM users WHERE orders_view.user_id = users.user_id) as email ,(SELECT users.phone_no FROM users WHERE orders_view.user_id = users.user_id) AS phoneno,user_id FROM `orders_view` WHERE `order_id`="'+ req.body.order_id +'" ', (err, rslt) => {
+            if (err) {
+              console.log({ "error": err })
+            } else {
+              if(rslt!=''){
+                console.log(rslt)
+                var user_id=rslt[0].user_id;
+                var email_address=rslt[0].email;
+                var mobile_no=rslt[0].phone_no;
+                connection.query('SELECT * FROM `notification_template` WHERE `notification_type` = "succeeded"', (err, rows) => {
+                  if (err) {
+                    console.log({ "notification": err })
+                  } else {
+                    console.log("_______notification-send__________")
+                    if(rows!=''){
+                      connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+user_id+'","user","'+rows[0].notification_text+'","unread")', (err, rows) => {
+                        if (err) {
+                          console.log({ "notification": err })
+                        } else {
+                          console.log("_______notification-send-__________")
+                        }
+                      })
+                    }else{
+                      res.send({"message":"notification template not available"})
+                    }
+                  }
+                })
+
+                connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "transaction"', (err, rows) => {
+                  if (err) {
+                    console.log({ "error": err })
+                  } else {
+                    if(rows!=''){
+                      var html_data = rows[0].email_text;
+                      var newdate = new Date();
+                      var current_date = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
+                      // console.log(current_date)
+                      data_replace = html_data.replaceAll('{email_address}', email_address)
+                      data_replace = data_replace.replaceAll('{contact_no}', mobile_no)
+                      data_replace = data_replace.replaceAll('{total_amount}', amount)
+                      data_replace = data_replace.replace('{method}', payment_method_details.type)
+                      data_replace = data_replace.replace('{payment_id}', id)
+                      data_replace = data_replace.replace('{status}', status)
+                      data_replace = data_replace.replace('{payment_date}', current_date)
+                      // data_replace = data_replace.replaceAll('{address}', address)
+                      // data_replace = data_replace.replace('{order_list}', order_srting_mail)
+                      // data_replace = data_replace.replace('{payment_mode}', payment_mode)
+                      
+                      
+                      console.log(data_replace)
+
+                    const mail_configs = {
+                      from: 'ashish.we2code@gmail.com',
+                      to: email_address,
+                      subject: 'Apna Organic Store',
+                      text: "apna organic",
+                      html: data_replace
+                    }
+                    nodemailer.createTransport({
+                      service: 'gmail',
+                      auth: {
+                        user: 'ashish.we2code@gmail.com',
+                        pass: 'nczaguozpagczmjv'
+                      }
+                    })
+                      .sendMail(mail_configs, (err) => {
+                        if (err) {
+                          return console.log({ "email_error": err });
+                        } else {
+                          return res.status(200).send({ "email_message": "transaction mail sent to user succesfully", "status_message": "transaction  succesfully" });
+                        }
+                      })
+                  }
+                  else{
+                    console.log("email not send")
+                    res.status(200).send({ "email_message": "status mail not sent to user", "status_message": "transaction  succesfully" });
+                  }
+                }
+                })
+
+              }
+
+
+            }
+          })
+
+        }
         
       }
     })
-
    } 
    else
     {

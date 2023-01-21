@@ -12,7 +12,7 @@ var  order_srting_mail=""
   var phone_no='';
   var order_count = 0;
   var percentage;
-  var { user_id, status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon, shipping_charges, discount_coupon_value } = req.body
+  var { user_id, status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon, shipping_charges, discount_coupon_value } = req.body;
   console.log("______chk-1_____")
   console.log(user_id + "" + status)
   //console.log(order_product)
@@ -64,7 +64,7 @@ var  order_srting_mail=""
                 } else {
                   if (rslt != '') {
                     order_count++ 
-                     order_srting_mail +=`<div style='display: flex;'>
+                    order_srting_mail +=`<div style='display: flex;'>
                     <div style='padding-right: 6px; display: flex; align-items: center;'><img src='${item.all_images}' width='70' height='52' /></div>
                     <div style='width: 100%;'>
                         <div style='display: flex; justify-content: space-between;'><strong style='display: flex;'> ${item.product_title_name}</strong><strong>Rs. ${item.sale_price}</strong></div>        
@@ -77,6 +77,25 @@ var  order_srting_mail=""
               })
               if (!--iterations) {
                 setTimeout(() => {
+                  connection.query('SELECT * FROM `notification_template` WHERE `notification_type` = "order_return"', (err, rows) => {
+                    if (err) {
+                      console.log({ "notification": err })
+                    } else {
+                      console.log("_______notification-send__________")
+                      if(rows!=''){
+                        connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+user_id+'","user","successfully placed order, total order- '+order_count+'","unread") , ("'+vendor_id+'","vendor","recived '+order_count+' new order","unread")', (err, rows) => {
+                          if (err) {
+                            console.log({ "notification": err })
+                          } else {
+                            console.log("_______notification-send-__________")
+                          }
+                        })
+                      }else{
+                        res.send({"message":"notification template not available"})
+                      }
+
+                    }
+                  })
 
                       connection.query('SELECT * FROM `email_template` WHERE `type` = "user" AND `email_type` = "order"', (err, rows) => {
                         if (err) {
@@ -136,7 +155,7 @@ var  order_srting_mail=""
   })
   console.log(max_invoice_no1)
   //return false
-    }else{res.send({"message":"please complete your profil first"})}
+    }else{res.send({"message":"please complete your profile first"})}
     }
   })
 
@@ -277,6 +296,27 @@ function order_status_change(req, res) {
             var address=rslt[0].address;
             var  phone_no = rslt[0].phone_no;
             // SELECT * FROM `orders_view` WHERE 1
+            connection.query('SELECT * FROM `notification_template` WHERE `notification_type` = "order_return"', (err, rows) => {
+              if (err) {
+                console.log({ "notification": err })
+              } else {
+                console.log("_______notification-send__________")
+                if(rows!=''){
+                  connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("'+user_id+'","user","'+rows[0].notification_text+'","unread")', (err, rows) => {
+                    if (err) {
+                      console.log({ "notification": err })
+                    } else {
+                      console.log("_______notification-send-__________")
+                    }
+                  })
+                }else{
+                  res.send({"message":"notification template not available"})
+                }
+
+              }
+            })
+
+
             connection.query('SELECT * FROM `orders` WHERE id="'+id+'" AND  `user_id`="' + user_id + '" ', (err, rslt) => {
               if (err) {
                 console.log({ "error": err })
