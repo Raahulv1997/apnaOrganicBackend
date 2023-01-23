@@ -12,7 +12,8 @@ async function orders(req, res) {
   var phone_no = '';
   var order_count = 0;
   var percentage;
-  var { user_id, status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon, shipping_charges, discount_coupon_value } = req.body
+  var user_id= req.user
+  var {status, vendor_id, order_product, total_quantity, ref_no, payment_mode, payment_mode, delivery_date, invoice_date, order_date, total_amount, total_gst, total_cgst, total_sgst, taxable_value, discount_coupon, shipping_charges, discount_coupon_value } = req.body
   //console.log("______chk-1_____")
   //console.log(user_id + "" + status)
   ////console.log(order_product)
@@ -210,7 +211,7 @@ function order_deteils(req, res) {
 
   //console.log(req.query.id)
 
-  connection.query('SELECT * FROM `orders` WHERE `id` =' + req.query.id + '', (err, rslt) => {
+  connection.query('SELECT * FROM `orders` WHERE `id` =' + req.body.id + '', (err, rslt) => {
     if (err) {
       //console.log(err)
       res.status(200).send(err)
@@ -463,15 +464,16 @@ function order_status_change(req, res) {
           }
         })
       } else {
-        //console.log("Not Update Order Status")
+        res.status(200).send({ "response":"data not found"})
       }
     }
   })
 }
 
 function users_orders(req, res) {
-
-  connection.query('SELECT * FROM `orders_view` WHERE  `user_id`= ' + req.query.user_id + '  ORDER BY id DESC', (err, rows, fields) => {
+console.log("_____________users_orders______________")
+console.log(req.user)
+  connection.query('SELECT * FROM `orders_view` WHERE  `user_id`= ' + req.user + '  ORDER BY id DESC', (err, rows, fields) => {
     if (err) {
       //console.log("/orders_list_error" + err)
       res.status(200).send(err)

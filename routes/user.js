@@ -14,8 +14,9 @@ function user_products_search(req, res) {
 //     }
 // })
 // return false
-//console.log(req.query.user_id)
-var u_id = req.query.user_id
+console.log("_____________________chk___________________")
+var u_id = req.user
+console.log(u_id)
 if(u_id!==''){
   if(u_id != undefined){
     var condition_flag = true;
@@ -36,7 +37,7 @@ if(u_id!==''){
   //console.log(pg)
   //console.log(srch)
  
-  var newstr = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist, (SELECT id FROM cart WHERE cart.product_view_id = products_view.id AND user_id = "'+req.query.user_id+'") as cart FROM products_view WHERE is_delete = "1" AND '
+  var newstr = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.user+'") as wishlist, (SELECT id FROM cart WHERE cart.product_view_id = products_view.id AND user_id = "'+req.user+'") as cart FROM products_view WHERE is_delete = "1" AND '
   if(srch != ''){
   //console.log("trueeeee")
   newstr +='(`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%") AND '
@@ -93,7 +94,7 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
   
       //console.log("_______________ressend-1_______________")
   
-      var newqry = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist, (SELECT id FROM cart WHERE cart.product_view_id = products_view.id AND user_id = "'+req.query.user_id+'") as cart FROM products_view WHERE is_delete = "1" AND (`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" )'+' '+ ' ORDER BY '+ase_desc+ ' LIMIT'
+      var newqry = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.user+'") as wishlist, (SELECT id FROM cart WHERE cart.product_view_id = products_view.id AND user_id = "'+req.user+'") as cart FROM products_view WHERE is_delete = "1" AND (`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" )'+' '+ ' ORDER BY '+ase_desc+ ' LIMIT'
 
       var numRows;
       var queryPagination;

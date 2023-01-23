@@ -27,21 +27,46 @@ function signup(req, res) {
           //console.log({"message":"User Already Exist. Please Login"});
           res.status(200).send({"response":"Email Already Exist"})
         } else {
-          //console.log("send________otp")
-
-          function generateOTP() {
-            var digits = '123456789';
-            OTP = '';
-            for (let o = 0; o < 6; o++ ) {
-                OTP += digits[Math.floor(Math.random() * 10)];
-            }
-              connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
+          console.log("send________otp")
+            OTP = Math.floor(100000 + Math.random() * 900000);
+            console.log(OTP)
+            connection.query('SELECT * FROM `users_otp` WHERE `email`="'+edata+'" ', (err, rows, fields) => {
+              if (err) {
+                //console.log("/_otp_error" + err);
+                res.status(200).send(err)
+              } else {
+                if(rows!=''){
+                  // console.log(rows)
+                  connection.query('UPDATE `users_otp` SET `otp`="'+OTP+'" WHERE `email`="'+edata+'" ', (err, rows, fields) => {
+                    if (err) {
+                      //console.log("/_otp_error" + err);
+                      res.status(200).send(err)
+                    } else {
+                      rows.affectedRows=='1'?sendOtpEmail(OTP):console.log({"message":"invalid input data"})
+            
+                    }
+                  })
+                }else{
+                  console.log("nhi h, bataya na...")
+                connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
                 if (err) {
                   //console.log("/_otp_error" + err);
                   res.status(200).send(err)
                 } else {
-                  //console.log("_____");
-                  // res.status(200).send(OTP);
+                if(rows!=''){
+                  sendOtpEmail(OTP)
+                }else{
+                  console.log("Not insert in otp in database")
+                }
+
+                }
+              })
+                }
+      
+              }
+            })
+                function sendOtpEmail(OTP){
+
                   const mail_configs={
                     from:'ashish.we2code@gmail.com',
                     to:edata,
@@ -65,10 +90,7 @@ function signup(req, res) {
                       }
                     })
                 }
-              })
-            return OTP
-        }
-         //console.log(generateOTP()) 
+                
         }
 
       }
@@ -356,46 +378,69 @@ function user_forgot_password(req,res){
           //console.log(useremail);
           //console.log({"message":"User Already Exist. Please Login"});
           //res.status(200).send(false)
-          function generateOTP() {
-            var digits = '0123456789';
-            OTP = '';
-            for (let o = 0; o < 6; o++ ) {
-                OTP += digits[Math.floor(Math.random() * 10)];
-            }
-              connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
+            OTP =  Math.floor(100000 + Math.random() * 900000);
+            console.log(OTP);
+            connection.query('SELECT * FROM `users_otp` WHERE `email`="'+edata+'" ', (err, rows, fields) => {
+              if (err) {
+                //console.log("/_otp_error" + err);
+                res.status(200).send(err)
+              } else {
+                if(rows!=''){
+                  // console.log(rows)
+                  connection.query('UPDATE `users_otp` SET `otp`="'+OTP+'" WHERE `email`="'+edata+'" ', (err, rows, fields) => {
+                    if (err) {
+                      //console.log("/_otp_error" + err);
+                      res.status(200).send(err)
+                    } else {
+                      rows.affectedRows=='1'?sendOtpEmail(OTP):console.log({"message":"invalid input data"})
+            
+                    }
+                  })
+                }else{
+                  console.log("nhi h, bataya na...")
+                connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
                 if (err) {
                   //console.log("/_otp_error" + err);
                   res.status(200).send(err)
                 } else {
-                  //console.log("_____");
-                  // res.status(200).send({"message":"send otp on your mail"});
-                  const mail_configs={
-                    from:'ashish.we2code@gmail.com',
-                    to:edata,
-                    subject:'Apna Organic Store',
-                    text:"One-time-password "+ OTP
-                  }
-    
-                     nodemailer.createTransport({
-                      service:'gmail',
-                      auth:{
-                          user:'ashish.we2code@gmail.com',
-                          pass:'nczaguozpagczmjv'
-                      }
-                    })
-                    .sendMail(mail_configs,(err)=>{
-                      if(err){
-                        return //console.log('errrr',err);
-                      }else{
-                        return res.status(200).send({"message":"send otp on your mail"});
-                      }
-                    })
+                if(rows!=''){
+                  sendOtpEmail(OTP)
+                }else{
+                  console.log("Not insert in otp in database")
+                }
+
                 }
               })
-            return OTP
-        }
+                }
+      
+              }
+            })
 
-        //console.log(generateOTP()) 
+            function sendOtpEmail(OTP){
+
+              const mail_configs={
+                from:'ashish.we2code@gmail.com',
+                to:edata,
+                subject:'Apna Organic Store',
+                text:"One-time-password "+ OTP
+              }
+
+                 nodemailer.createTransport({
+                  service:'gmail',
+                  auth:{
+                      user:'ashish.we2code@gmail.com',
+                      pass:'nczaguozpagczmjv'
+                  }
+                })
+                .sendMail(mail_configs,(err)=>{
+                  if(err){
+                    return //console.log('errrr',err);
+                  }else{
+                    
+                    return res.status(200).send({"message":"Send otp in Gmail Succesfully"});
+                  }
+                })
+            }         
         } else {
           res.status(200).send({ "message": "User Not Found" })
         }
