@@ -9,7 +9,7 @@ const app = express();
 const bodyParser = require("body-parser");
 require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
-
+const {fetchuser} = require("./routes/middleware/auth_by_token.js")
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete_remove,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details,user_login,change_user_password,user_forgot_password} = require("./routes/auth.js")
@@ -21,7 +21,7 @@ const {vendors,vendor_register,vendor_list,vendor_update,content_manager,vendor_
 // const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
 const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
-const {review_rating,review_approved,review_list,review_detaile} = require("./routes/review")
+const {review_rating,review_approved,review_list,review_detaile,ratings_review_get} = require("./routes/review")
 const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
 const {user_products_search} = require("./routes/user.js")
 const {add_wishlist,remove_product_from_wishlist,wishlist} = require("./routes/wishlist.js")
@@ -36,6 +36,7 @@ const {add_email_template,update_email_template,email_template_list,email_templa
 const {add_notification_template ,update_notification_template,notification_template_list,notification_template_remove,notification_template_status,notification_template_get} = require("./routes/notification_template")
 const {add_fetured_product,update_fetured_product,featured_list}=require("./routes/fetured_product.js")
 const {notification}=require("./routes/notification.js")
+
 
 
 //__________+++___________testing______________+++_______________
@@ -93,7 +94,7 @@ var upload = multer({
 //   timeZone: 'Asia/Calcutta'
 // });
 
-// console.log(nDate);
+// //console.log(nDate);
 
 
 // module.exports={imageUpload}
@@ -126,8 +127,8 @@ app.put("/change_porduct_cover_image",change_porduct_cover_image)
 //________________user-sign-up_______________________
 app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
-app.post("/user_register",user_register)
-app.get("/user_details",user_details)
+app.post("/user_register",fetchuser,user_register)
+app.post("/user_details",fetchuser,user_details)
 app.post("/home",user_products_search)
 //app.post("/apna_organic_home",apna_organic_home)
 app.post("/user_login",user_login)
@@ -135,8 +136,8 @@ app.post("/change_user_password",change_user_password)
 app.post("/user_forgot_password",user_forgot_password)
 
 //_____________________cart__________________________
-app.post("/add_to_cart",add_to_cart)
-app.get("/cart",cart)
+app.post("/add_to_cart",fetchuser,add_to_cart)
+app.put("/cart",fetchuser,cart)
 app.put("/remove_product_from_cart",remove_cart)
 app.put("/cart_update",cart_update)
 app.get("/user_cart_list",cart_list)
@@ -198,6 +199,7 @@ app.post("/review_rating",review_rating)
 app.put("/review_approved",review_approved)
 app.post("/review_list",review_list)
 app.get("/review_detaile",review_detaile)
+app.post("/ratings_review_get",ratings_review_get)
  
 //_______________cammplain-&-support___________
 app.post("/add_complaint",add_complaint)
@@ -290,7 +292,7 @@ app.get("*", function(req, res){
 //__________+++___________testing______________+++_________
 app.post("/multer_image",multer_image)
 // app.post('/multer_image', (req, res, next) => {
-//   console.log("form___________")
+//   //console.log("form___________")
 
 //   const form = formidable({ multiples: true });
 
@@ -306,20 +308,20 @@ app.post("/multer_image",multer_image)
 //--------------------------------------------------
 
 //   const form = new formidable.IncomingForm();
-//   console.log(form)
+//   //console.log(form)
 //   form.parse(req, function(err, fields, file){
 //       var oldPath = file.image.path;
-//       console.log("oldPath_______")
-//       console.log(oldPath)
+//       //console.log("oldPath_______")
+//       //console.log(oldPath)
 
 //       var newPath = path.join(__dirname,'/apna_backend/public/catgory_images')+ '/'+files.image.name
-//       console.log("newPath________")
-//       console.log(newPath)
+//       //console.log("newPath________")
+//       //console.log(newPath)
 //       var rawData = fs.readFileSync(oldPath)
-//       console.log(newPath)
+//       //console.log(newPath)
       
 //       fs.writeFile(newPath, rawData, function(err){
-//           if(err) console.log(err)
+//           if(err) //console.log(err)
 //           return res.send("Successfully uploaded")
 //       })
 // })
@@ -330,10 +332,10 @@ var PORT =0
 SERVER_PORT == undefined || SERVER_PORT =='' ? PORT = 5000: PORT = SERVER_PORT;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${SERVER_PORT}.`);
+  //console.log(`Server is running on port ${SERVER_PORT}.`);
   //____________________node-cron-function_______________________________________
   publish_blog()
 });
 
 // const filePath = path.join(__dirname,'/apna_backend/public/catgory_images' );
-// console.log(filePath)
+// //console.log(filePath)
