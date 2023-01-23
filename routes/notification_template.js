@@ -88,10 +88,11 @@ function notification_template_remove(req,res){
   console.log(req.body)
   var {is_deleted,id}=req.body
   if(is_deleted == '0'){
-      connection.query('UPDATE `notification_template` SET `is_deleted`="'+is_deleted+'" WHERE `id`='+id+'', (err, rows, fields) => {
+      connection.query('UPDATE `notification_template` SET `is_deleted`="'+is_deleted+'" WHERE `id`='+id+'', (err, rows) => {
           if (err) {
             res.status(200).send(err)
           } else {
+            console.log(rows)
             rows.affectedRows == '1' ? res.status(200).send({ "message": "Deleted_successfully" }) : res.status(200).send({ "message": "invalid_id" })
           }
         })

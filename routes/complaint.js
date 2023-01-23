@@ -43,7 +43,7 @@ function complaint_update(req,res){
           console.log("error"+err)
           res.status(200).send(err)
         }else{
-            rows!=''?resstatus(200).send("Succesfully Update Complaint"):res.status(200).send("Faild Complaint Update")          
+            rows!=''?res.status(200).send("Succesfully Update Complaint"):res.status(200).send("Faild Complaint Update")          
         }
     })
 }

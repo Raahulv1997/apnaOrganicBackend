@@ -148,7 +148,7 @@ function coupons_delete(req,res){
 var {id,is_active}=req.body
 console.log(req.body)
 if(is_active == '0'){
-  connection.query('UPDATE vendor SET is_active= "'+is_active+'" WHERE id='+id+' ', (err, rows, fields) => {
+  connection.query('UPDATE coupons SET is_active= "'+is_active+'" WHERE id='+id+' ', (err, rows, fields) => {
     if (err) {
       console.log(err)
       res.status(200).send(err)

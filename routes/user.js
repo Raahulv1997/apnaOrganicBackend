@@ -35,7 +35,8 @@ if(u_id!==''){
   var pg = req.query
   console.log(pg)
   console.log(srch)
-  var newstr = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist, (SELECT is_deleted FROM fetured_product_table WHERE fetured_product_table.product_id = products_view.product_id AND fetured_product_table.start_date < NOW() AND fetured_product_table.end_date > NOW() ) as is_fetured_product FROM products_view WHERE is_delete = "1" AND '
+ 
+  var newstr = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist, (SELECT id FROM cart WHERE cart.product_view_id = products_view.id AND user_id = "'+req.query.user_id+'") as cart FROM products_view WHERE is_delete = "1" AND '
   if(srch != ''){
   console.log("trueeeee")
   newstr +='(`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%") AND '
@@ -92,7 +93,7 @@ console.log(ase_desc)
   
       console.log("_______________ressend-1_______________")
   
-      var newqry = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist FROM products_view WHERE is_delete = "1" AND (`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" )'+' '+ ' ORDER BY '+ase_desc+ ' LIMIT'
+      var newqry = 'SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.id AND user_id = "'+req.query.user_id+'") as wishlist, (SELECT id FROM cart WHERE cart.product_view_id = products_view.id AND user_id = "'+req.query.user_id+'") as cart FROM products_view WHERE is_delete = "1" AND (`product_title_name` LIKE "%'+srch+'%" OR `product_description` LIKE "%'+srch+'%" OR `product_type` LIKE "%'+srch+'%" OR `colors` LIKE "%'+srch+'%" )'+' '+ ' ORDER BY '+ase_desc+ ' LIMIT'
 
       var numRows;
       var queryPagination;

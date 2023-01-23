@@ -28,7 +28,7 @@ function signup(req, res) {
           console.log("send________otp")
 
           function generateOTP() {
-            var digits = '0123456789';
+            var digits = '123456789';
             OTP = '';
             for (let o = 0; o < 6; o++ ) {
                 OTP += digits[Math.floor(Math.random() * 10)];

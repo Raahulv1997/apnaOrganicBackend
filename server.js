@@ -11,7 +11,7 @@ require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
 
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
-const {products_search,productpost,products_varient_update,products_update,products_delete,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image} = require("./routes/product.js")
+const {products_search,productpost,products_varient_update,products_update,products_delete_remove,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image} = require("./routes/product.js")
 const {signup,otp_verify,user_register,user_details,user_login,change_user_password,user_forgot_password} = require("./routes/auth.js")
 const {add_to_cart,cart, cart_update,remove_cart,cart_list} = require("./routes/cart.js")
 const {admin_login,update_password,admin_forgot_password,update_admin,add_admin,admin_search,admin,vendor_availability,vendor_requests,brand_list} = require("./routes/admin.js")
@@ -34,7 +34,8 @@ const {publish_blog} = require("./routes/cron_.js")
 const {add_banner,update_banner,banner_list,banner_delete,cahange_banner_status} = require("./routes/banner.js")
 const {add_email_template,update_email_template,email_template_list,email_template_remove,email_template_status,email_template_get} = require("./routes/email_template")
 const {add_notification_template ,update_notification_template,notification_template_list,notification_template_remove,notification_template_status,notification_template_get} = require("./routes/notification_template")
-const {add_fetured_product,update_fetured_product,get_singal_fetured_product}=require("./routes/fetured_product.js")
+const {add_fetured_product,update_fetured_product,featured_list}=require("./routes/fetured_product.js")
+const {notification}=require("./routes/notification.js")
 
 
 //__________+++___________testing______________+++_______________
@@ -112,7 +113,7 @@ app.post("/products_search",products_search)
 app.post("/products",productpost)
 app.put("/products_varient_update",products_varient_update)
 app.put("/products_update",products_update)
-app.put("/products_delete",products_delete)
+app.put("/products_delete_remove",products_delete_remove)
 app.post("/products_varient_add",products_varient_add)
 app.get("/product_details",product)
 app.get("/products_pricing",products_pricing)
@@ -257,10 +258,13 @@ app.post("/email_template_list",email_template_list)
 app.put("/email_template_remove",email_template_remove)
 app.put("/email_template_status",email_template_status)
 app.get("/email_template_get",email_template_get)
+
+
 //___________________fetured_product____________________
 app.post("/add_fetured_product",add_fetured_product)
 app.put("/update_fetured_product",update_fetured_product)
-app.get("/get_singal_fetured_product",get_singal_fetured_product)
+app.post("/featured_list",featured_list)
+//app.post("/featured_list",featured_list)
 
 
 
@@ -272,11 +276,10 @@ app.put("/notification_template_remove",notification_template_remove)
 app.put("/notification_template_status",notification_template_status)
 app.get("/notification_template_get",notification_template_get)
 
+//_____________notification_- user_&_vendor_&_admin - __________
+app.post("/notification",notification)
 
-
-
-
-//___________________invalid_url_error_______________
+//___________________invalid_url_error____________________
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
@@ -284,7 +287,7 @@ app.get("*", function(req, res){
 
 
 
-//__________+++___________testing______________+++_______________
+//__________+++___________testing______________+++_________
 app.post("/multer_image",multer_image)
 // app.post('/multer_image', (req, res, next) => {
 //   console.log("form___________")

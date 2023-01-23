@@ -18,7 +18,7 @@ var {user_id,product_view_id,price,discount,quantity,is_active} = req.body
 
 function cart(req,res){
   console.log(req.query.user_id)
-    connection.query('SELECT * FROM `cart_view` WHERE user_id='+req.query.user_id+'', (err, rows, fields) => {
+    connection.query('SELECT * FROM `cart_view2` WHERE user_id='+req.query.user_id+'', (err, rows, fields) => {
         if (err) {
           console.log(err)
           res.status(200).send(err)
