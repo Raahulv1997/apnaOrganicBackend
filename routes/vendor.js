@@ -52,7 +52,6 @@ function vendor_signup(req, res) {
           //console.log(useremail);
           res.send({ "message": "Vendor of this e-mail:'" + useremail + "' Already Exist. Please Login", "response": false })
         } else {
-          //console.log("send________otp")
 
           function generateOTP() {
             var digits = '123456789';
