@@ -94,7 +94,7 @@ function vendor_signup(req, res) {
             })
             return OTP
           }
-          //console.log(generateOTP())
+          console.log(generateOTP())
         }
       }
       signup_condition = true;

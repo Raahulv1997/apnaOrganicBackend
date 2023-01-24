@@ -2,15 +2,15 @@ const connection = require('../db')
 
 function add_wishlist(req,res){
     //console.log("req.body")
-    var {user_id,product_view_id}=req.body;
-    connection.query('SELECT * FROM `wishlist` WHERE `user_id`='+user_id+'  AND `product_id`='+product_view_id+' ',(err,results)=>{
+    var {product_view_id}=req.body;
+    connection.query('SELECT * FROM `wishlist` WHERE `user_id`='+req.user+'  AND `product_id`='+product_view_id+' ',(err,results)=>{
         if(err){
           //console.log(err)
           res.status(502).send(err)
         }else{
          //console.log("_____")
          if(results==''){   
-        connection.query("INSERT INTO `wishlist`(`user_id`, `product_id`) VALUES ('"+user_id+"','"+product_view_id+"')",(err,results)=>{
+        connection.query("INSERT INTO `wishlist`(`user_id`, `product_id`) VALUES ('"+req.user+"','"+product_view_id+"')",(err,results)=>{
       if(err){
         //console.log(err)
         res.status(502).send(err)
@@ -28,7 +28,7 @@ function add_wishlist(req,res){
 
 function remove_product_from_wishlist(req,res){
   //console.log("req.body")
-    connection.query("DELETE FROM `wishlist` WHERE `product_id` = '"+req.body.product_id+"' AND `user_id` = '"+req.body.user_id+"'",(err,results)=>{
+    connection.query("DELETE FROM `wishlist` WHERE `product_id` = '"+req.body.product_id+"' AND `user_id` = '"+eq.user+"'",(err,results)=>{
         if(err){
           //console.log(err)
           res.status(502).send(err)
@@ -42,7 +42,7 @@ function remove_product_from_wishlist(req,res){
 
 function wishlist(req,res){
   
-  connection.query("SELECT * FROM `wishlist_view1` WHERE user_id = '"+req.query.user_id+"'",(err,results)=>{
+  connection.query("SELECT * FROM `wishlist_view1` WHERE user_id = '"+req.user+"'",(err,results)=>{
     if(err){
       //console.log(err)
       res.status(200).send(err)

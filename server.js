@@ -148,6 +148,7 @@ app.post("/home",(req,res,next)=>{
     next()
   }
 },user_products_search)
+
 //app.post("/apna_organic_home",apna_organic_home)
 app.post("/user_login",user_login)
 app.post("/change_user_password",change_user_password)
@@ -226,9 +227,9 @@ app.post("/complaint_search",complaint_search)
 
 
 //_______________add_wishlist_______________________
-app.post("/add_product_wishlist",add_wishlist)
-app.put("/remove_product_from_wishlist",remove_product_from_wishlist)
-app.get("/wishlist",wishlist)
+app.post("/add_product_wishlist", fetchuser,add_wishlist)
+app.put("/remove_product_from_wishlist", fetchuser,remove_product_from_wishlist)
+app.post("/wishlist",fetchuser,wishlist)
 
 
 app.post("/transaction",payment)
