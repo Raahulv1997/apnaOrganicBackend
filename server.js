@@ -7,8 +7,11 @@ const fs  = require('fs');
 const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
+var jwt = require('jsonwebtoken');
 require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
+const USER_JWT_SECRET_KEY =   process.env.USER_JWT_SECRET_KEY
+
 const {fetchuser} = require("./routes/middleware/auth_by_token.js")
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete_remove,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image} = require("./routes/product.js")
@@ -129,7 +132,22 @@ app.post("/sign_up",signup)
 app.post("/otp_verification",otp_verify)
 app.post("/user_register",fetchuser,user_register)
 app.post("/user_details",fetchuser,user_details)
-app.post("/home",user_products_search)
+app.post("/home",(req,res,next)=>{
+  if('user_token' in req.headers){
+    var token_user = req.headers.user_token
+    try {
+        const data = jwt.verify(token_user, USER_JWT_SECRET_KEY);
+        req.user = data.id;
+        next();
+    } catch (error) {
+        res.status(401).send({ error: "Please authenticate using a valid token" })
+    }
+  }else{
+    user_products_search
+    req.user=""
+    next()
+  }
+},user_products_search)
 //app.post("/apna_organic_home",apna_organic_home)
 app.post("/user_login",user_login)
 app.post("/change_user_password",change_user_password)
@@ -138,8 +156,8 @@ app.post("/user_forgot_password",user_forgot_password)
 //_____________________cart__________________________
 app.post("/add_to_cart",fetchuser,add_to_cart)
 app.put("/cart",fetchuser,cart)
-app.put("/remove_product_from_cart",remove_cart)
-app.put("/cart_update",cart_update)
+app.put("/remove_product_from_cart",fetchuser,remove_cart)
+app.put("/cart_update",fetchuser,cart_update)
 app.get("/user_cart_list",cart_list)
 //_________________admin_login_______________________
 app.post("/admin_login", admin_login)
@@ -153,13 +171,13 @@ app.get("/vendor_requests", vendor_requests)
 app.post("/vendor_list",vendor_list)
 app.get("/brand_list", brand_list)
 //________________order______________________________
-app.post("/orders",orders)
+app.post("/orders",fetchuser,orders)
 //app.post("/orders",order_search)
-app.get("/order_deteils",order_deteils)
-app.post("/orders_list",orders_list)
-app.put("/order_status_change",order_status_change)
+app.post("/order_deteils",fetchuser,order_deteils)
+app.post("/orders_list",fetchuser,orders_list)
+app.put("/order_status_change",fetchuser,order_status_change)
 app.put("/vendor_availability",vendor_availability)
-app.get("/user_orders",users_orders)
+app.get("/user_orders",fetchuser,users_orders)
 //_______________invoice_list________________________
 app.get("/invoice_list",invoice_list)
 app.post("/invoice_search",invoice_search)

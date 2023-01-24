@@ -10,71 +10,84 @@ const fetchuser = (req, res, next) => {
     console.log("fetchuser++++++++++++++")
     //var token = req.headers.user_token
     //var token = req.headers.admin_token
-
-if(req.headers.admin_token!=''&&req.headers.admin_token!=undefined){
-    console.log("ADMIN++++++++++++++")
-    var token_admin = req.headers.admin_token
-    console.log(token_admin)
-
-    try {
-        var admin_data = jwt.verify(token_admin, ADMIN_JWT_SECRET_KEY);
-        var aid = admin_data.id
-        console.log(aid)
-
-        connection.query("SELECT * FROM `admin_login_details` WHERE `id` = "+aid+"",async (err, rows) => {
-            if(err){
-              console.log("error"+err)
-              res.status(200).send(err)
-            }else{
-            if(rows!=''){
-                console.log("admin_login_details+++++++")
-                console.log(rows)
-
-                if(req.body.user_id!=undefined){
-                    req.user=req.body.user_id
-                    console.log("user_id")
-                    console.log(req.user)
-                    next();
-                }
-                if(req.body.vendor_id!=undefined){
-                    req.user=req.body.vendor_id
-                    console.log("vendor_id")
-                    console.log(req.user)
-                    next();
-                }
-                if(req.body.admin_id!=undefined){
-                    req.user=req.body.admin_id
-                    console.log(req.user)
-                    console.log("admin_id")
-                    next();
-                }
-            }else{
-               res.status(200).send("admin not matched")
+    if('admin_token' in req.headers || 'user_token' in req.headers || 'vendor_token' in req.headers ){
+        if(req.headers.admin_token!=''&&req.headers.admin_token!=undefined){
+            console.log("ADMIN++++++++++++++")
+            var token_admin = req.headers.admin_token
+            console.log(token_admin)
+        
+            try {
+                var admin_data = jwt.verify(token_admin, ADMIN_JWT_SECRET_KEY);
+                var aid = admin_data.id
+                console.log(aid)
+        
+                connection.query("SELECT * FROM `admin_login_details` WHERE `id` = "+aid+"",async (err, rows) => {
+                    if(err){
+                      console.log("error"+err)
+                      res.status(200).send(err)
+                    }else{
+                    if(rows!=''){
+                        console.log("admin_login_details+++++++")
+                        console.log(rows)
+        
+                        if(req.body.user_id!=undefined){
+                            req.user=req.body.user_id
+                            console.log("user_id")
+                            console.log(req.user)
+                            next();
+                        }
+                        else if(req.body.vendor_id!=undefined){
+                            req.user=req.body.vendor_id
+                            console.log("vendor_id")
+                            console.log(req.user)
+                            next();
+                        }
+                        else if(req.body.admin_id!=undefined){
+                            req.user=req.body.admin_id
+                            console.log(req.user)
+                            console.log("admin_id")
+                            next();
+                        }else{
+                            req.user=00
+                            next(); 
+                        }
+                    }else{
+                       res.status(200).send("admin not matched")
+                    }
+                  
+                    }
+                  })
+            } catch (error) {
+                res.status(401).send({ error: "Please authenticate using a valid token" })
             }
-          
-            }
-          })
-    } catch (error) {
-        res.status(401).send({ error: "Please authenticate using a valid token" })
+        }else{
+        
+        }
+        //_______________________++++++++++++___________________________
+        
+        if(req.headers.user_token!=''&&req.headers.user_token!=undefined){
+            var token_user = req.headers.user_token
+              try {
+                  const data = jwt.verify(token_user, USER_JWT_SECRET_KEY);
+                  req.user = data.id;
+                  console.log(data)
+                  console.log(req.user)
+                  next();
+              } catch (error) {
+                  res.status(401).send({ error: "Please authenticate using a valid token" })
+              }
+          }
+
+    }else{
+        //res.send(req.headers.admin_token)
+        res.send({"response":"header error"})  
+
     }
-}else{
 
-}
 
 //_______________________________________________________________________________________________________________
 
-if(req.headers.user_token!=''&&req.headers.user_token!=undefined){
-  var token_user = req.headers.user_token
-    try {
-        const data = jwt.verify(token_user, USER_JWT_SECRET_KEY);
-        req.user = data.id;
-        console.log(data)
-        console.log(req.user)
-        next();
-    } catch (error) {
-        res.status(401).send({ error: "Please authenticate using a valid token" })
-    }
-}
+
 
 
 

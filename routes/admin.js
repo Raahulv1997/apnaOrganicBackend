@@ -100,20 +100,20 @@ if(admin_email != '' && admin_password != '' && new_admin_password != ''){
                         res.send(err)
                         }else{
                             //console.log("password_updated")
-                            res.send("password_updated")
+                            res.send({"response":"password_updated"})
                             
                         }
                       })
-                    }else{res.send("password not matched")}
+                    }else{res.send({"response":"password not matched"})}
           
 
             }else{
-                res.send("email not matched") 
+                res.send({"response":"email not matched"}) 
             }
         }
 })
 }else{
-    //console.log("plaese fill all input")
+    res.status(200).send({"response":"please fill all input"})
 }
 }
 
@@ -159,7 +159,7 @@ connection.query('SELECT `admin_email`, `admin_password` FROM `admin_login_detai
 
         }else{
             //console.log("invalid_mail")
-            res.send({message:"invalid_mail"})
+            res.send({"response":"invalid_mail"})
         }
     }
 })
