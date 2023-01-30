@@ -11,7 +11,7 @@ function review_rating(req,res){
     res.status(200).send(err)
       }else{
           //console.log("review_rating Data Insert Succecsfully")
-        res.status(201).send("Review Rating Data Insert Succecsfully")
+        res.status(201).send({message:"Review Rating Data Insert Succecsfully"})
       }
     }) 
 }
@@ -25,7 +25,7 @@ function review_approved(req,res){
       res.status(200).send(err)
         }else{
             //console.log("review_approved update Succecsfully")
-          res.status(200).send("Review Approved Update Succecsfully")
+          res.status(200).send({message:"Review Approved Update Succecsfully"})
         }
     }) 
 }
@@ -95,11 +95,74 @@ connection.query("SELECT * FROM `review` WHERE `id` ="+req.query.id+"",(err,rows
     if(rows!=''){
       res.status(200).send(rows)
     }else{
-      res.status(200).send("error")
+      // res.status(200).send("error")
     }
   }
 })
 }
 
+function ratings_review_get(req,res){
+ var ratings_review_get =[];
+  var {product_id}=req.body;
+  connection.query('SELECT DISTINCT review_rating,COUNT(user_id) user_count FROM review WHERE product_id="'+product_id+'" GROUP BY review_rating ',(err,rows,fields)=>{
+    if(err){
+      //console.log(err)
+      res.status(200).send(err)
+    }else{
+      if(rows!=''){
+        // res.status(200).send(rows)
+        ratings_review_get.push(rows)
+      }else{
+        // res.status(200).send("error")
+      }
+    }
+  })
 
-module.exports={review_rating,review_approved,review_list,review_detaile}
+  connection.query('SELECT ROUND(AVG(`review_rating`), 1) as avgRating FROM review WHERE product_id="'+product_id+'"',(err,rows,fields)=>{
+    if(err){
+      //console.log(err)
+      res.status(200).send(err)
+    }else{
+      if(rows!=''){
+        // res.status(200).send(rows)
+        ratings_review_get.push(rows)
+      }else{
+        res.status(200).send("error")
+      }
+    }
+  })
+
+  connection.query('SELECT COUNT(`user_id`) total_ratings FROM `review` WHERE `product_id`="'+product_id+'" ',(err,rows,fields)=>{
+    if(err){
+      //console.log(err)
+      res.status(200).send(err)
+    }else{
+      if(rows!=''){
+        // res.status(200).send(rows)
+        ratings_review_get.push(rows)
+      }else{
+        res.status(200).send("error")
+      }
+    }
+  })
+
+  connection.query('SELECT COUNT(`comment`) total_review FROM review WHERE `product_id`="'+product_id+'"  AND `comment` != "" ',(err,rows,fields)=>{
+    if(err){
+      //console.log(err)
+      res.status(200).send(err)
+    }else{
+      if(rows!=''){
+        ratings_review_get.push(rows)
+        res.status(200).send(ratings_review_get)
+      }else{
+        res.status(200).send("error")
+      }
+    }
+  })
+
+}
+
+
+
+
+module.exports={review_rating,review_approved,review_list,review_detaile,ratings_review_get}

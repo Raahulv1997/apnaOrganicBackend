@@ -24,7 +24,13 @@ function cart(req,res){
           //console.log(err)
           res.status(200).send(err)
         } else {
+          if(rows!=''){
             res.status(200).send(rows)
+          }else{
+            res.status(200).send({"response":"cart_empty"})
+
+          }
+            
             //console.log("_____") 
         }})   
 }
@@ -66,7 +72,13 @@ function remove_cart(req,res){
         res.status(502).send(err)
       }else{
        //console.log(results.affectedRows)
-       results!=''?res.status(201).send(results):res.status(200).send("invalid url")
+       //results!=''?res.status(201).send(results):res.status(200).send("invalid url")
+       if(results!=''){
+        res.status(200).send(results)
+      }else{
+        res.status(200).send({"response":"cart_empty"})
+
+      }
       }
   })
   }

@@ -273,6 +273,7 @@ async function user_login(req,res){
 
 var {user_email,user_password} = req.body
 
+// if (rst) {
 const salt = await bcrypt.genSalt(10);
 password_salt = await bcrypt.hash(user_password, salt);
 //console.log(password_salt)
@@ -318,7 +319,9 @@ password_salt = await bcrypt.hash(user_password, salt);
             
         }
 })
-
+// } else {
+//   res.status(513).send({ "message": "invalid address" })
+// }
 }
 
 function change_user_password(req,res){
@@ -397,7 +400,7 @@ function user_forgot_password(req,res){
                     }
                   })
                 }else{
-                  console.log("nhi h, bataya na...")
+              
                 connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
                 if (err) {
                   //console.log("/_otp_error" + err);

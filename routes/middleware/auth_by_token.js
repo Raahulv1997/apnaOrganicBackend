@@ -38,6 +38,9 @@ const fetchuser = (req, res, next) => {
                         }
                         else if(req.body.vendor_id!=undefined){
                             req.user=req.body.vendor_id
+
+                            if(req.body.vendor_id == 'all'){req.scrt="y9a2d3a2v8"}
+                            
                             console.log("vendor_id")
                             console.log(req.user)
                             next();
@@ -48,7 +51,7 @@ const fetchuser = (req, res, next) => {
                             console.log("admin_id")
                             next();
                         }else{
-                            req.user=00
+                           req.user=00
                             next(); 
                         }
                     }else{
@@ -63,14 +66,14 @@ const fetchuser = (req, res, next) => {
         }else{
         
         }
-        //_______________________++++++++++++___________________________
+        //_______________________++++++--user--++++++___________________________
         
         if(req.headers.user_token!=''&&req.headers.user_token!=undefined){
             var token_user = req.headers.user_token
               try {
-                  const data = jwt.verify(token_user, USER_JWT_SECRET_KEY);
-                  req.user = data.id;
-                  console.log(data)
+                  const data_u = jwt.verify(token_user, USER_JWT_SECRET_KEY);
+                  req.user = data_u.id;
+                  console.log(data_u)
                   console.log(req.user)
                   next();
               } catch (error) {
@@ -78,6 +81,21 @@ const fetchuser = (req, res, next) => {
               }
           }
 
+
+        //_______________________++++++--vendor--++++++___________________________
+        
+        if(req.headers.vendor_token!=''&&req.headers.vendor_token!=undefined){
+            var token_vendor = req.headers.vendor_token
+              try {
+                  const data_v = jwt.verify(token_vendor, VENDOR_JWT_SECRET_KEY);
+                  req.user = data_v.id;
+                  console.log(data_v)
+                  console.log(req.user)
+                  next();
+              } catch (error) {
+                  res.status(401).send({ error: "Please authenticate using a valid token" })
+              }
+          }
     }else{
         //res.send(req.headers.admin_token)
         res.send({"response":"header error"})  

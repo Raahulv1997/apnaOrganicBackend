@@ -24,7 +24,7 @@ const {vendors,vendor_register,vendor_list,vendor_update,content_manager,vendor_
 // const {vendors,vendor_signup,vendor_otp_verify,vendor_register,vendor_list,vendor_update} = require("./routes/vendor")
 const {product_bulk_uploads} = require("./routes/product_bulk_uploads.js")
 const {coupon,coupons_add,coupon_update,coupons_list,coupons_delete} = require("./routes/coupons")
-const {review_rating,review_approved,review_list,review_detaile} = require("./routes/review")
+const {review_rating,review_approved,review_list,review_detaile,ratings_review_get} = require("./routes/review")
 const {add_complaint,complaint_details,complaint_update,complaint_search} = require("./routes/complaint")
 const {user_products_search} = require("./routes/user.js")
 const {add_wishlist,remove_product_from_wishlist,wishlist} = require("./routes/wishlist.js")
@@ -185,7 +185,7 @@ app.post("/invoice_search",invoice_search)
 app.get("/invoice_details",invoice_details)
 
 //______________vendor____________________
-app.get("/vendors",vendors)
+app.post("/vendors",fetchuser,vendors)
 app.post("/vendor_signup",vendor_signup)
 app.post("/vendor_otp_verify",vendor_otp_verify)
 app.post("/vendor_login",vendor_login)
@@ -218,6 +218,7 @@ app.post("/review_rating",review_rating)
 app.put("/review_approved",review_approved)
 app.post("/review_list",review_list)
 app.get("/review_detaile",review_detaile)
+app.post("/ratings_review_get",ratings_review_get)
  
 //_______________cammplain-&-support___________
 app.post("/add_complaint",add_complaint)

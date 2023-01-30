@@ -2,14 +2,20 @@ const connection = require('../db')
 const nodemailer = require("nodemailer")
 const bcrypt = require("bcrypt")
 const fs = require('fs');
-const path = require("path")
+const path = require("path");
+const { json } = require('body-parser');
+var jwt = require('jsonwebtoken');
+
+const VENDOR_JWT_SECRET_KEY = process.env.VENDOR_JWT_SECRET_KEY
+
 
 var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z]{2,4})+$/;
 
 function vendors(req, res) {
   // //console.log(typeof req.query.category)
   //res.send(req.query.category)
-  if (req.query.id == 'all') {
+  console.log(req.user)
+  if (req.body.vendor_id == 'all' && req.scrt == 'y9a2d3a2v8') {
     connection.query('SELECT * FROM vendor WHERE 1  ', (err, rows, fields) => {
       if (err) {
         res.status(200).send(err)
@@ -18,7 +24,7 @@ function vendors(req, res) {
       }
     })
   } else {
-    connection.query('SELECT * FROM vendor WHERE id =' + req.query.id + ' ', (err, rows, fields) => {
+    connection.query('SELECT * FROM vendor WHERE id ='+req.user+'', (err, rows, fields) => {
       if (err) {
         //console.log("/vendors_error" + err)
         res.status(200).send(err)
@@ -32,9 +38,10 @@ function vendors(req, res) {
     })
   }
 }
+
+
 var signup_condition = false;
 var otp_verify_condition = false;
-
 function vendor_signup(req, res) {
   var email_data = req.body.email;
   var rst = regex.test(email_data);
@@ -52,48 +59,72 @@ function vendor_signup(req, res) {
           //console.log(useremail);
           res.send({ "message": "Vendor of this e-mail:'" + useremail + "' Already Exist. Please Login", "response": false })
         } else {
-
-          function generateOTP() {
-            var digits = '123456789';
-            var OTP = '';
-            for (let o = 0; o < 6; o++) {
-              OTP += digits[Math.floor(Math.random() * 10)];
-            }
-            connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("' + email_data + '","' + OTP + '")', (err, rows, fields) => {
+          //console.log("send________otp")
+            var OTP = Math.floor(100000 + Math.random() * 900000);
+        
+            console.log(OTP)
+            connection.query('SELECT * FROM `users_otp` WHERE `email`="'+email_data+'" ', (err, rows, fields) => {
               if (err) {
                 //console.log("/_otp_error" + err);
                 res.status(200).send(err)
               } else {
-                //console.log("_____");
-                // res.send({"message":"send otp on your mail"});
-
-                const mail_configs = {
-                  from: 'ashish.we2code@gmail.com',
-                  to: email_data,
-                  subject: 'Apna Organic Store',
-                  text: "One-time-password " + OTP
-                }
-
-                nodemailer.createTransport({
-                  service: 'gmail',
-                  auth: {
-                    user: 'ashish.we2code@gmail.com',
-                    pass: 'nczaguozpagczmjv'
-                  }
-                })
-                  .sendMail(mail_configs, (err) => {
+                if(rows!=''){
+                  // console.log(rows)
+                  connection.query('UPDATE `users_otp` SET `otp`="'+OTP+'" WHERE `email`="'+email_data+'" ', (err, rows, fields) => {
                     if (err) {
-                      return //console.log('errrr', err);
+                      //console.log("/_otp_error" + err);
+                      res.status(200).send(err)
                     } else {
-                      return res.status(200).send({ "message": "Send otp in Gmail Succesfully" });
+                      rows.affectedRows=='1'?sendOtpEmail(OTP):console.log({"message":"invalid input data"})
+            
                     }
                   })
+                }else{
+                  console.log("nhi h, bataya na...")
+                connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+email_data+'","'+OTP+'")', (err, rows, fields) => {
+                if (err) {
+                  //console.log("/_otp_error" + err);
+                  res.status(200).send(err)
+                } else {
+                if(rows!=''){
+                  sendOtpEmail(OTP)
+                }else{
+                  console.log("Not insert in otp in database")
+                }
 
+                }
+              })
+                }
+      
               }
             })
-            return OTP
-          }
-          console.log(generateOTP())
+
+
+            function sendOtpEmail(OTP){
+
+              const mail_configs={
+                from:'ashish.we2code@gmail.com',
+                to:email_data,
+                subject:'Apna Organic Store',
+                text:"One-time-password "+ OTP
+              }
+
+                 nodemailer.createTransport({
+                  service:'gmail',
+                  auth:{
+                      user:'ashish.we2code@gmail.com',
+                      pass:'nczaguozpagczmjv'
+                  }
+                })
+                .sendMail(mail_configs,(err)=>{
+                  if(err){
+                    return //console.log('errrr',err);
+                  }else{
+                    
+                    return res.status(200).send({"message":"Send otp in Gmail Succesfully"});
+                  }
+                })
+            }
         }
       }
       signup_condition = true;
@@ -139,9 +170,17 @@ async function vendor_otp_verify(req, res) {
                 } else {
                   //console.log("_____")
                   if (rows != '') {
+                    
                     respo = rows
-                    //console.log("+++++++++++++++++++")
-                    //console.log("rows")
+                    var v_token=''
+                    var vid = rows.insertId
+                    jwt.sign({ id: rows.insertId }, VENDOR_JWT_SECRET_KEY, function(err,token){
+                      console.log(token);
+                      if(err){
+                      console.log(err);
+                      }
+                      v_token = token
+                    })
                     //_____________________________________________________________
                     connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("' + rows.insertId + '","admin","vendor requested for approve","unread") , ("' + rows.insertId + '","vendor","please register your information in profile","unread")', (err, rows) => {
                       if (err) {
@@ -150,7 +189,7 @@ async function vendor_otp_verify(req, res) {
                         //console.log("_______notification-send-admin__________")
                       }
                     })
-                    connection.query('SELECT * FROM `email_template` WHERE  `email_type` = "Shipped"', (err, rows) => {
+                    connection.query('SELECT * FROM `email_template` WHERE  `email_type` = "pending"', (err, rows) => {
                       if (err) {
                         //console.log({ "error": err })
                       } else {
@@ -186,7 +225,7 @@ async function vendor_otp_verify(req, res) {
                                   }
                                 })
                                 signup_condition = false
-                                return res.status(202).send(respo);
+                                return res.status(202).send({"response":respo,"vendor_token":v_token});
                               }
                             })
                         } else {
@@ -256,14 +295,20 @@ async function vendor_login(req, res) {
       res.send(err)
     } else {
       if (results != '') {
+        var v_token_log =''
+        jwt.sign({ id: results[0].id }, VENDOR_JWT_SECRET_KEY, async function(err,token){
+          console.log(token);
+          if(err){
+          console.log(err);
+          }
+          v_token_log = token
 
-        //console.log("_____")
-        // return false
-        var psw = JSON.parse(JSON.stringify(results[0].password))
-        //console.log(typeof psw)
-        const validPassword = await bcrypt.compare(password, psw);
-        //console.log(validPassword)
-        validPassword ? res.send({ "id": results[0].id, "vendor_email": results[0].email }) : res.send({ "message": "please fill valid credintials" })
+          var psw = JSON.parse(JSON.stringify(results[0].password))
+          const validPassword = await bcrypt.compare(password, psw);
+          validPassword ? res.send({ "id": results[0].id, "vendor_email": results[0].email,"vendor_token":v_token_log}) : res.send({ "message": "please fill valid credintials" })
+  
+        })
+        console.log(v_token_log)
 
       } else {
         res.send({ "message": "check_credintials" })
@@ -341,7 +386,7 @@ function vendor_register(req, res) {
     } else {
       //console.log("_____")
       //res.status(200).send(rows)
-      connection.query('SELECT `admin_email` FROM admin_login_details WHERE `admin_type`="super_admin"', (err, rslt) => {
+      connection.query('SELECT `admin_email` FROM admin_login_details WHERE `admin_type`="superadmin"', (err, rslt) => {
         if (err) {
           //console.log({ "error": err })
         } else {
@@ -458,7 +503,7 @@ function vendor_update(req, res) {
   //console.log(typeof social_media_links_new)
   //console.log(social_media_links_new)
 
-
+  
   if (req.file == undefined || req.file == '') {
     // image="no image"
     connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "'  WHERE id='" + id + "'", async (err, rows, fields) => {
@@ -663,46 +708,69 @@ function vendor_forgot_password(req, res) {
           //console.log(useremail);
           // //console.log({"message":"User Already Exist. Please Login"});
           //res.status(200).send(false)
-          function generateOTP() {
-            var digits = '123456789';
-            OTP = '';
-            for (let o = 0; o < 6; o++) {
-              OTP += digits[Math.floor(Math.random() * 10)];
-            }
-            connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("' + edata + '","' + OTP + '")', (err, rows, fields) => {
+          OTP =  Math.floor(100000 + Math.random() * 900000);
+          console.log(OTP);
+          connection.query('SELECT * FROM `users_otp` WHERE `email`="'+edata+'" ', (err, rows, fields) => {
+            if (err) {
+              //console.log("/_otp_error" + err);
+              res.status(200).send(err)
+            } else {
+              if(rows!=''){
+                // console.log(rows)
+                connection.query('UPDATE `users_otp` SET `otp`="'+OTP+'" WHERE `email`="'+edata+'" ', (err, rows, fields) => {
+                  if (err) {
+                    //console.log("/_otp_error" + err);
+                    res.status(200).send(err)
+                  } else {
+                    rows.affectedRows=='1'?sendOtpEmail(OTP):console.log({"message":"invalid input data"})
+          
+                  }
+                })
+              }else{
+                console.log("nhi h, bataya na...")
+              connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
               if (err) {
                 //console.log("/_otp_error" + err);
                 res.status(200).send(err)
               } else {
-                //console.log("_____");
-                // res.status(200).send({"message":"send otp on your mail"});
-                const mail_configs = {
-                  from: 'ashish.we2code@gmail.com',
-                  to: edata,
-                  subject: 'Apna Organic Store',
-                  text: "One-time-password " + OTP
-                }
+              if(rows!=''){
+                sendOtpEmail(OTP)
+              }else{
+                console.log("Not insert in otp in database")
+              }
 
-                nodemailer.createTransport({
-                  service: 'gmail',
-                  auth: {
-                    user: 'ashish.we2code@gmail.com',
-                    pass: 'nczaguozpagczmjv'
-                  }
-                })
-                  .sendMail(mail_configs, (err) => {
-                    if (err) {
-                      return //console.log('errrr', err);
-                    } else {
-                      return res.status(200).send({ "message": "send otp on your mail" });
-                    }
-                  })
               }
             })
-            return OTP
-          }
+              }
+    
+            }
+          })
 
-          //console.log(generateOTP())
+          function sendOtpEmail(OTP){
+
+            const mail_configs={
+              from:'ashish.we2code@gmail.com',
+              to:edata,
+              subject:'Apna Organic Store',
+              text:"One-time-password "+ OTP
+            }
+
+               nodemailer.createTransport({
+                service:'gmail',
+                auth:{
+                    user:'ashish.we2code@gmail.com',
+                    pass:'nczaguozpagczmjv'
+                }
+              })
+              .sendMail(mail_configs,(err)=>{
+                if(err){
+                  return //console.log('errrr',err);
+                }else{
+                  
+                  return res.status(200).send({"message":"Send otp in Gmail Succesfully"});
+                }
+              })
+          } 
         } else {
           res.status(200).send({ "message": "User Not Found" })
         }

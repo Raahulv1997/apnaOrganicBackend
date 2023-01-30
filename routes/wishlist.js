@@ -28,7 +28,7 @@ function add_wishlist(req,res){
 
 function remove_product_from_wishlist(req,res){
   //console.log("req.body")
-    connection.query("DELETE FROM `wishlist` WHERE `product_id` = '"+req.body.product_id+"' AND `user_id` = '"+eq.user+"'",(err,results)=>{
+    connection.query("DELETE FROM `wishlist` WHERE `product_id` = '"+req.body.id+"' AND `user_id` = '"+req.user+"'",(err,results)=>{
         if(err){
           //console.log(err)
           res.status(502).send(err)
