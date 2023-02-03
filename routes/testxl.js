@@ -1,4 +1,4 @@
-const connection = require('../db')
+// const connection = require('../db')
 // const reader = require('xlsx');
 // const path = require('path');
 // const fs = require('fs');
@@ -103,28 +103,109 @@ const connection = require('../db')
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_base64__to__image-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
 
-const fs  = require('fs');
-//var imgBase64 = ''
+// const fs  = require('fs');
+// //var imgBase64 = ''
 
 
 
 
-function multer_image(req,res){
-  ////console.log("req.body")
-  var base64_type=req.body.product_images
-  //console.log(base64_type)
-  base64_type.forEach((item,ind) => {
-    var imgBase64 = item.img_64
-    //console.log(item.img_64)
-    var base64Data = imgBase64.replace("data:image/png;base64,", "");
-    // Store Image into Server
-    fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
-      if(null){
-        //console.log("Image Saved Successfully."); 
-      }else{
-        //console.log(err); 
-      }
-    });
-  });
-}
-module.exports={multer_image}
+// function multer_image(req,res){
+//   ////console.log("req.body")
+//   var base64_type=req.body.product_images
+//   //console.log(base64_type)
+//   base64_type.forEach((item,ind) => {
+//     var imgBase64 = item.img_64
+//     //console.log(item.img_64)
+//     var base64Data = imgBase64.replace("data:image/png;base64,", "");
+//     // Store Image into Server
+//     fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
+//       if(null){
+//         //console.log("Image Saved Successfully."); 
+//       }else{
+//         //console.log(err); 
+//       }
+//     });
+//   });
+// }
+// module.exports={multer_image}
+
+
+
+// const axios = require('axios');
+
+// axios.post("http://192.168.29.108:5000/add_complaint",
+//         {
+//           order_id:"123456",
+//           first_name: "mayur",
+//           last_name: "yadav",
+//           contect_no:"9827803082",
+//           email: "mayur@gmail.com",
+//           subject: "pendinggggg",
+//           description: "mayurmmmmmmmmmmmmm",
+//         },
+//         {
+//           headers: {
+//             user_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ODgsImlhdCI6MTY3NTMxNjY1OX0.Uo4re8857mdwTVuedjudITcFkfKJcFLsGclKCsW-iTQ",
+//           },
+//         }
+//       )
+//       .then((response) => {
+//         console.log("02");
+//         console.log(response.data);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//         console.log("03");
+//       });
+
+const axios = require('axios');
+axios.post("http://192.168.29.108:5000/home?page=0&per_page=2",
+              // `${process.env.REACT_APP_BASEURL}/home?page=0&per_page=400`,
+              {
+                product_search: {
+                  search:"",
+                  price_from:"",
+                  price_to:"",
+                  id:"",
+                  product_title_name:"",
+                  sale_price:"",
+                  short_by_updated_on:"",
+                  product_type: [],
+                  colors: [],
+                  size: [],
+
+                  // brand: brandfilter,
+                  // discount: discountfilter,
+                  // rating: ratingfilter,
+                  // category: [searchCat],
+                },
+              },
+              {
+                headers: {
+                  user_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ODgsImlhdCI6MTY3NTMxNjY1OX0.Uo4re8857mdwTVuedjudITcFkfKJcFLsGclKCsW-iTQ",
+                },
+              }
+            
+            ).then((response) => {
+              let data = response.data;
+              console.log(data);
+              // setProdData(data.results);
+              // settotaldata(data.pagination.totaldata);
+              // if (data.results.length == 0) {
+              //   setNoData(true);
+              // } else {
+              //   setNoData(false);
+              // }
+              // if (
+              //   searchCat.length === 0 &&
+              //   ratingfilter.length === 0 &&
+              //   brandfilter.length === 0 &&
+              //   discountfilter.length === 0 &&
+              //   pricefilter.from_product_price === "" &&
+              //   pricefilter.to_product_price === ""
+              // ) {
+              //   setCategoryfilterData(data.results);
+              // }
+              // setapicall(false);
+            })
+        

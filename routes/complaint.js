@@ -2,9 +2,11 @@ const connection = require('../db')
 
 function add_complaint(req,res){
     //console.log("req.body")
-    var {order_id,subject,description}=req.body
+    var {order_id, first_name, last_name, contect_no, subject, email, description}=req.body
+console.log("++++++++++++++++++++++++++++++++")
+console.log(req.body)
     //return false
-   connection.query("INSERT INTO `comaplains_support`(`order_id`, `subject`, `description`) VALUES ('"+order_id+"','"+subject+"','"+description+"')",async (err, rows, fields) => {
+   connection.query("INSERT INTO `comaplains_support`(`order_id`, user_id, `first_name`, `last_name` , `contect_no`, `email`, `subject`,`description`) VALUES ('"+order_id+"','"+req.user+"','"+first_name+"','"+last_name+"','"+contect_no+"','"+email+"','"+subject+"','"+description+"')",async (err, rows, fields) => {
     if(err){
       //console.log("error"+err)
       res.status(200).send(err)
@@ -37,20 +39,32 @@ function complaint_details(req,res){
 
 function complaint_update(req,res){
     //console.log("req.body")
-    var {id, assigned_to, resolve_date, status_, resolve_description}=req.body
-    connection.query("UPDATE `comaplains_support` SET `assigned_to`='"+assigned_to+"',`resolve_date`='"+resolve_date+"',`status_`='"+status_+"',`resolve_description`='"+resolve_description+"' WHERE `id`= "+id+"",async (err, rows, fields) => {
-        if(err){
-          //console.log("error"+err)
-          res.status(200).send(err)
-        }else{
-            rows!=''?res.status(200).send("Succesfully Update Complaint"):res.status(200).send("Faild Complaint Update")          
-        }
-    })
+    if(req.scrt=="a2d3m6i4n6"){
+      var {id, assigned_to, resolve_date, status_, resolve_description}=req.body
+      connection.query("UPDATE `comaplains_support` SET `assigned_to`='"+assigned_to+"',`resolve_date`='"+resolve_date+"',`status_`='"+status_+"',`resolve_description`='"+resolve_description+"' WHERE `id`= "+id+"",async (err, rows, fields) => {
+          if(err){
+            //console.log("error"+err)
+            res.status(200).send(err)
+          }else{
+              rows!=''?res.status(200).send({"response":"Succesfully Update Complaint"}):res.status(200).send({"response":"Faild Complaint Update"})          
+          }
+      })
+    }else{
+      res.send({"response":"header_error"})
+    }
+
 }
 
 
 function complaint_search(req,res){
-  //console.log("req.body")
+  console.log(req.user)
+  console.log(req.body)
+  if(0<req.user){
+    req.body.user_id=''
+  } 
+
+// res.send([req.user,req.body])
+//   return false
     var {id,status_,ticket_date}=req.body;
     if(id != '' || status_ != '' || ticket_date != '' ){
 
@@ -82,6 +96,10 @@ function complaint_search(req,res){
            
           //console.log("no avia")
         }
+        if(0<req.user){
+          stringsearch+=' AND user_id ='+req.user+' '
+        } 
+        console.log(stringsearch)
       connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
         if(err){
           //console.log("/complaint_error"+err)
@@ -91,7 +109,13 @@ function complaint_search(req,res){
         }
       })
 }else{
-connection.query('SELECT * FROM `comaplains_support` WHERE 1 ORDER BY id DESC ',(err,rows,fields)=>{
+  if(0===req.user){
+  var stringsearch = 'SELECT * FROM `comaplains_support` WHERE 1 ORDER BY id DESC'
+  }else{
+  var stringsearch = 'SELECT * FROM `comaplains_support` WHERE user_id ="'+req.user+'" ORDER BY id DESC'
+  }  
+  console.log(stringsearch)
+  connection.query(stringsearch,(err,rows,fields)=>{
     if(err){
       //console.log("/complaint_error"+err)
       res.status(200).send(err)
@@ -99,7 +123,8 @@ connection.query('SELECT * FROM `comaplains_support` WHERE 1 ORDER BY id DESC ',
       res.status(200).send(rows)
     }
   })
-}   
-}
+  }
+  } 
+
 
 module.exports={add_complaint,complaint_details,complaint_update,complaint_search}

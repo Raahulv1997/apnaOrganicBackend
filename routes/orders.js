@@ -75,7 +75,7 @@ async function orders(req, res) {
                             if (err) {
                               //console.log(err)
                             } else {
-                              //console.log({ "message": "delete from cart", "product_verient_id": product_verient_id, "user_id": user_id })
+                              console.log({ "message": "delete from cart", "product_verient_id": product_verient_id, "user_id": user_id })
                             }
                           })
 
@@ -175,7 +175,7 @@ async function orders(req, res) {
                               })
                                 .sendMail(mail_configs, (err) => {
                                   if (err) {
-                                    return //console.log({ "email_error": err });
+                                    return console.log({ "email_error": err });
                                   } else {
                                     return res.status(200).send({ "order_id": orderno, "message": "Send mail Succesfully", "order": "order_count_" + order_count + "" });
                                   }

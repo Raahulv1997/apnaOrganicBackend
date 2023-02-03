@@ -235,40 +235,32 @@ function productpost(req, res) {
       //console.log("/_products_post_error" + err)
       res.status(200).send(err)
     } else {
-      // //___add-images______________________________________________________________________________________
-      
-      // //console.log(base64_type)
-      // base64_type.forEach((item,ind) => {
-      //   var imgBase64 = item.img_64
-      //   //console.log(item.img_64)
-      //   var base64Data = imgBase64.replace("data:image/png;base64,", "");
-      //   // Store Image into Server
-      //   fs.writeFile("/home/we2code/Desktop/apna backend 19Nov/apna_backend/public/products_images/"+"image"+ind+".png", base64Data, 'base64', function(err) {
-      //     if(null){
-      //       //console.log("Image Saved Successfully."); 
-      //     }else{
-      //       //console.log(err); 
-      //     }
-      //   });
-      // });
-      //__add-product-varient______________________________________________________________________________
-      var p_id = JSON.parse(rows.insertId)
-      //console.log("p_id______" + p_id)
-      res.status(201).send({ "message": "succesfully added data on new_product table" })
-      //console.log("successfully_add_data_on_new_products")
-      product_catagory.forEach((item, index) => {
-        //console.log(index)
-        //console.log(item.sale_price)
-        connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"' + item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","' + item.unit_quantity + '",' + item.quantity + ',"' + item.product_status + '")', (err, rows, fields) => {
-          if (err) {
-            //console.log("/_products_post_error" + err)
-            res.status(200).send(err)
-          } else {
-            //console.log("successfully_added_data_on_price_table")
+      if(rows!=''){
+        console.log(rows)
+        var p_id = JSON.parse(rows.insertId)
+        product_catagory.forEach((item, index) => {
+          //console.log(index)
+          //console.log(item.sale_price)
+          connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"' + item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","' + item.unit_quantity + '",' + item.quantity + ',"' + item.product_status + '")', (err, rows, fields) => {
+            if (err) {
+              //console.log("/_products_post_error" + err)
+              res.status(200).send(err)
+            } else {
+              if(rows!=''){
+                console.log(rows.insertId)
+                var p_v_id = JSON.parse(rows.insertId)
+                res.status(201).send({ "product_id":p_id,"product_variant_id":p_v_id,"message": "succesfully added data on new_product table" })
+              }else{
+                res.status(200).send(err)
+              }
 
-          }
+            }
+          });
         });
-      });
+      }else{
+        res.status(200).send(err)
+      }
+ 
     }
   })
 }
@@ -336,7 +328,7 @@ function products_varient_add(req, res) {
   //console.log("req.body")
   //console.log(colors)
   if (product_id != '') {
-    connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + product_id + ',"' + colors + '","' + size + '",' + mrp + ',' + product_price + ',' + sale_price + ',' + discount + ',"' + manufacturing_date + '","' + expire_date + '",' + special_offer + ',' + featured_product + ',"' + unit + '",' + unit_quantity + ',' + quantity + ',"'+ product_status +'")', (err, rows, fields) => {
+    connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + product_id + ',"' + colors + '","' + size + '","' + mrp + '","' + product_price + '","' + sale_price + '","' + discount + '","' + manufacturing_date + '","' + expire_date + '",' + special_offer + ',' + featured_product + ',"' + unit + '","' + unit_quantity + '","' + quantity + '","'+ product_status +'")', (err, rows, fields) => {
       if (err) {
         //console.log("/products_update" + err)
         res.status(200).send(err)
