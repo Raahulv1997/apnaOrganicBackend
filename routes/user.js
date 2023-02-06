@@ -166,7 +166,7 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
        //console.log("newqry")
        var numRows;
   
-       var numPerPage = 10
+       var numPerPage = pg.per_page
        var page = parseInt(pg.page,pg.per_page) || 0;
        var numPages;
        var skip = page * numPerPage;
@@ -365,7 +365,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
     //console.log("newqry")
     var numRows;
 
-    var numPerPage = 10
+    var numPerPage = pg.per_page
     var page = parseInt(pg.page,pg.per_page) || 0;
     var numPages;
     var skip = page * numPerPage;
