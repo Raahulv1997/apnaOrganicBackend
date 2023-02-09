@@ -7,14 +7,14 @@ const VENDOR_JWT_SECRET_KEY = process.env.VENDOR_JWT_SECRET_KEY
 
 
 const fetchuser = (req, res, next) => {
-    //console.log("fetchuser++++++++++++++")
+    console.log("fetchuser++++++++++++++")
     //var token = req.headers.user_token
     //var token = req.headers.admin_token
     if('admin_token' in req.headers || 'user_token' in req.headers || 'vendor_token' in req.headers ){
         if(req.headers.admin_token!=''&&req.headers.admin_token!=undefined){
-            //console.log("ADMIN++++++++++++++")
+            console.log("ADMIN++++++++++++++")
             var token_admin = req.headers.admin_token
-            //console.log(token_admin)
+            console.log(token_admin)
         
             try {
                 var admin_data = jwt.verify(token_admin, ADMIN_JWT_SECRET_KEY);
@@ -38,6 +38,7 @@ const fetchuser = (req, res, next) => {
                         }
                         else if(req.body.vendor_id!=undefined){
                             req.user=req.body.vendor_id
+                            
 
                             if(req.body.vendor_id == 'all'){req.scrt="y9a2d3a2v8"}
                             
@@ -52,8 +53,9 @@ const fetchuser = (req, res, next) => {
                             next();
                         }else{
                            req.user=00
+                           req.admin_vendor_com_id=aid
                            req.scrt="a2d3m6i4n6"
-                            next(); 
+                           next(); 
                         }
                     }else{
                        res.status(200).send("admin not matched")
@@ -74,6 +76,7 @@ const fetchuser = (req, res, next) => {
               try {
                   const data_u = jwt.verify(token_user, USER_JWT_SECRET_KEY);
                   req.user = data_u.id;
+                  console.log("userrrrrrrrrrrrrrrrrrrrr")
                   console.log(data_u)
                   console.log(req.user)
                   next();
@@ -90,6 +93,9 @@ const fetchuser = (req, res, next) => {
               try {
                 const data_v = jwt.verify(token_vendor, VENDOR_JWT_SECRET_KEY);
                 req.user = data_v.id;
+                req.admin_vendor_com_id=data_v.id;
+                req.vendor_id=data_v.id
+                console.log("vendorrrrrrrrrrrrrrrr")
                 console.log(data_v)
                 console.log(req.user)
                 connection.query("SELECT * FROM `vendor` WHERE `id` = "+data_v.id+"",async (err, rows) => {
@@ -106,11 +112,6 @@ const fetchuser = (req, res, next) => {
 
                 })
 
-
-                  //const data_v = jwt.verify(token_vendor, VENDOR_JWT_SECRET_KEY);
-                  //req.user = data_v.id;
-                  
-                  
               } catch (error) {
                   res.status(401).send({ error: "Please authenticate using a valid token" })
               }

@@ -131,7 +131,8 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
                   //console.log(err)
                   res.status(502).send(err)
                 }else{
-                 // //console.log("_____")
+                 console.log("_____")
+                //  console.log(results)
                   var responsePayload = {
                     results: results
                   };

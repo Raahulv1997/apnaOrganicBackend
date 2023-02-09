@@ -138,16 +138,30 @@ function vendor_signup(req, res) {
 
 async function vendor_otp_verify(req, res) {
   //console.log("req.body")
-  var respo = ''
   var email_otp = req.body.email
   var password_ = req.body.password
-  var otp_ver = req.body.otp
+  var otp_ver = JSON.stringify(req.body.otp)
+
+  console.log("chk_1"+email_otp+"__"+password_+"__"+otp_ver)
+
+if((email_otp!=''||email_otp!=null)&&(password_!=''||password_!=null )&& (otp_ver!=''||otp_ver!=null)){
+ var respo = ''
+      email_otp = email_otp.trim()
+      password_= password_.trim()
+      otp_ver = otp_ver.trim()
+  console.log("chk_2"+email_otp+"__"+password_+"__"+otp_ver)
+
   var cheked_email = regex.test(email_otp);
   const salt = await bcrypt.genSalt(10);
   const password_salt = await bcrypt.hash(password_, salt);
+
+  console.log("chk_3"+cheked_email+"__"+password_salt+"__"+"")
+
   //console.log(password_salt)
   if (cheked_email) {
     //console.log("email_true")
+  console.log("chk_4"+cheked_email+"")
+
     connection.query("SELECT * FROM `users_otp` WHERE email = '" + email_otp + "'", async (err, rows, fields) => {
       if (err) {
         //console.log(err)
@@ -160,16 +174,18 @@ async function vendor_otp_verify(req, res) {
           var user_otp = userauth[0].otp;
           //console.log(otp_ver + "==" + user_otp)
           if (otp_ver == user_otp) {
+            console.log(otp_ver +"=chk_5="+ user_otp)
             //console.log("otp verification successfully")
             //res.send({"message":"otp verification successfully"})
-            if (signup_condition) {
-              connection.query("INSERT INTO `vendor`( `email`, `password`) VALUES ('" + email_otp + "','" + password_salt + "')", async (err, rows, fields) => {
+            if (signup_condition) {    
+              connection.query('INSERT INTO `vendor`( `email`, `password`,`status`) VALUES ("'+email_otp+'","'+password_salt+'","incomplete")', async (err, rows, fields) => {
                 if (err) {
                   //console.log("error" + err)
                   res.status(200).send(err)
                 } else {
                   //console.log("_____")
                   if (rows != '') {
+                  console.log("chk_6"+email_otp+"___"+password_salt)
                     
                     respo = rows
                     var v_token=''
@@ -225,7 +241,7 @@ async function vendor_otp_verify(req, res) {
                                   }
                                 })
                                 signup_condition = false
-                                return res.status(202).send({"response":respo,"vendor_token":v_token});
+                                return res.status(202).send({"response":respo,"vendor_token":v_token,"status":"incomplete"});
                               }
                             })
                         } else {
@@ -270,11 +286,11 @@ async function vendor_otp_verify(req, res) {
             }
 
           } else {
-            res.status(200).send({ "message": "please check credential" })
+            res.status(200).send({ "message": "otp not matched" })
           }
 
         } else {
-          res.status(200).send({ "message": "please check credential" })
+          res.status(200).send({ "message": "email not matched" })
         }
       }
     })
@@ -282,19 +298,28 @@ async function vendor_otp_verify(req, res) {
     //console.log("email_false")
     res.status(513).send({ "message": "invalid address" })
   }
-
+}else{
+  res.send({"response":"please fill all inputs"})
+}
 }
 
 
 async function vendor_login(req, res) {
+  
   //console.log("req.body")
   var { email, password } = req.body
-  connection.query('SELECT `id`, `email` , `password` FROM `vendor`  WHERE `email` ="' + email + '"', async (err, results) => {
+  email=email.trim()
+  password=password.trim()
+
+
+  connection.query('SELECT `id`, `email`, status, `password` FROM `vendor`  WHERE `email` ="' + email + '"', async (err, results) => {
     if (err) {
       //console.log(err)
       res.send(err)
     } else {
+      console.log(results)
       if (results != '') {
+        console.log(results)
         var v_token_log =''
         jwt.sign({ id: results[0].id }, VENDOR_JWT_SECRET_KEY, async function(err,token){
           console.log(token);
@@ -305,13 +330,13 @@ async function vendor_login(req, res) {
 
           var psw = JSON.parse(JSON.stringify(results[0].password))
           const validPassword = await bcrypt.compare(password, psw);
-          validPassword ? res.send({ "id": results[0].id, "vendor_email": results[0].email,"vendor_token":v_token_log}) : res.send({ "message": "please fill valid credintials" })
+          validPassword ? res.send({ "id": results[0].id, "vendor_email": results[0].email,"vendor_token":v_token_log, "status":results[0].status}) : res.send({ "message": "password not matched" })
   
         })
         console.log(v_token_log)
 
       } else {
-        res.send({ "message": "check_credintials" })
+        res.send({ "message": "email not matched" })
       }
     }
   })
@@ -322,8 +347,8 @@ async function vendor_login(req, res) {
 function change_vendor_password(req, res) {
   var { email, password, new_password } = req.body
   if (email != '' && password != '' && new_password != '') {
-    //console.log("fill all")
-    connection.query('SELECT `email` , `password` FROM `vendor`  WHERE `email` ="' + email + '"', async (err, results) => {
+    console.log("__________"+req.vendor_id)
+    connection.query('SELECT `email` , `password` FROM `vendor`  WHERE `id` ="'+req.vendor_id+'" AND `email` = "'+email+'"', async (err, results) => {
       if (err) {
         //console.log(err)
         res.send(err)
@@ -338,7 +363,7 @@ function change_vendor_password(req, res) {
             const salt = await bcrypt.genSalt(10);
             password_salt = await bcrypt.hash(new_password, salt);
             //console.log(password_salt)
-            connection.query('UPDATE `vendor` SET `password`= "' + password_salt + '" WHERE `email` = "' + email + '"', async (err, results) => {
+            connection.query('UPDATE `vendor` SET `password`= "' + password_salt + '" WHERE  `id` ="'+req.vendor_id+'" AND `email` = "'+email+'"', async (err, results) => {
               if (err) {
                 //console.log(err)
                 res.send(err)
@@ -348,10 +373,10 @@ function change_vendor_password(req, res) {
               }
             })
           } else {
-            res.send({ "message": "check credentials" })
+            res.send({ "message": "old password not matched" })
           }
         } else {
-          res.send({ "message": "invalid credentials" })
+          res.send({ "message": "invalid token" })
         }
       }
     })
@@ -360,8 +385,11 @@ function change_vendor_password(req, res) {
   }
 }
 
-function vendor_register(req, res) {
+async function vendor_register(req, res) {
+
   var { owner_name, shop_name, mobile, email, shop_address, gstn, geolocation, store_type, status, document_name, availability, social_media_links } = req.body;
+  email=email.trim()
+
   //console.log("_________+++++_________________vendor_register______________++++++_______________")
   //console.log("req.body")
   var document_name1 = JSON.stringify(document_name)
@@ -379,63 +407,91 @@ function vendor_register(req, res) {
 
   //res.send([newar])
   //return false
-  connection.query("INSERT INTO `vendor`(`email`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `document_name`, `availability`,`social_media_links`) VALUES ('" + email + "','" + owner_name + "','" + shop_name + "','" + mobile + "','" + shop_address + "','" + gstn + "','" + geolocation + "','" + store_type + "','" + image + "','" + status + "','" + document_name1 + "','" + availability + "','" + social_media_links_new + "')", async (err, rows, fields) => {
-    if (err) {
-      //console.log("error" + err)
-      res.status(200).send(err)
-    } else {
-      //console.log("_____")
-      //res.status(200).send(rows)
-      connection.query('SELECT `admin_email` FROM admin_login_details WHERE `admin_type`="superadmin"', (err, rslt) => {
-        if (err) {
-          //console.log({ "error": err })
-        } else {
-          var user_e_address = rslt[0].admin_email
-          //console.log(user_e_address)
-          connection.query('SELECT * FROM `email_template` WHERE  `email_type` = "Shipped"', (err, rows) => {
+
+  if(req.headers.admin_token!=''&&req.headers.admin_token!=undefined){
+          console.log("++++++++++++++++++++++")
+      console.log(req.headers)
+        var chars =
+          "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
+        var randomArray = Array.from(
+          { length: 10 },
+          (v, k) => chars[Math.floor(Math.random() * chars.length)]
+        );
+        var randomString = randomArray.join("");
+        console.log(randomString);
+  
+        var salt_ = await bcrypt.genSalt(10);
+        var password_salt_ = await bcrypt.hash(randomString, salt_);
+          // console.log(password_salt_)
+        connection.query("SELECT * FROM `vendor` WHERE email = '" + email + "'", async (err, rows, fields) => {
             if (err) {
-              //console.log({ "error": err })
+              //console.log("/signup_error" + err)
+              res.status(200).send(err)
             } else {
-              if (rows != '') {
-                //console.log(rows[0].email_text)
-                var html_data = rows[0].email_text;
-                const mail_configs = {
-                  from: 'ashish.we2code@gmail.com',
-                  to: user_e_address,
-                  subject: 'Apna Organic Store',
-                  text: "your placed request pending",
-                  html: html_data
-                }
-                nodemailer.createTransport({
-                  service: 'gmail',
-                  auth: {
-                    user: 'ashish.we2code@gmail.com',
-                    pass: 'nczaguozpagczmjv'
-                  }
-                })
-                  .sendMail(mail_configs, (err) => {
+                if(rows==''){
+                  connection.query("INSERT INTO `vendor`(`email`,`password`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `document_name`, `availability`,`social_media_links`) VALUES ('" + email + "','"+password_salt_+"','" + owner_name + "','" + shop_name + "','" + mobile + "','" + shop_address + "','" + gstn + "','" + geolocation + "','" + store_type + "','" + image + "','" + status + "','" + document_name1 + "','" + availability + "','" + social_media_links_new + "')", async (err, rows, fields) => {
                     if (err) {
-                      return //console.log({ "email_error": err });
+                      //console.log("error" + err)
+                      res.status(200).send(err)
                     } else {
-                      connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("' + rows.insertId + '","admin","vendor requested for approve","unread") , ("' + rows.insertId + '","vendor","please wait for approve profile","unread")', (err, rows) => {
-                        if (err) {
-                          //console.log({ "notification": err })
-                        } else {
-                          //console.log("_______notification-send-admin_vendor__________")
-                        }
+                    if(rows!=""){
+                            connection.query('SELECT * FROM `email_template` WHERE  `email_type` = "complete"', (err, rows) => {
+                              if (err) {
+                                //console.log({ "error": err })
+                              } else {
+                                if (rows != '') {
+                                  //console.log(rows[0].email_text)
+                                  var html_data = rows[0].email_text;
+                                  html_data_replace = html_data.replace('{name}', owner_name);
+                                  html_data_replace = html_data_replace.replace('{user_name}', email);
+                                  html_data_replace = html_data_replace.replace('{password}', randomString);
+                                  // console.log(html_data)
+                                  const mail_configs = {
+                                    from: 'ashish.we2code@gmail.com',
+                                    to: email,
+                                    subject: 'Apna Organic Store',
+                                    text: "your placed request pending",
+                                    html: html_data_replace
+                                  }
+                                  nodemailer.createTransport({
+                                    service: 'gmail',
+                                    auth: {
+                                      user: 'ashish.we2code@gmail.com',
+                                      pass: 'nczaguozpagczmjv'
+                                    }
+                                  })
+                                    .sendMail(mail_configs, (err) => {
+                                      if (err) {
+                                        return //console.log({ "email_error": err });
+                                      } else {
+                                        connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("' + rows.insertId + '","admin","vendor requested for approve","unread") , ("' + rows.insertId + '","vendor","please wait for approve profile","unread")', (err, rows) => {
+                                          if (err) {
+                                            //console.log({ "notification": err })
+                                          } else {
+                                            //console.log("_______notification-send-admin_vendor__________")
+                                          }
+                                        })
+                                        return res.status(200).send({ "message": "Sent mail to super_admin Succesfully", "message_for_vendor": "sent your request to admin" });
+                                      }
+                                    })
+                                } else {
+                                  res.send({ "message": "status not define" })
+                                }
+                              }
                       })
-                      return res.status(200).send({ "message": "Sent mail to super_admin Succesfully", "message_for_vendor": "sent your request to admin" });
                     }
-                  })
-              } else {
-                res.send({ "message": "status not define" })
-              }
+                    }
+                  }) 
+                }else{
+                  res.status(200).send({"message":"vendor already exist"})
+                }
             }
           })
-        }
-      })
-    }
-  })
+  }
+  else{
+    res.status(200).send({"response":"please send vendor or admin token"})
+  }
+
 }
 
 
@@ -495,46 +551,52 @@ function vendor_list(req, res) {
 }
 
 function vendor_update(req, res) {
-  var { owner_name, shop_name, mobile, id, shop_address, gstn, geolocation, store_type, status, document_name, availability, social_media_links } = req.body;
-  //console.log("req.body")
-  //console.log(req.file)
-  var document_name1 = JSON.stringify(document_name)
-  var social_media_links_new = JSON.stringify(JSON.parse(social_media_links))
-  //console.log(typeof social_media_links_new)
-  //console.log(social_media_links_new)
-
+  if(req.admin_vendor_com_id!=''&&req.admin_vendor_com_id!=undefined){
+    console.log(req.admin_vendor_com_id)
+    var { owner_name, shop_name, mobile, id, shop_address, gstn, geolocation, store_type, status, document_name, availability, social_media_links } = req.body;
+    //console.log("req.body")
+    //console.log(req.file)
+    var document_name1 = JSON.stringify(document_name)
+    var social_media_links_new = JSON.stringify(JSON.parse(social_media_links))
+    //console.log(typeof social_media_links_new)
+    //console.log(social_media_links_new)
   
-  if (req.file == undefined || req.file == '') {
-    // image="no image"
-    connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "'  WHERE id='" + id + "'", async (err, rows, fields) => {
-      if (err) {
-        //console.log("error" + err)
-        res.status(500).send(err)
-      } else {
-        if (rows != '') {
-          //console.log("_____")
-          res.status(200).send({ "message": "Updated Vendor Profile" })
+    
+    if (req.file == undefined || req.file == '') {
+      // image="no image"
+      connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "'  WHERE id='" +req.admin_vendor_com_id+ "'", async (err, rows, fields) => {
+        if (err) {
+          //console.log("error" + err)
+          res.status(500).send(err)
         } else {
-          res.status(500).send({ "message": "Error Plaese Give Valid Data " })
+          if (rows != '') {
+            //console.log("_____")
+            res.status(200).send({ "message": "Updated Vendor Profile" })
+          } else {
+            res.status(500).send({ "message": "Error Plaese Give Valid Data " })
+          }
         }
-      }
-    })
-  } else {
-    var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
-    //console.log(image)
-    connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`shop_logo`='" + image + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "'  WHERE id='" + id + "'", async (err, rows, fields) => {
-      if (err) {
-        //console.log("error" + err)
-        res.status(500).send(err)
-      } else {
-        if (rows != '') {
-          //console.log("_____")
-          res.status(200).send({ "message": "Updated Vendor Profile" })
+      })
+    } else {
+      var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
+      //console.log(image)
+      connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`shop_logo`='" + image + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "'  WHERE id='" +req.admin_vendor_com_id+ "'", async (err, rows, fields) => {
+        if (err) {
+          //console.log("error" + err)
+          res.status(500).send(err)
         } else {
-          res.status(500).send({ "message": "Error Plaese Give Valid Data " })
+          if (rows != '') {
+            //console.log("_____")
+            res.status(200).send({ "message": "Updated Vendor Profile" })
+          } else {
+            res.status(500).send({ "message": "Error Plaese Give Valid Data " })
+          }
         }
-      }
-    })
+      })
+    }
+  }
+  else{ 
+    res.status(200).send({"response":"please send vendor or admin token"})
   }
 }
 
@@ -621,7 +683,7 @@ function vendor_status_change(req, res) {
 function content_manager(req, res) {
   //console.log("req.body")
   var { vendor_id, show_product_rating } = req.body
-  connection.query('UPDATE `vendor` SET `show_product_rating`=' + show_product_rating + ' WHERE `id`=' + vendor_id + '', async (err, rows, fields) => {
+  connection.query('UPDATE `vendor` SET `show_product_rating`=' + show_product_rating + ' WHERE `id`=' + req.vendor_id + '', async (err, rows, fields) => {
     if (err) {
       //console.log("error" + err)
       res.status(200).send(err)

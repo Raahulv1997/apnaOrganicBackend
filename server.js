@@ -46,6 +46,14 @@ const {notification}=require("./routes/notification.js")
 // const {multer_image} = require("./routes/testxl.js")
 const {gmail_send} = require("./routes/gmail_send")
 
+connection.query("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));", async (err, rows, fields) => {
+  if (err) {
+    //console.log("/signup_error" + err)
+    res.status(200).send(err)
+  } else {
+    rows!=''? console.log("SET GLOBAL sql_mode"):console.log("error________SET GLOBAL sql_mode_________________==")
+    
+  }})
 
 var corsOptions = {
   origin: "http://localhost:3000"
@@ -101,6 +109,10 @@ var upload = multer({
 
 
 // module.exports={imageUpload}
+
+
+
+
 
 //----------------category----routes------------------------
 app.get("/category", category)
@@ -177,7 +189,7 @@ app.post("/orders",fetchuser,orders)
 app.post("/order_deteils",fetchuser,order_deteils)
 app.post("/orders_list",fetchuser,orders_list)
 app.put("/order_status_change",fetchuser,order_status_change)
-app.put("/vendor_availability",vendor_availability)
+app.put("/vendor_availability",fetchuser,vendor_availability)
 app.get("/user_orders",fetchuser,users_orders)
 //_______________invoice_list________________________
 app.get("/invoice_list",invoice_list)
@@ -189,11 +201,11 @@ app.post("/vendors",fetchuser,vendors)
 app.post("/vendor_signup",vendor_signup)
 app.post("/vendor_otp_verify",vendor_otp_verify)
 app.post("/vendor_login",vendor_login)
-app.post("/change_vendor_password",change_vendor_password)
+app.post("/change_vendor_password",fetchuser,change_vendor_password)
 
 // app.post("/vendor_register",vendor_register)
-app.post("/vendor_register",upload.single('image'),vendor_register)
-app.put("/vendor_update",upload.single('image'),vendor_update)
+app.post("/vendor_register",upload.single('image'),fetchuser,vendor_register)
+app.put("/vendor_update",upload.single('image'),fetchuser,vendor_update)
 //app.put("/vendor_status_change",vendor_status_change)
 app.put("/content_manager",content_manager)
 app.post("/vendor_documents_upload",vendor_documents_upload)

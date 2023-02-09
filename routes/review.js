@@ -5,17 +5,29 @@ const connection = require('../db')
 function review_rating(req,res){
   //console.log("review")
   //console.log("req.body")
-  var {user_id,product_id,product_name,user_name,category_type,review_rating,comment,review_date}=req.body;                                                           
-  connection.query('INSERT INTO  `review`( `user_id`, `user_name`, `product_id`,`product_name`,`category_type`,`review_date`,`review_rating`, `comment`) VALUES ("'+user_id+'","'+user_name+'","'+product_id+'","'+product_name+'","'+category_type+'","'+review_date+'","'+review_rating+'","'+comment+'")',(err,rows,fields)=>{
-      if(err){
-    res.status(200).send(err)
+  var {user_id,product_id,product_name,user_name,category_type,review_rating,comment,review_date}=req.body;   
+  
+  connection.query('SELECT * FROM `review` WHERE user_id="'+user_id+'" AND product_id="'+product_id+'"',(err,rows,fields)=>{
+    if(err){
+      //console.log("/review_error"+err)
+      res.status(200).send(err)
+    }else{
+      if(rows==""){
+          connection.query('INSERT INTO  `review`( `user_id`, `user_name`, `product_id`,`product_name`,`review_date`,`review_rating`, `comment`) VALUES ("'+user_id+'","'+user_name+'","'+product_id+'","'+product_name+'","'+review_date+'","'+review_rating+'","'+comment+'")',(err,rows,fields)=>{
+            if(err){
+          res.status(200).send(err)
+            }else{
+                //console.log("review_rating Data Insert Succecsfully")
+              res.status(201).send({message:"Review Rating Data Insert Succecsfully"})
+            }
+          }) 
       }else{
-          //console.log("review_rating Data Insert Succecsfully")
-        res.status(201).send({message:"Review Rating Data Insert Succecsfully"})
+        res.status(200).send({"message":"User already Reviewed","status":false})
       }
-    }) 
+      
+    }
+  })
 }
-
 
 function review_approved(req,res){
 
@@ -34,8 +46,8 @@ function review_approved(req,res){
 
 function review_list(req,res){
     //console.log("req.body")
-    var {product_name,category_type,status}=req.body;
-    if(product_name != '' || category_type != '' || status != '' ){
+    var {product_name,status}=req.body;
+    if(product_name != '' || status != '' ){
 
         var stringsearch = 'SELECT * FROM `review` WHERE '
         var catobj=req.body;
