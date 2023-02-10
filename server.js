@@ -12,6 +12,19 @@ require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
 const USER_JWT_SECRET_KEY =   process.env.USER_JWT_SECRET_KEY
 
+//________________________________________________________SET GLOBAL sql_mode__________________________________________________________________
+
+connection.query("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));", async (err, rows, fields) => {
+ if (err) {
+    //console.log("/signup_error" + err)
+    res.status(200).send(err)
+  } else {
+    rows!=''? console.log("SET GLOBAL sql_mode"):console.log("error________SET GLOBAL sql_mode_________________")
+    
+  }})
+//________________________________________________________SET GLOBAL sql_mode__________________________________________________________________
+
+
 const {fetchuser} = require("./routes/middleware/auth_by_token.js")
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete_remove,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image} = require("./routes/product.js")
@@ -46,14 +59,6 @@ const {notification}=require("./routes/notification.js")
 // const {multer_image} = require("./routes/testxl.js")
 const {gmail_send} = require("./routes/gmail_send")
 
-connection.query("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));", async (err, rows, fields) => {
-  if (err) {
-    //console.log("/signup_error" + err)
-    res.status(200).send(err)
-  } else {
-    rows!=''? console.log("SET GLOBAL sql_mode"):console.log("error________SET GLOBAL sql_mode_________________==")
-    
-  }})
 
 var corsOptions = {
   origin: "http://localhost:3000"

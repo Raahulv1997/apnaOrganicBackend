@@ -28,7 +28,7 @@ if(u_id!==''){
     var price_to=catobj.price_to;
     var price_from=catobj.price_from;
     var id = catobj.id;
-    var product_title_name = catobj.product_title_name;
+    var product_title_name = catobj.product_title_name_asc_desc;
     var sale_price = catobj.sale_price;
     var short_by_updated_on = catobj.short_by_updated_on;
     //console.log(price_to)
@@ -250,7 +250,8 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
  var price_to=catobj.price_to;
  var price_from=catobj.price_from;
  var id = catobj.id;
- var product_title_name = catobj.product_title_name;
+ console.log(catobj)
+ var product_title_name = catobj.product_title_name_asc_desc;
  var sale_price = catobj.sale_price;
  var short_by_updated_on = catobj.short_by_updated_on;
  

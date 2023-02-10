@@ -11,7 +11,7 @@ function products_search(req, res) {
   var price_to = catobj.price_to;
   var price_from = catobj.price_from;
   var id = catobj.latest_first;
-  var product_title_name = catobj.product_title_name;
+  var product_title_name = catobj.product_title_name_asc_desc;
   var sale_price = catobj.sale_price;
   var short_by_updated_on = catobj.short_by_updated_on;
   // //console.log(price_to)
@@ -358,8 +358,13 @@ function products_pricing(req, res) {
       new_query='SELECT * FROM products_pricing WHERE id =' + req.query.id + ' AND product_id =' + req.query.product_id + ''
 
     }else{
-      new_query='SELECT *,(SELECT id FROM wishlist WHERE wishlist.product_id = products_pricing.id AND user_id = ' + req.query.user_id + ') as wishlist, (SELECT id FROM cart WHERE cart.product_view_id = products_pricing.id AND user_id = ' + req.query.user_id + ') cart_ FROM `products_pricing` WHERE `id`=' + req.query.id + ' AND `product_id`=' + req.query.product_id +' ';
+      new_query='SELECT *,(SELECT id FROM wishlist WHERE wishlist.product_id = products_pricing.id AND user_id = ' + req.query.user_id + ' AND wishlist.is_active!="0") as wishlist, (SELECT id FROM cart WHERE cart.product_view_id = products_pricing.id AND user_id = ' + req.query.user_id + ' AND cart.is_active!="0") cart_ FROM products_pricing WHERE id=' + req.query.id + ' AND product_id=' + req.query.product_id +' ';
     }
+
+ 
+
+
+
     connection.query(new_query, (err, rows, fields) => {
       if (err) {
         //console.log("/product_error" + err)
@@ -387,7 +392,7 @@ function product(req, res) {
       if (rows != '') {
         product_details = rows[0]
         // //console.log(rows[0])
-        connection.query('SELECT * FROM products_pricing WHERE product_id =' + req.query.id + '', (err, row, fields) => {
+        connection.query('SELECT * FROM products_pricing WHERE product_id =' + req.query.id + ' AND is_delete = 1', (err, row, fields) => {
           if (err) {
             //console.log("/product_error" + err)
             res.status(200).send(err)

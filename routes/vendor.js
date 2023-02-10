@@ -130,7 +130,7 @@ function vendor_signup(req, res) {
       signup_condition = true;
     })
   } else {
-    res.status(513).send({ "message": "invalid address" })
+    res.status(200).send({ "message": "invalid address" })
   }
 }
 
@@ -265,6 +265,7 @@ if((email_otp!=''||email_otp!=null)&&(password_!=''||password_!=null )&& (otp_ve
                   res.status(200).send(err)
                 } else {
                   if (rows != '') {
+                    res.status(202).send({"message":"succecfully forget password"})
                     connection.query('DELETE FROM `users_otp` WHERE email ="' + email_otp + '" ', async (err, rows, fields) => {
                       if (err) {
                         //console.log("error" + err)
@@ -278,7 +279,7 @@ if((email_otp!=''||email_otp!=null)&&(password_!=''||password_!=null )&& (otp_ve
                         }
                       }
                     })
-                    res.status(202).send(rows)
+                   
                     otp_verify_condition = false;
                   }
                 }
@@ -296,7 +297,7 @@ if((email_otp!=''||email_otp!=null)&&(password_!=''||password_!=null )&& (otp_ve
     })
   } else {
     //console.log("email_false")
-    res.status(513).send({ "message": "invalid address" })
+    res.status(200).send({ "message": "invalid address" })
   }
 }else{
   res.send({"response":"please fill all inputs"})
@@ -834,7 +835,7 @@ function vendor_forgot_password(req, res) {
               })
           } 
         } else {
-          res.status(200).send({ "message": "User Not Found" })
+          res.status(200).send({ "message": "User Not Exist" })
         }
       }
       otp_verify_condition = true;
