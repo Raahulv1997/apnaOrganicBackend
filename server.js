@@ -43,7 +43,7 @@ const {notification}=require("./routes/notification.js")
 
 
 //__________+++___________testing______________+++_______________
-const {multer_image} = require("./routes/testxl.js")
+// const {multer_image} = require("./routes/testxl.js")
 const {gmail_send} = require("./routes/gmail_send")
 
 
@@ -221,10 +221,10 @@ app.get("/review_detaile",review_detaile)
 app.post("/ratings_review_get",ratings_review_get)
  
 //_______________cammplain-&-support___________
-app.post("/add_complaint",add_complaint)
+app.post("/add_complaint",fetchuser,add_complaint)
 app.get("/complaint_details",complaint_details)
-app.put("/complaint_update",complaint_update)
-app.post("/complaint_search",complaint_search)
+app.put("/complaint_update",fetchuser,complaint_update)
+app.post("/complaint_search",fetchuser,complaint_search)
 
 
 //_______________add_wishlist_______________________
@@ -309,7 +309,7 @@ app.get("*", function(req, res){
 
 
 //__________+++___________testing______________+++_________
-app.post("/multer_image",multer_image)
+//app.post("/multer_image",multer_image)
 // app.post('/multer_image', (req, res, next) => {
 //   //console.log("form___________")
 

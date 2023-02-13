@@ -289,12 +289,14 @@ async function vendor_otp_verify(req, res) {
 async function vendor_login(req, res) {
   //console.log("req.body")
   var { email, password } = req.body
-  connection.query('SELECT `id`, `email` , `password` FROM `vendor`  WHERE `email` ="' + email + '"', async (err, results) => {
+  connection.query('SELECT `id`, `email` ,`password` FROM `vendor`  WHERE `email` ="' + email + '"', async (err, results) => {
     if (err) {
       //console.log(err)
       res.send(err)
     } else {
+      console.log(results)
       if (results != '') {
+        console.log(results)
         var v_token_log =''
         jwt.sign({ id: results[0].id }, VENDOR_JWT_SECRET_KEY, async function(err,token){
           console.log(token);

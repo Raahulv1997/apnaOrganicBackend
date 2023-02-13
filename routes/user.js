@@ -1,6 +1,7 @@
 const connection = require('../db')
 function user_products_search(req, res) {
-
+  var totaldata ;
+  var countnewstr ;
   //SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.product_id) as wishlist FROM products_view
 
 //   connection.query("SELECT *, (SELECT id FROM wishlist WHERE wishlist.product_id = products_view.product_id AND user_id = "+req.body.user_id+") as wishlist FROM products_view WHERE is_delete ='1'",(err,results)=>{
@@ -14,7 +15,7 @@ function user_products_search(req, res) {
 //     }
 // })
 // return false
-console.log("_____________________chk___________________")
+//console.log("_____________________chk___________________")
 var u_id = req.user
 console.log(u_id)
 if(u_id!==''){
@@ -27,7 +28,7 @@ if(u_id!==''){
     var price_to=catobj.price_to;
     var price_from=catobj.price_from;
     var id = catobj.id;
-    var product_title_name = catobj.product_title_name;
+    var product_title_name = catobj.product_title_name_asc_desc;
     var sale_price = catobj.sale_price;
     var short_by_updated_on = catobj.short_by_updated_on;
     //console.log(price_to)
@@ -51,7 +52,7 @@ if(u_id!==''){
     condition_flag = false;
   } else {
     if(price_to != '' && price_from !=''){
-      newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
+      newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
       condition_flag = false;  
     }
 
@@ -73,9 +74,9 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
   
       if(onjvaluarrry[i]!=''){
          condition_flag = false;
-         if(price_to != '' && price_from !='' && srch ==''){
-          newstr += ' AND'
-        }
+        //  if(price_to != '' && price_from !='' && srch ==''){
+        //   newstr += ' AND'
+        // }
         if(onjkayarrry.length-1 == i){
         var arr = JSON.stringify(onjvaluarrry[i]);
         var abc="'"+arr+"'"
@@ -98,8 +99,10 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
 
       var numRows;
       var queryPagination;
-      var numPerPage = pg.per_page
-      var page = parseInt(pg.page,pg.per_page) || 0;
+      var numPerPage = parseInt(pg.per_page)
+      var page = parseInt(pg.page);
+      var page_1 = parseInt(pg.page);
+   //   console.log("_______________page_____________"+page)
       var numPages;
       var skip = page * numPerPage;
       // Here we compute the LIMIT parameter for MySQL query
@@ -115,6 +118,14 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
               //console.log('number of pages:', numPages);
               //console.log('______++++__________________________+++___________________wishlist_query_____________________+++_________________________++++_________')
                //console.log(''+newqry+' '+limit+'')
+              countnewstr = newqry.replace("SELECT *","SELECT COUNT(id) AS total_data")
+              countnewstr = countnewstr.replace("LIMIT","")
+              connection.query(countnewstr,(err,row)=>{
+                console.log(err)
+                 totaldata = row[0].total_data
+                //console.log(totaldata)
+              })
+              //console.log(''+newqry+' '+limit+'')
               connection.query(''+newqry+' '+limit+'',(err,results)=>{
                 if(err){
                   //console.log(err)
@@ -126,7 +137,8 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
                   };
                   if (page < numPages) {
                     responsePayload.pagination = {
-                      current: page,
+                      totaldata:totaldata,
+                      current: page_1,
                       perPage: numPerPage,
                       previous: page > 0 ? page - 1 : undefined,
                       next: page < numPages - 1 ? page + 1 : undefined
@@ -166,8 +178,8 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
        //console.log("newqry")
        var numRows;
   
-       var numPerPage = pg.per_page
-       var page = parseInt(pg.page,pg.per_page) || 0;
+       var numPerPage = parseInt(pg.per_page);
+       var page = parseInt(pg.page);
        var numPages;
        var skip = page * numPerPage;
        // Here we compute the LIMIT parameter for MySQL query
@@ -184,6 +196,14 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
                //console.log('number of pages:', numPages);
               //  //console.log('______++++__________________________+++___________________wishlist_query_____________________+++_________________________++++_________')
               //  //console.log(''+newqry+' '+limit+'')
+              countnewstr = newqry.replace("SELECT *","SELECT COUNT(id) AS total_data")
+              countnewstr = countnewstr.replace("LIMIT","")
+              connection.query(countnewstr,(err,row)=>{
+                console.log(err)
+                 totaldata = row[0].total_data
+                //console.log(totaldata)
+              })
+              //console.log(''+newqry+' '+limit+'')
                connection.query(''+newqry+' '+limit+'',(err,results)=>{
                  if(err){
                    //console.log(err)
@@ -195,6 +215,7 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
                    };
                    if (page < numPages) {
                      responsePayload.pagination = {
+                      totaldata:totaldata,
                        current: page,
                        perPage: numPerPage,
                        previous: page > 0 ? page - 1 : undefined,
@@ -228,7 +249,7 @@ if(short_by_updated_on !=''){ase_desc = 'updated_on '+short_by_updated_on  }
  var price_to=catobj.price_to;
  var price_from=catobj.price_from;
  var id = catobj.id;
- var product_title_name = catobj.product_title_name;
+ var product_title_name = catobj.product_title_name_asc_desc;
  var sale_price = catobj.sale_price;
  var short_by_updated_on = catobj.short_by_updated_on;
  
@@ -255,7 +276,7 @@ if (price_to != '' && price_from !='' && srch != '' ) {
  condition_flag = false;
 } else {
  if(price_to != '' && price_from !=''){
-   newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") '
+   newstr += '(`sale_price` BETWEEN "'+price_from+'" AND "'+price_to+'") AND'
    condition_flag = false;  
  }
 
@@ -268,9 +289,9 @@ if (price_to != '' && price_from !='' && srch != '' ) {
 
    if(onjvaluarrry[i]!=''){
       condition_flag = false;
-      if(price_to != '' && price_from !='' && srch ==''){
-       newstr += ' AND'
-     }
+    //   if(price_to != '' && price_from !='' && srch ==''){
+    //    newstr += ' AND'
+    //  }
      if(onjkayarrry.length-1 == i){
                //console.log(onjvaluarrry[i])
      var arr = JSON.stringify(onjvaluarrry[i]);
@@ -301,8 +322,8 @@ if (price_to != '' && price_from !='' && srch != '' ) {
    //console.log("newqry")
    var numRows;
    var queryPagination;
-   var numPerPage = pg.per_page
-   var page = parseInt(pg.page,pg.per_page) || 0;
+   var numPerPage = parseInt(pg.per_page);
+   var page = parseInt(pg.page)
    var numPages;
    var skip = page * numPerPage;
    // Here we compute the LIMIT parameter for MySQL query
@@ -319,6 +340,14 @@ if (price_to != '' && price_from !='' && srch != '' ) {
            //console.log("__________________________qry___________________________");
 
            //console.log(''+newqry+' '+limit+'')
+           countnewstr = newqry.replace("SELECT *","SELECT COUNT(id) AS total_data")
+           countnewstr = countnewstr.replace("LIMIT","")
+           connection.query(countnewstr,(err,row)=>{
+             console.log(err)
+              totaldata = row[0].total_data
+            // console.log(totaldata)
+           })
+           //console.log(''+newqry+' '+limit+'')
            connection.query(''+newqry+' '+limit+'',(err,results)=>{
              if(err){
                //console.log(err)
@@ -330,6 +359,7 @@ if (price_to != '' && price_from !='' && srch != '' ) {
                };
                if (page < numPages) {
                  responsePayload.pagination = {
+                  totaldata:totaldata,
                    current: page,
                    perPage: numPerPage,
                    previous: page > 0 ? page - 1 : undefined,
@@ -365,8 +395,8 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
     //console.log("newqry")
     var numRows;
 
-    var numPerPage = pg.per_page
-    var page = parseInt(pg.page,pg.per_page) || 0;
+    var numPerPage = parseInt(pg.per_page);
+    var page = parseInt(pg.page);
     var numPages;
     var skip = page * numPerPage;
     // Here we compute the LIMIT parameter for MySQL query
@@ -382,6 +412,14 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
             numPages = Math.ceil(numRows / numPerPage);
             //console.log('number of pages:', numPages);
             //console.log("newqry")
+            countnewstr = newqry.replace("SELECT *","SELECT COUNT(id) AS total_data")
+            countnewstr = countnewstr.replace("LIMIT","")
+            connection.query(countnewstr,(err,row)=>{
+              console.log(err)
+               totaldata = row[0].total_data
+             // console.log(totaldata)
+            })
+            //console.log(''+newqry+' '+limit+'')
             connection.query(''+newqry+' '+limit+'',(err,results)=>{
               if(err){
                 //console.log(err)
@@ -393,6 +431,7 @@ var qry = qry.substring(0, qry.lastIndexOf(" "));
                 };
                 if (page < numPages) {
                   responsePayload.pagination = {
+                    totaldata:totaldata,
                     current: page,
                     perPage: numPerPage,
                     previous: page > 0 ? page - 1 : undefined,
