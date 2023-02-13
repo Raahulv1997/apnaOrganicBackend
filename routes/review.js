@@ -5,7 +5,7 @@ const connection = require('../db')
 function review_rating(req,res){
   //console.log("review")
   //console.log("req.body")
-  var {user_id,product_id,product_name,user_name,category_type,review_rating,comment,review_date}=req.body;   
+  var {user_id,product_id,product_name,user_name,review_rating,comment,review_date}=req.body;   
   
   connection.query('SELECT * FROM `review` WHERE user_id="'+user_id+'" AND product_id="'+product_id+'"',(err,rows,fields)=>{
     if(err){
