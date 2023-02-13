@@ -30,8 +30,6 @@ if(for_=='user'){
 if(for_=='admin'){
   var str_blog = 'SELECT * FROM `blog` WHERE is_delete=1'
 }
-
-  
   //console.log("req.body")
   if (id == '' && recent == '' && category == '' && product_tag == '') {
     query_flg = true
@@ -57,12 +55,17 @@ if(for_=='admin'){
   }
   if (query_flg) {
     //console.log(str_blog)
-    connection.query(str_blog, (err, rows, fields) => {
+    connection.query(''+str_blog+' ORDER BY `updated_on` DESC', (err, rows, fields) => {
       if (err) {
         res.status(200).send(err)
       } else {
         //console.log("_____")
-        res.status(200).send(rows)
+        if(rows!=''){
+          res.status(200).send(rows)
+        }else{
+          res.status(200).send({message:"No blogs Data"})
+        }
+        
       }
     })
   }
@@ -71,9 +74,11 @@ if(for_=='admin'){
 function update_blog(req, res) {
   //console.log("req.body")
   var { id, admin_id, title, description, category, product_tag, publish_date } = req.body;
+  var newdate = new Date();
+  var blog_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
   if (req.file == undefined || req.file == '') {
     // image = "no image"
-    connection.query('UPDATE `blog` SET `title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '" WHERE admin_id="'+admin_id+'" AND id="'+id+'"', (err, rows, fields) => {
+    connection.query('UPDATE `blog` SET `title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '",`updated_on`="'+blog_newdate+'" WHERE admin_id="'+admin_id+'" AND id="'+id+'"', (err, rows, fields) => {
       if (err) {
         res.status(200).send(err)
       } else {
@@ -84,7 +89,7 @@ function update_blog(req, res) {
     var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
     //console.log(image)
     //console.log("pass+++++++")
-    connection.query('UPDATE `blog` SET `image`="' + image + '",`title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '" WHERE admin_id="'+admin_id+'" AND id="'+id+'"', (err, rows, fields) => {
+    connection.query('UPDATE `blog` SET `image`="' + image + '",`title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '",`updated_on`="'+blog_newdate+'" WHERE admin_id="'+admin_id+'" AND id="'+id+'"', (err, rows, fields) => {
       if (err) {
         res.status(200).send(err)
       } else {

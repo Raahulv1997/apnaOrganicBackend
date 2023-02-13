@@ -273,10 +273,12 @@ function productpost(req, res) {
 }
 
 function products_varient_update(req, res) {
-  var { id, product_id, colors, size, mrp, product_price, sale_price, discount, manufacturing_date, expire_date, special_offer, featured_product, unit, quantity, product_status, unit_quantity } = req.body
+  var { id, product_id, colors, size, mrp, product_price, sale_price, discount, manufacturing_date, expire_date, special_offer, featured_product, unit, quantity, product_status, unit_quantity } = req.body;
+  var newdate1 = new Date();
+  var products_varient_newdate = newdate1.getFullYear() + "-" + (newdate1.getMonth() + 1) + "-" + newdate1.getDate();
   //console.log("req.body")
   //console.log(colors)
-  connection.query('UPDATE products_pricing SET colors="' + colors + '",size="' + size + '",mrp=' + mrp + ',product_price=' + product_price + ',sale_price=' + sale_price + ',discount=' + discount + ',manufacturing_date="' + manufacturing_date + '",expire_date="' + expire_date + '",special_offer=' + special_offer + ',featured_product=' + featured_product + ',unit="' + unit + '",unit_quantity="' + unit_quantity + '",product_status="' + product_status + '",quantity=' + quantity + '  WHERE id =' + id + ' AND product_id=' + product_id + '', (err, rows, fields) => {
+  connection.query('UPDATE products_pricing SET colors="' + colors + '",size="' + size + '",mrp=' + mrp + ',product_price=' + product_price + ',sale_price=' + sale_price + ',discount=' + discount + ',manufacturing_date="' + manufacturing_date + '",expire_date="' + expire_date + '",special_offer=' + special_offer + ',featured_product=' + featured_product + ',unit="' + unit + '",unit_quantity="' + unit_quantity + '",product_status="' + product_status + '",quantity=' + quantity + ',`updated_on`="'+products_varient_newdate+'"  WHERE id =' + id + ' AND product_id=' + product_id + '', (err, rows, fields) => {
     if (err) {
       //console.log("/products_update" + err)
       res.status(200).send(err)
@@ -288,7 +290,9 @@ function products_varient_update(req, res) {
 }
 
 function products_update(req, res) {
-  var { id, product_title_name, product_slug, store_name, product_description, product_type, category, parent_category, seo_tag, other_introduction, add_custom_input, brand, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, value_added_tax, variety, gst, cgst, sgst } = req.body
+  var { id, product_title_name, product_slug, store_name, product_description, product_type, category, parent_category, seo_tag, other_introduction, add_custom_input, brand, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, value_added_tax, variety, gst, cgst, sgst } = req.body;
+  var newdate = new Date();
+  var products_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
   //console.log("_______products_update________")
   //console.log("req.body")
   var product_title_name = jsStringEscape(product_title_name)
@@ -299,7 +303,7 @@ function products_update(req, res) {
   var shop = jsStringEscape(shop)
   var add_custom_input1 = JSON.stringify(add_custom_input)
   //console.log(add_custom_input1)
-  connection.query("UPDATE `products` SET `product_title_name`='" + product_title_name + "',`product_slug`='" + product_slug + "',`brand`='" + brand + "',`store_name`='" + store_name + "',`product_description`='" + product_description + "',`product_type`='" + product_type + "',`category`=" + category + ",`parent_category`='" + parent_category + "',`seo_tag`='" + seo_tag + "',`variety`=" + variety + ",`other_introduction`='" + other_introduction + "',`add_custom_input`='" + add_custom_input1 + "',`wholesale_sales_tax`='" + wholesale_sales_tax + "',`manufacturers_sales_tax`='" + manufacturers_sales_tax + "',`retails_sales_tax`='" + retails_sales_tax + "',`gst`='" + gst + "' ,`cgst`='" + cgst + "' ,`sgst`='" + sgst + "',`value_added_tax`='" + value_added_tax + "'  WHERE `id`=" + id + "", (err, rows, fields) => {
+  connection.query("UPDATE `products` SET `product_title_name`='" + product_title_name + "',`product_slug`='" + product_slug + "',`brand`='" + brand + "',`store_name`='" + store_name + "',`product_description`='" + product_description + "',`product_type`='" + product_type + "',`category`=" + category + ",`parent_category`='" + parent_category + "',`seo_tag`='" + seo_tag + "',`variety`=" + variety + ",`other_introduction`='" + other_introduction + "',`add_custom_input`='" + add_custom_input1 + "',`wholesale_sales_tax`='" + wholesale_sales_tax + "',`manufacturers_sales_tax`='" + manufacturers_sales_tax + "',`retails_sales_tax`='" + retails_sales_tax + "',`gst`='" + gst + "' ,`cgst`='" + cgst + "' ,`sgst`='" + sgst + "',`value_added_tax`='" + value_added_tax + "',`updated_on`='"+products_newdate+"'  WHERE `id`=" + id + "", (err, rows, fields) => {
     if (err) {
       //console.log("/products_update" + err)
       res.status(200).send(err)

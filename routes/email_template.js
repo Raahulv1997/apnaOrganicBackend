@@ -22,8 +22,9 @@ function add_email_template(req,res){
 function update_email_template(req,res){
     //console.log("req.body")
     var {id,type,email_type,email_name,email_text,text_msg,test_email,status}=req.body;
-
-    connection.query('UPDATE `email_template` SET `type`="'+type+'",`email_type`="'+email_type+'",`email_name`="'+email_name+'",`email_text`="'+email_text+'",`text_msg`="'+text_msg+'",`test_email`="'+test_email+'",`status`="'+status+'"  WHERE `id`="'+id+'" ', (err, rows, fields) => {
+    var newdate = new Date();
+    var email_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
+    connection.query('UPDATE `email_template` SET `type`="'+type+'",`email_type`="'+email_type+'",`email_name`="'+email_name+'",`email_text`="'+email_text+'",`text_msg`="'+text_msg+'",`test_email`="'+test_email+'",`status`="'+status+'",`updated_on`="'+email_newdate+'"  WHERE `id`="'+id+'" ', (err, rows, fields) => {
         if (err) {
           res.status(200).send(err)
         } else {
@@ -67,21 +68,29 @@ function email_template_list(req,res){
                
            //   //console.log("no avia")
             }
-          connection.query(''+stringsearch+' ',(err,rows,fields)=>{
+          connection.query(''+stringsearch+' ORDER BY updated_on DESC',(err,rows,fields)=>{
             if(err){
             //  //console.log("/email_template_list_error"+err)
               res.status(200).send(err)
             }else{
-              res.status(200).send(rows)
+              if(rows!=''){
+                res.status(200).send(rows)
+              }else{
+                res.status(200).send({message:"No Email Templates"})
+              }
             }
           })
     }else{
-    connection.query('SELECT * FROM `email_template` WHERE 1 ',(err,rows,fields)=>{
+    connection.query('SELECT * FROM `email_template` WHERE 1 ORDER BY updated_on DESC',(err,rows,fields)=>{
         if(err){
           //console.log("/email_template_list_error"+err)
           res.status(200).send(err)
         }else{
-          res.status(200).send(rows)
+          if(rows!=''){
+            res.status(200).send(rows)
+          }else{
+            res.status(200).send({message:"No Email Templates"})
+          }
         }
       })
     }      

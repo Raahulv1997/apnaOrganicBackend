@@ -26,7 +26,7 @@ function complaint_details(req,res){
     }else{
        quy = "SELECT * FROM `comaplains_support` WHERE `id` ="+req.query.id+""
     }
-    connection.query(quy,async (err, rows, fields) => {
+    connection.query(''+quy+' ORDER BY updated_on DESC',async (err, rows, fields) => {
         if(err){
           //console.log("error"+err)
           res.status(200).send(err)
@@ -40,8 +40,10 @@ function complaint_details(req,res){
 function complaint_update(req,res){
     //console.log("req.body")
     if(req.scrt=="a2d3m6i4n6"){
-      var {id, assigned_to, resolve_date, status_, resolve_description}=req.body
-      connection.query("UPDATE `comaplains_support` SET `assigned_to`='"+assigned_to+"',`resolve_date`='"+resolve_date+"',`status_`='"+status_+"',`resolve_description`='"+resolve_description+"' WHERE `id`= "+id+"",async (err, rows, fields) => {
+      var {id, assigned_to, resolve_date, status_, resolve_description}=req.body;
+      var newdate = new Date();
+      var complaint_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
+      connection.query("UPDATE `comaplains_support` SET `assigned_to`='"+assigned_to+"',`resolve_date`='"+resolve_date+"',`status_`='"+status_+"',`resolve_description`='"+resolve_description+"',`updated_on`='"+complaint_newdate+"' WHERE `id`= "+id+"",async (err, rows, fields) => {
           if(err){
             //console.log("error"+err)
             res.status(200).send(err)
@@ -100,7 +102,7 @@ function complaint_search(req,res){
           stringsearch+=' AND user_id ='+req.user+' '
         } 
         console.log(stringsearch)
-      connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
+      connection.query(''+stringsearch+' ORDER BY updated_on DESC',(err,rows,fields)=>{
         if(err){
           //console.log("/complaint_error"+err)
           res.status(200).send(err)
@@ -110,9 +112,9 @@ function complaint_search(req,res){
       })
 }else{
   if(0===req.user){
-  var stringsearch = 'SELECT * FROM `comaplains_support` WHERE 1 ORDER BY id DESC'
+  var stringsearch = 'SELECT * FROM `comaplains_support` WHERE 1 ORDER BY updated_on DESC'
   }else{
-  var stringsearch = 'SELECT * FROM `comaplains_support` WHERE user_id ="'+req.user+'" ORDER BY id DESC'
+  var stringsearch = 'SELECT * FROM `comaplains_support` WHERE user_id ="'+req.user+'" ORDER BY updated_on DESC'
   }  
   console.log(stringsearch)
   connection.query(stringsearch,(err,rows,fields)=>{

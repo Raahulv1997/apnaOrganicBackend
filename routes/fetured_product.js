@@ -53,8 +53,9 @@ function add_fetured_product(req, res) {
 function update_fetured_product(req, res) {
   //console.log("req.body")
   var { id, start_date, end_date } = req.body
-
-  connection.query('UPDATE `fetured_product_table` SET `start_date`="' + start_date + '",`end_date`="' + end_date + '" WHERE id = ' + id + '', (err, rows, fields) => {
+  var newdate = new Date();
+  var fetured_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
+  connection.query('UPDATE `fetured_product_table` SET `start_date`="' + start_date + '",`end_date`="' + end_date + '",`updated_on`="'+fetured_newdate+'" WHERE id = ' + id + '', (err, rows, fields) => {
     if (err) {
       //console.log(err)
       res.status(200).send(err)
@@ -87,7 +88,7 @@ function featured_list(req, res) {
   }
   //console.log(ftr_query)
 
-  connection.query(ftr_query, (err, rows, fields) => {
+  connection.query(''+ftr_query+' ORDER BY updated_on DESC', (err, rows, fields) => {
     if (err) {
       //console.log(err)
       res.status(200).send(err)

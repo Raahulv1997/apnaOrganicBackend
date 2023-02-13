@@ -59,22 +59,24 @@ if(parent_id !=''&& level!=''&& all_parent_id!=''&& new_category!='' &&  categor
 function update_category(req, res) {
   //console.log("req.body")
   var { id, parent_id, level, all_parent_id, new_category,category_type } = req.body;
+  var  newdate= new Date();
+  var category_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
 if(id !=''&& parent_id!=''&& level!=''&& all_parent_id!='' &&  new_category!='' &&  category_type!=''){
   if (req.file == undefined || req.file == '') {
     // image = "no image"
-    connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '", `category_type`="'+category_type+'", `is_active`= "' + 1 + '" WHERE `id`= "' + id + '"', (err, rows, fields) => {
+    connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '", `category_type`="'+category_type+'", `is_active`= "' + 1 + '",`updated_on`="'+category_newdate+'" WHERE `id`= "' + id + '"', (err, rows, fields) => {
       if (err) {
         //console.log("/category_error" + err)
         res.status(500).send(err)
       } else {
-        res.status(200).send("Succesfully Update Category")
+        res.status(200).send({message:"Succesfully Update Category"})
       }
     })
   } else {
     var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
     //console.log(image)
 
-    connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '", `category_type`="'+category_type+'",`image`="' +image+ '", `is_active`= "' + 1 + '" WHERE `id`= "' + id + '"', (err, rows, fields) => {
+    connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '", `category_type`="'+category_type+'",`image`="' +image+ '", `is_active`= "' + 1 + '",`updated_on`="'+category_newdate+'" WHERE `id`= "' + id + '"', (err, rows, fields) => {
       if (err) {
         //console.log("/category_error" + err)
         res.status(500).send(err)
@@ -147,7 +149,7 @@ if(all_blank){
 }
   console.log(stringsearch)
 
-  connection.query('' + stringsearch +' ORDER BY id DESC', (err, rows, fields) => {
+  connection.query('' + stringsearch +' ORDER BY updated_on DESC', (err, rows, fields) => {
     if (err) {
       //console.log("/category_error" + err)
       res.status(502).send(err)

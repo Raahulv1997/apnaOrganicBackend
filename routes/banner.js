@@ -25,10 +25,12 @@ function update_banner(req, res) {
   //console.log("______banner____")
   //console.log("req.body")
   var { banner_id, image, title, description, banner_url, size, banner_location} = req.body;
+  var newdate = new Date();
+  var banner_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
 
   if (req.file == undefined || req.file == '') {
       // image = "no image"
-      connection.query('UPDATE `banner` SET `title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
+      connection.query('UPDATE `banner` SET `title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'",`updated_on`="'+banner_newdate+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
         if (err) {
           res.status(500).send(err)
         } else {
@@ -38,7 +40,7 @@ function update_banner(req, res) {
   } else {
       var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
       //console.log(image)
-      connection.query('UPDATE `banner` SET `image`="'+image+'",`title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
+      connection.query('UPDATE `banner` SET `image`="'+image+'",`title`="'+title+'",`description`="'+description+'",`banner_url`="'+banner_url+'",`size`="'+size+'",`banner_location`="'+banner_location+'",`updated_on`="'+banner_newdate+'" WHERE `banner_id`='+banner_id+'', (err, rows, fields) => {
         if (err) {
           res.status(500).send(err)
         } else {
@@ -68,7 +70,7 @@ function update_banner(req, res) {
         }    
     }
     //console.log(banner_list_qry)
-    connection.query(banner_list_qry, (err, rows, fields) => {
+    connection.query(''+banner_list_qry+' ORDER BY `updated_on` DESC', (err, rows, fields) => {
         if (err) {
             res.status(200).send(err)
         } else {
@@ -77,7 +79,8 @@ function update_banner(req, res) {
         }
     }) 
   }
-  function banner_delete(req,res){
+  
+function banner_delete(req,res){
     //console.log("req.body")
     var {is_deleted,banner_id}=req.body
     if(is_deleted=='0'){

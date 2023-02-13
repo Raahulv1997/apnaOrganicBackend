@@ -16,7 +16,7 @@ function vendors(req, res) {
   //res.send(req.query.category)
   console.log(req.user)
   if (req.body.vendor_id == 'all' && req.scrt == 'y9a2d3a2v8') {
-    connection.query('SELECT * FROM vendor WHERE 1  ', (err, rows, fields) => {
+    connection.query('SELECT * FROM vendor WHERE 1  ORDER BY updated_on DESC', (err, rows, fields) => {
       if (err) {
         res.status(200).send(err)
       } else {
@@ -24,7 +24,7 @@ function vendors(req, res) {
       }
     })
   } else {
-    connection.query('SELECT * FROM vendor WHERE id ='+req.user+'', (err, rows, fields) => {
+    connection.query('SELECT * FROM vendor WHERE id ='+req.user+' ORDER BY updated_on DESC', (err, rows, fields) => {
       if (err) {
         //console.log("/vendors_error" + err)
         res.status(200).send(err)
@@ -42,7 +42,7 @@ function vendors(req, res) {
 
 var signup_condition = false;
 var otp_verify_condition = false;
-function vendor_signup(req, res) {
+function vendor_signup(req, res) {              
   var email_data = req.body.email;
   var rst = regex.test(email_data);
   if (rst) {
@@ -535,7 +535,7 @@ function vendor_list(req, res) {
 
       //console.log("no avia")
     }
-    connection.query('' + stringsearch + ' ORDER BY id DESC', (err, rows, fields) => {
+    connection.query('' + stringsearch + ' ORDER BY updated_on DESC', (err, rows, fields) => {
       if (err) {
         //console.log("/vendor_error" + err)
         res.status(200).send(err)
@@ -544,7 +544,7 @@ function vendor_list(req, res) {
       }
     })
   } else {
-    connection.query('SELECT * FROM `vendor` WHERE 1 ORDER BY id DESC', (err, rows, fields) => {
+    connection.query('SELECT * FROM `vendor` WHERE 1 ORDER BY updated_on DESC', (err, rows, fields) => {
       if (err) {
         //console.log("/vendor_error" + err)
         res.status(200).send(err)
@@ -560,7 +560,8 @@ function vendor_update(req, res) {
     console.log(req.admin_vendor_com_id)
     var { owner_name, shop_name, mobile, id, shop_address, gstn, geolocation, store_type, status, document_name, availability, social_media_links } = req.body;
     //console.log("req.body")
-    //console.log(req.file)
+    var newdate = new Date();
+    var vendor_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
     if(mobile.length==10){
 
     var document_name1 = JSON.stringify(document_name)
@@ -571,7 +572,7 @@ function vendor_update(req, res) {
     
     if (req.file == undefined || req.file == '') {
       // image="no image"
-      connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "'  WHERE id='" +req.admin_vendor_com_id+ "'", async (err, rows, fields) => {
+      connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "',`updated_on`='"+vendor_newdate+"'  WHERE id='" +req.admin_vendor_com_id+ "'", async (err, rows, fields) => {
         if (err) {
           //console.log("error" + err)
           res.status(500).send(err)
@@ -587,7 +588,7 @@ function vendor_update(req, res) {
     } else {
       var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
       //console.log(image)
-      connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`shop_logo`='" + image + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "'  WHERE id='" +req.admin_vendor_com_id+ "'", async (err, rows, fields) => {
+      connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`shop_logo`='" + image + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "',`updated_on`='"+vendor_newdate+"'  WHERE id='" +req.admin_vendor_com_id+ "'", async (err, rows, fields) => {
         if (err) {
           //console.log("error" + err)
           res.status(500).send(err)

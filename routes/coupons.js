@@ -1,7 +1,7 @@
 const connection = require('../db')
 function coupon(req,res){
     if(req.query.coupon_id == 'all'){
-        connection.query('SELECT * FROM coupons WHERE 1  ',(err,rows,fields)=>{
+        connection.query('SELECT * FROM coupons WHERE 1 ORDER BY updated_on DESC',(err,rows,fields)=>{
           if(err){
             res.status(200).send(err)
           }else{
@@ -9,7 +9,7 @@ function coupon(req,res){
           }
         })
       }else{
-        connection.query('SELECT * FROM coupons WHERE id ='+req.query.coupon_id+' ',(err,rows,fields)=>{
+        connection.query('SELECT * FROM coupons WHERE id ='+req.query.coupon_id+' ORDER BY updated_on DESC',(err,rows,fields)=>{
           if(err){
             //console.log("/Coupouns_error"+err)
             res.status(200).send(err)
@@ -64,9 +64,11 @@ function coupons_add(req,res){
   function coupon_update(req,res){
     //console.log("req.body")
    var {campaign_name,code,product_type,start_date,end_date,minimum_amount,percentage,status,id}=req.body;
+   var newdate = new Date();
+   var coupon_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
    if(req.file == undefined || req.file == '' ){
     // image="no image"
-    connection.query('UPDATE `coupons` SET `campaign_name`="'+campaign_name+'",`code`="'+code+'",`product_type`="'+product_type+'",`start_date`="'+start_date+'",`end_date`="'+end_date+'",`minimum_amount`="'+minimum_amount+'",`percentage`="'+percentage+'",`status`="'+status+'"  WHERE `id`='+id+' ',(err,rows,fields)=>{
+    connection.query('UPDATE `coupons` SET `campaign_name`="'+campaign_name+'",`code`="'+code+'",`product_type`="'+product_type+'",`start_date`="'+start_date+'",`end_date`="'+end_date+'",`minimum_amount`="'+minimum_amount+'",`percentage`="'+percentage+'",`status`="'+status+'",`updated_on`="'+coupon_newdate+'"  WHERE `id`='+id+' ',(err,rows,fields)=>{
       if(err){
         res.status(500).send(err)
       }else{
@@ -78,7 +80,7 @@ function coupons_add(req,res){
     var image = "http://192.168.29.108:5000/catgory_images/"+req.file.filename;
     //console.log(image);
 
-    connection.query('UPDATE `coupons` SET `campaign_name`="'+campaign_name+'",`code`="'+code+'",`product_type`="'+product_type+'",`start_date`="'+start_date+'",`end_date`="'+end_date+'",`minimum_amount`="'+minimum_amount+'",`percentage`="'+percentage+'",`status`="'+status+'",`image`="'+image+'"  WHERE `id`='+id+' ',(err,rows,fields)=>{
+    connection.query('UPDATE `coupons` SET `campaign_name`="'+campaign_name+'",`code`="'+code+'",`product_type`="'+product_type+'",`start_date`="'+start_date+'",`end_date`="'+end_date+'",`minimum_amount`="'+minimum_amount+'",`percentage`="'+percentage+'",`status`="'+status+'",`image`="'+image+'",`updated_on`="'+coupon_newdate+'"   WHERE `id`='+id+' ',(err,rows,fields)=>{
       if(err){
         res.status(500).send(err)
       }else{
@@ -122,7 +124,7 @@ function coupons_list(req,res){
            
           //console.log("no avia")
         }
-      connection.query(''+stringsearch+' ORDER BY id DESC',(err,rows,fields)=>{
+      connection.query(''+stringsearch+' ORDER BY updated_on DESC',(err,rows,fields)=>{
         if(err){
           //console.log("/Coupouns_error"+err)
           res.status(200).send(err)
@@ -131,7 +133,7 @@ function coupons_list(req,res){
         }
       })
 }else{
-connection.query('SELECT * FROM `coupons` WHERE 1 ORDER BY id DESC',(err,rows,fields)=>{
+connection.query('SELECT * FROM `coupons` WHERE 1 ORDER BY updated_on DESC',(err,rows,fields)=>{
     if(err){
       //console.log("/Coupouns_error"+err)
       res.status(200).send(err)

@@ -19,8 +19,9 @@ function add_notification_template(req,res) {
 function update_notification_template(req,res){
   //console.log("req.body")
   var {id,type,notification_type,notification_name,notification_text,status}=req.body;
-
-  connection.query('UPDATE `notification_template` SET `type`="'+type+'",`notification_type`="'+notification_type+'",`notification_name`="'+notification_name+'",`notification_text`="'+notification_text+'",`status`="'+status+'" WHERE `id`="'+id+'" ', (err, rows, fields) => {
+  var newdate = new Date();
+  var notification_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
+  connection.query('UPDATE `notification_template` SET `type`="'+type+'",`notification_type`="'+notification_type+'",`notification_name`="'+notification_name+'",`notification_text`="'+notification_text+'",`status`="'+status+'",`updated_on`="'+notification_newdate+'" WHERE `id`="'+id+'" ', (err, rows, fields) => {
       if (err) {
         res.status(200).send(err)
       } else {
@@ -63,7 +64,7 @@ function notification_template_list(req,res){
          
         //console.log("no avia")
       }
-    connection.query(''+stringsearch+' ',(err,rows,fields)=>{
+    connection.query(''+stringsearch+' ORDER BY updated_on DESC',(err,rows,fields)=>{
       if(err){
         //console.log("/notification_template_list_error"+err)
         res.status(200).send(err)
@@ -72,7 +73,7 @@ function notification_template_list(req,res){
       }
     })
 }else{
-connection.query('SELECT * FROM `notification_template` WHERE 1 ',(err,rows,fields)=>{
+connection.query('SELECT * FROM `notification_template` WHERE 1 ORDER BY updated_on DESC',(err,rows,fields)=>{
   if(err){
     //console.log("/notification_template_list_error"+err)
     res.status(200).send(err)
