@@ -43,11 +43,9 @@ function signup(req, res) {
                       res.status(200).send(err)
                     } else {
                       rows.affectedRows=='1'?sendOtpEmail(OTP):console.log({"message":"invalid input data"})
-            
-                    }
+                  }
                   })
                 }else{
-                  console.log("nhi h, bataya na...")
                 connection.query('INSERT INTO `users_otp`(`email`, `otp`) VALUES ("'+edata+'","'+OTP+'")', (err, rows, fields) => {
                 if (err) {
                   //console.log("/_otp_error" + err);
@@ -259,11 +257,14 @@ connection.query("SELECT `user_id`,`first_name`,`last_name`,`email`,`phone_no`,`
     res.status(200).send(err)
   }else{
     if(rows!=''){
-      //console.log("_____")
+      console.log("_____")
       var dobb =JSON.parse(JSON.stringify(rows[0].date_of_birth))
-      console.log(dobb)
-      dobb = dobb.replace("T18:30:00.000Z","")
-      rows[0].date_of_birth=dobb
+      if(dobb!='' && dobb!=null && dobb!="null" &&dobb!=undefined){
+        dobb = dobb.split("T");
+        console.log(dobb[0])
+      }
+     
+      rows[0].date_of_birth=dobb[0]
       res.status(200).send(rows)
     }else{
 

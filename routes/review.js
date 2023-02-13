@@ -5,7 +5,7 @@ const connection = require('../db')
 function review_rating(req,res){
   //console.log("review")
   //console.log("req.body")
-  var {user_id,product_id,product_name,user_name,category_type,review_rating,comment,review_date}=req.body;   
+  var {user_id,product_id,product_name,user_name,review_rating,comment,review_date}=req.body;   
   
   connection.query('SELECT * FROM `review` WHERE user_id="'+user_id+'" AND product_id="'+product_id+'"',(err,rows,fields)=>{
     if(err){
@@ -13,7 +13,7 @@ function review_rating(req,res){
       res.status(200).send(err)
     }else{
       if(rows==""){
-          connection.query('INSERT INTO  `review`( `user_id`, `user_name`, `product_id`,`product_name`,`category_type`,`review_date`,`review_rating`, `comment`) VALUES ("'+user_id+'","'+user_name+'","'+product_id+'","'+product_name+'","'+category_type+'","'+review_date+'","'+review_rating+'","'+comment+'")',(err,rows,fields)=>{
+          connection.query('INSERT INTO  `review`( `user_id`, `user_name`, `product_id`,`product_name`,`review_date`,`review_rating`, `comment`) VALUES ("'+user_id+'","'+user_name+'","'+product_id+'","'+product_name+'","'+review_date+'","'+review_rating+'","'+comment+'")',(err,rows,fields)=>{
             if(err){
           res.status(200).send(err)
             }else{
@@ -28,7 +28,6 @@ function review_rating(req,res){
     }
   })
 }
-
 
 function review_approved(req,res){
 
@@ -47,8 +46,8 @@ function review_approved(req,res){
 
 function review_list(req,res){
     //console.log("req.body")
-    var {product_name,category_type,status}=req.body;
-    if(product_name != '' || category_type != '' || status != '' ){
+    var {product_name,status}=req.body;
+    if(product_name != '' || status != '' ){
 
         var stringsearch = 'SELECT * FROM `review` WHERE '
         var catobj=req.body;

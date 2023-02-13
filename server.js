@@ -12,6 +12,19 @@ require('dotenv').config();
 const SERVER_PORT = process.env.SERVER_PORT
 const USER_JWT_SECRET_KEY =   process.env.USER_JWT_SECRET_KEY
 
+//________________________________________________________SET GLOBAL sql_mode__________________________________________________________________
+
+connection.query("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));", async (err, rows, fields) => {
+ if (err) {
+    //console.log("/signup_error" + err)
+    res.status(200).send(err)
+  } else {
+    rows!=''? console.log("SET GLOBAL sql_mode"):console.log("error________SET GLOBAL sql_mode_________________")
+    
+  }})
+//________________________________________________________SET GLOBAL sql_mode__________________________________________________________________
+
+
 const {fetchuser} = require("./routes/middleware/auth_by_token.js")
 const {category,add_category,update_category,delete_category,search_category,get_all_category,category_details} = require("./routes/category.js")
 const {products_search,productpost,products_varient_update,products_update,products_delete_remove,products_varient_add,products_pricing,product,product_images,product_status_update,product_images_get_all_veriant,product_images_get_singal_veriant,product_image_delete,change_porduct_cover_image} = require("./routes/product.js")
@@ -70,9 +83,27 @@ var storage = multer.diskStorage({
 })
 
 var upload = multer({
-  storage: storage
+  storage: storage,
   // dest:'./public/catgory_images'
+  fileFilter: function(_req, file, cb){
+    checkFileType(file, cb);
+}
 })
+
+function checkFileType(file, cb){
+  // Allowed ext
+  const filetypes = /jpeg|jpg|png/;
+  // Check ext
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  // Check mime
+  const mimetype = filetypes.test(file.mimetype);
+
+  if(mimetype && extname){
+    return cb(null,true);
+  } else {
+    return cb('Error: Select Images Only!');
+  }
+}
 
 //_______________________________________________________________________________________________________________
 
@@ -101,6 +132,10 @@ var upload = multer({
 
 
 // module.exports={imageUpload}
+
+
+
+
 
 //----------------category----routes------------------------
 app.get("/category", category)
@@ -177,7 +212,7 @@ app.post("/orders",fetchuser,orders)
 app.post("/order_deteils",fetchuser,order_deteils)
 app.post("/orders_list",fetchuser,orders_list)
 app.put("/order_status_change",fetchuser,order_status_change)
-app.put("/vendor_availability",vendor_availability)
+app.put("/vendor_availability",fetchuser,vendor_availability)
 app.get("/user_orders",fetchuser,users_orders)
 //_______________invoice_list________________________
 app.get("/invoice_list",invoice_list)
@@ -189,11 +224,11 @@ app.post("/vendors",fetchuser,vendors)
 app.post("/vendor_signup",vendor_signup)
 app.post("/vendor_otp_verify",vendor_otp_verify)
 app.post("/vendor_login",vendor_login)
-app.post("/change_vendor_password",change_vendor_password)
+app.post("/change_vendor_password",fetchuser,change_vendor_password)
 
 // app.post("/vendor_register",vendor_register)
-app.post("/vendor_register",upload.single('image'),vendor_register)
-app.put("/vendor_update",upload.single('image'),vendor_update)
+app.post("/vendor_register",fetchuser,upload.single('image'),vendor_register)
+app.put("/vendor_update",fetchuser,upload.single('image'),vendor_update)
 //app.put("/vendor_status_change",vendor_status_change)
 app.put("/content_manager",content_manager)
 app.post("/vendor_documents_upload",vendor_documents_upload)
@@ -304,7 +339,6 @@ app.post("/notification",notification)
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
-
 
 
 

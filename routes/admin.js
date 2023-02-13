@@ -270,7 +270,8 @@ function admin(req,res){
 
 function vendor_availability(req,res){
   // //console.log(req.body.id)
-  connection.query('UPDATE `vendor` SET `availability`= "'+req.body.availability_change+'" WHERE `id` = '+req.body.id+'',(err,rows,fields)=>{
+
+  connection.query('UPDATE `vendor` SET `availability`= "'+req.body.availability_change+'" WHERE `id` = '+req.admin_vendor_com_id+'',(err,rows,fields)=>{
     if(err){
       //console.log("/vendor_update_error"+err)
       res.send(err)

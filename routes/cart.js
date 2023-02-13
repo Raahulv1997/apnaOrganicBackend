@@ -13,7 +13,6 @@ var {product_view_id,price,discount,quantity,is_active} = req.body
             res.status(200).send(rows)
             //console.log("_____") 
         }})
-
 }
 
 function cart(req,res){

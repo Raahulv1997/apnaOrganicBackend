@@ -1,6 +1,7 @@
 const { parse } = require('path');
 const nodemailer = require("nodemailer")
 const connection = require('../db')
+const jsStringEscape = require('js-string-escape')
 var max_invoice_no1 = 0
 
 
@@ -57,14 +58,16 @@ async function orders(req, res) {
                   var iterations = order_product.length;
                   //console.log("__________iterations_________" + iterations)
                   for (item of order_product) {
+                    var jsstr = jsStringEscape(item.product_description)
+                    console.log(jsstr)
                     var order_quantity_1 = 0
                     var product_verient_id = 0
                     product_verient_id = item.id
                     order_quantity_1 = parseInt(item.order_quantity)
-                    connection.query('INSERT INTO `order_products` (`order_id`, `product_id`, `mrp`, `quantity`, `gst`, `cgst`, `sgst`,`value_added_tax`, `offer_id`, `discount`, `product_price`,`product_title_name`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `other_introduction`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `variety`, `vendor_id`, `shop`, `rating`, `colors`, `size`, `sale_price`, `manufacturing_date`, `special_offer`, `product_status`, `expire_date`, `unit`, `unit_quantity`,`all_images`,`order_quantity`) VALUES ("' + orderno + '","' + item.product_id + '","' + item.mrp + '","' + item.quantity + '","' + item.gst + '","' + item.cgst + '","' + item.sgst + '","' + item.value_added_tax + '","' + item.offer_id + '","' + item.discount + '", "' + item.product_price + '","' + item.product_title_name + '", "' + item.store_name + '", "' + item.product_description + '", "' + item.product_type + '", "' + item.brand + '", "' + item.category + '", "' + item.parent_category + '", "' + item.other_introduction + '", "' + item.wholesale_sales_tax + '", "' + item.manufacturers_sales_tax + '", "' + item.retails_sales_tax + '", "' + item.variety + '", "' + item.vendor_id + '", "' + item.shop + '", "' + item.rating + '", "' + item.colors + '", "' + item.size + '", "' + item.sale_price + '", "' + item.manufacturing_date + '", "' + item.special_offer + '", "' + item.product_status + '", "' + item.expire_date + '", "' + item.unit + '", "' + item.unit_quantity + '","' + item.all_images + '","' + item.order_quantity + '")', async (err, rslt) => {
+                    connection.query('INSERT INTO `order_products` (`order_id`, `product_id`, `mrp`, `quantity`, `gst`, `cgst`, `sgst`,`value_added_tax`, `offer_id`, `discount`, `product_price`,`product_title_name`, `store_name`, `product_description`, `product_type`, `brand`, `category`, `parent_category`, `other_introduction`, `wholesale_sales_tax`, `manufacturers_sales_tax`, `retails_sales_tax`, `variety`, `vendor_id`, `shop`, `rating`, `colors`, `size`, `sale_price`, `manufacturing_date`, `special_offer`, `product_status`, `expire_date`, `unit`, `unit_quantity`,`all_images`,`order_quantity`) VALUES ("' + orderno + '","' + item.product_id + '","' + item.mrp + '","' + item.quantity + '","' + item.gst + '","' + item.cgst + '","' + item.sgst + '","' + item.value_added_tax + '","' + item.offer_id + '","' + item.discount + '", "' + item.product_price + '","' + item.product_title_name + '", "' + item.store_name + '", "' + jsstr+ '", "' + item.product_type + '", "' + item.brand + '", "' + item.category + '", "' + item.parent_category + '", "' + item.other_introduction + '", "' + item.wholesale_sales_tax + '", "' + item.manufacturers_sales_tax + '", "' + item.retails_sales_tax + '", "' + item.variety + '", "' + item.vendor_id + '", "' + item.shop + '", "' + item.rating + '", "' + item.colors + '", "' + item.size + '", "' + item.sale_price + '", "' + item.manufacturing_date + '", "' + item.special_offer + '", "' + item.product_status + '", "' + item.expire_date + '", "' + item.unit + '", "' + item.unit_quantity + '","' + item.all_images + '","' + item.order_quantity + '")', async (err, rslt) => {
                       if (err) {
-                        //console.log(err)
-                        // res.status(200).send(err)
+                        console.log(err)
+                        res.status(200).send(err)
                         //console.log({ "error_4": err })
                       } else {
                         if (rslt != '') {
