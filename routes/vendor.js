@@ -389,108 +389,112 @@ function change_vendor_password(req, res) {
 async function vendor_register(req, res) {
 
   var { owner_name, shop_name, mobile, email, shop_address, gstn, geolocation, store_type, status, document_name, availability, social_media_links } = req.body;
-  email=email.trim()
+  // email=email.trim()
 
-  //console.log("_________+++++_________________vendor_register______________++++++_______________")
-  //console.log("req.body")
-  var document_name1 = JSON.stringify(document_name)
-  //console.log(document_name1)
-  var social_media_links_new = JSON.stringify(JSON.parse(social_media_links))
-  //console.log(typeof social_media_links_new)
-  //console.log(social_media_links_new)
 
-  if (req.file == undefined || req.file == '') {
-    image = "no image"
-  } else {
-    var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
-    //console.log(image)
-  }
-
-  //res.send([newar])
-  //return false
-
-  if(req.headers.admin_token!=''&&req.headers.admin_token!=undefined){
-          console.log("++++++++++++++++++++++")
-      console.log(req.headers)
-        var chars =
-          "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
-        var randomArray = Array.from(
-          { length: 10 },
-          (v, k) => chars[Math.floor(Math.random() * chars.length)]
-        );
-        var randomString = randomArray.join("");
-        console.log(randomString);
+  if(mobile.length==10){
+    var document_name1 = JSON.stringify(document_name)
+    //console.log(document_name1)
+    var social_media_links_new = JSON.stringify(JSON.parse(social_media_links))
+    //console.log(typeof social_media_links_new)
+    //console.log(social_media_links_new)
   
-        var salt_ = await bcrypt.genSalt(10);
-        var password_salt_ = await bcrypt.hash(randomString, salt_);
-          // console.log(password_salt_)
-        connection.query("SELECT * FROM `vendor` WHERE email = '" + email + "'", async (err, rows, fields) => {
-            if (err) {
-              //console.log("/signup_error" + err)
-              res.status(200).send(err)
-            } else {
-                if(rows==''){
-                  connection.query("INSERT INTO `vendor`(`email`,`password`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `document_name`, `availability`,`social_media_links`) VALUES ('" + email + "','"+password_salt_+"','" + owner_name + "','" + shop_name + "','" + mobile + "','" + shop_address + "','" + gstn + "','" + geolocation + "','" + store_type + "','" + image + "','" + status + "','" + document_name1 + "','" + availability + "','" + social_media_links_new + "')", async (err, rows, fields) => {
-                    if (err) {
-                      //console.log("error" + err)
-                      res.status(200).send(err)
-                    } else {
-                    if(rows!=""){
-                            connection.query('SELECT * FROM `email_template` WHERE  `email_type` = "complete"', (err, rows) => {
-                              if (err) {
-                                //console.log({ "error": err })
-                              } else {
-                                if (rows != '') {
-                                  //console.log(rows[0].email_text)
-                                  var html_data = rows[0].email_text;
-                                  html_data_replace = html_data.replace('{name}', owner_name);
-                                  html_data_replace = html_data_replace.replace('{user_name}', email);
-                                  html_data_replace = html_data_replace.replace('{password}', randomString);
-                                  // console.log(html_data)
-                                  const mail_configs = {
-                                    from: 'ashish.we2code@gmail.com',
-                                    to: email,
-                                    subject: 'Apna Organic Store',
-                                    text: "your placed request pending",
-                                    html: html_data_replace
-                                  }
-                                  nodemailer.createTransport({
-                                    service: 'gmail',
-                                    auth: {
-                                      user: 'ashish.we2code@gmail.com',
-                                      pass: 'nczaguozpagczmjv'
+    if (req.file == undefined || req.file == '') {
+      image = "no image"
+    } else {
+      var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
+      //console.log(image)
+    }
+  
+    //res.send([newar])
+    //return false
+  
+    if(req.headers.admin_token!=''&&req.headers.admin_token!=undefined){
+            console.log("++++++++++++++++++++++")
+        console.log(req.headers)
+          var chars =
+            "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
+          var randomArray = Array.from(
+            { length: 10 },
+            (v, k) => chars[Math.floor(Math.random() * chars.length)]
+          );
+          var randomString = randomArray.join("");
+          console.log(randomString);
+    
+          var salt_ = await bcrypt.genSalt(10);
+          var password_salt_ = await bcrypt.hash(randomString, salt_);
+            // console.log(password_salt_)
+          connection.query("SELECT * FROM `vendor` WHERE email = '" + email + "'", async (err, rows, fields) => {
+              if (err) {
+                //console.log("/signup_error" + err)
+                res.status(200).send(err)
+              } else {
+                  if(rows==''){
+                    connection.query("INSERT INTO `vendor`(`email`,`password`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `document_name`, `availability`,`social_media_links`) VALUES ('" + email + "','"+password_salt_+"','" + owner_name + "','" + shop_name + "','" + mobile + "','" + shop_address + "','" + gstn + "','" + geolocation + "','" + store_type + "','" + image + "','" + status + "','" + document_name1 + "','" + availability + "','" + social_media_links_new + "')", async (err, rows, fields) => {
+                      if (err) {
+                        //console.log("error" + err)
+                        res.status(200).send(err)
+                      } else {
+                      if(rows!=""){
+                              connection.query('SELECT * FROM `email_template` WHERE  `email_type` = "complete"', (err, rows) => {
+                                if (err) {
+                                  //console.log({ "error": err })
+                                } else {
+                                  if (rows != '') {
+                                    //console.log(rows[0].email_text)
+                                    var html_data = rows[0].email_text;
+                                    html_data_replace = html_data.replace('{name}', owner_name);
+                                    html_data_replace = html_data_replace.replace('{user_name}', email);
+                                    html_data_replace = html_data_replace.replace('{password}', randomString);
+                                    // console.log(html_data)
+                                    const mail_configs = {
+                                      from: 'ashish.we2code@gmail.com',
+                                      to: email,
+                                      subject: 'Apna Organic Store',
+                                      text: "your placed request pending",
+                                      html: html_data_replace
                                     }
-                                  })
-                                    .sendMail(mail_configs, (err) => {
-                                      if (err) {
-                                        return //console.log({ "email_error": err });
-                                      } else {
-                                        connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("' + rows.insertId + '","admin","vendor requested for approve","unread") , ("' + rows.insertId + '","vendor","please wait for approve profile","unread")', (err, rows) => {
-                                          if (err) {
-                                            //console.log({ "notification": err })
-                                          } else {
-                                            //console.log("_______notification-send-admin_vendor__________")
-                                          }
-                                        })
-                                        return res.status(200).send({ "message": "Sent mail to super_admin Succesfully", "message_for_vendor": "sent your request to admin" });
+                                    nodemailer.createTransport({
+                                      service: 'gmail',
+                                      auth: {
+                                        user: 'ashish.we2code@gmail.com',
+                                        pass: 'nczaguozpagczmjv'
                                       }
                                     })
-                                } else {
-                                  res.send({ "message": "status not define" })
+                                      .sendMail(mail_configs, (err) => {
+                                        if (err) {
+                                          return //console.log({ "email_error": err });
+                                        } else {
+                                          connection.query('INSERT INTO `notification`(`actor_id`, `actor_type`, `message`, `status`) VALUES ("' + rows.insertId + '","admin","vendor requested for approve","unread") , ("' + rows.insertId + '","vendor","please wait for approve profile","unread")', (err, rows) => {
+                                            if (err) {
+                                              //console.log({ "notification": err })
+                                            } else {
+                                              //console.log("_______notification-send-admin_vendor__________")
+                                            }
+                                          })
+                                          return res.status(200).send({ "message": "Sent mail to super_admin Succesfully", "message_for_vendor": "sent your request to admin" });
+                                        }
+                                      })
+                                  } else {
+                                    res.send({ "message": "status not define" })
+                                  }
                                 }
-                              }
-                      })
-                    }
-                    }
-                  }) 
-                }else{
-                  res.status(200).send({"message":"vendor already exist"})
-                }
-            }
-          })
-  }
-  else{
-    res.status(200).send({"response":"please send vendor or admin token"})
+                        })
+                      }
+                      }
+                    }) 
+                  }else{
+                    res.status(200).send({"message":"vendor already exist"})
+                  }
+              }
+            })
+    }
+    else{
+      res.status(200).send({"response":"please send vendor or admin token"})
+    }
+  }else{
+    res.status(200).send({"message":"please Enter 10 digit number","status":false})
+
   }
 
 }
@@ -557,6 +561,8 @@ function vendor_update(req, res) {
     var { owner_name, shop_name, mobile, id, shop_address, gstn, geolocation, store_type, status, document_name, availability, social_media_links } = req.body;
     //console.log("req.body")
     //console.log(req.file)
+    if(mobile.length==10){
+
     var document_name1 = JSON.stringify(document_name)
     var social_media_links_new = JSON.stringify(JSON.parse(social_media_links))
     //console.log(typeof social_media_links_new)
@@ -599,6 +605,10 @@ function vendor_update(req, res) {
   else{ 
     res.status(200).send({"response":"please send vendor or admin token"})
   }
+}else{
+  res.status(200).send({"message":"please Enter 10 digit number","status":false})
+
+}
 }
 
 function vendor_status_change(req, res) {

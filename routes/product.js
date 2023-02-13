@@ -221,6 +221,8 @@ function productpost(req, res) {
 
   var { product_title_name, product_slug, store_name, product_description, product_type, brand, category, parent_category, seo_tag, other_introduction, add_custom_input, wholesale_sales_tax, manufacturers_sales_tax, retails_sales_tax, gst, value_added_tax, id, variety, vendor_id, shop, show_product_rating, cgst, sgst } = postdata[0]
 
+  // if(product_title_name!='' && product_slug!='' && store_name!='' && product_description!='' && product_type!='' && brand!='' && category!='' && parent_category!='' && seo_tag!='' && other_introduction!='' && add_custom_input!='' && wholesale_sales_tax!='' && manufacturers_sales_tax!='' && retails_sales_tax!='' && gst!='' && value_added_tax!='' && variety!='' && shop!='' && cgst!='' && sgst!=''){
+
   var product_title_name = jsStringEscape(product_title_name)
   var product_slug = jsStringEscape(product_slug)
   var product_description = jsStringEscape(product_description)
@@ -238,7 +240,8 @@ function productpost(req, res) {
       if (rows != '') {
         console.log(rows)
         var p_id = JSON.parse(rows.insertId)
-        product_catagory.forEach((item, index) => {
+        var iterations = product_catagory.length;
+        for (item of product_catagory) {
           //console.log(index)
           //console.log(item.sale_price)
           connection.query('INSERT INTO `products_pricing`(`product_id`, `colors`, `size`, `mrp`, `product_price`, `sale_price`, `discount`, `manufacturing_date`, `expire_date`, `special_offer`, `featured_product`, `unit`, `unit_quantity`, `quantity`,`product_status`) VALUES (' + p_id + ',"' + item.colors + '","' + item.size + '",' + item.mrp + ',' + item.product_price + ',' + item.sale_price + ',' + item.discount + ',"' + item.manufacturing_date + '","' + item.expire_date + '",' + item.special_offer + ',' + item.featured_product + ',"' + item.unit + '","' + item.unit_quantity + '",' + item.quantity + ',"' + item.product_status + '")', (err, rows, fields) => {
@@ -249,20 +252,24 @@ function productpost(req, res) {
               if (rows != '') {
                 console.log(rows.insertId)
                 var p_v_id = JSON.parse(rows.insertId)
-                res.status(201).send({ "product_id": p_id, "product_variant_id": p_v_id, "message": "succesfully added data on new_product table" })
+                if (!--iterations) {
+                  res.status(201).send({ "product_id": p_id, "product_variant_id": p_v_id, "message": "succesfully added data on new_product table" })
+                }
               } else {
                 res.status(200).send(err)
               }
 
             }
           });
-        });
+        }
       } else {
         res.status(200).send(err)
       }
-
-    }
+  }
   })
+  // }else{
+  //   res.send({"response":"please fill all input"})
+  // } 
 }
 
 function products_varient_update(req, res) {
@@ -402,7 +409,7 @@ function product(req, res) {
                 Object.assign(product_details, { product_verient: row });
                 res.status(200).send(product_details)
               }
-            } else {
+            } else { 
               res.status(200).send("error")
             }
           }

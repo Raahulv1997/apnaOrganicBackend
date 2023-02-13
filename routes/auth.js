@@ -259,7 +259,7 @@ connection.query("SELECT `user_id`,`first_name`,`last_name`,`email`,`phone_no`,`
     if(rows!=''){
       console.log("_____")
       var dobb =JSON.parse(JSON.stringify(rows[0].date_of_birth))
-      if(dobb!=''){
+      if(dobb!='' && dobb!=null && dobb!="null" &&dobb!=undefined){
         dobb = dobb.split("T");
         console.log(dobb[0])
       }

@@ -83,9 +83,27 @@ var storage = multer.diskStorage({
 })
 
 var upload = multer({
-  storage: storage
+  storage: storage,
   // dest:'./public/catgory_images'
+  fileFilter: function(_req, file, cb){
+    checkFileType(file, cb);
+}
 })
+
+function checkFileType(file, cb){
+  // Allowed ext
+  const filetypes = /jpeg|jpg|png/;
+  // Check ext
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  // Check mime
+  const mimetype = filetypes.test(file.mimetype);
+
+  if(mimetype && extname){
+    return cb(null,true);
+  } else {
+    return cb('Error: Select Images Only!');
+  }
+}
 
 //_______________________________________________________________________________________________________________
 
@@ -209,8 +227,8 @@ app.post("/vendor_login",vendor_login)
 app.post("/change_vendor_password",fetchuser,change_vendor_password)
 
 // app.post("/vendor_register",vendor_register)
-app.post("/vendor_register",upload.single('image'),fetchuser,vendor_register)
-app.put("/vendor_update",upload.single('image'),fetchuser,vendor_update)
+app.post("/vendor_register",fetchuser,upload.single('image'),vendor_register)
+app.put("/vendor_update",fetchuser,upload.single('image'),vendor_update)
 //app.put("/vendor_status_change",vendor_status_change)
 app.put("/content_manager",content_manager)
 app.post("/vendor_documents_upload",vendor_documents_upload)
@@ -321,7 +339,6 @@ app.post("/notification",notification)
 app.get("*", function(req, res){
   res.send({"Error":"invalid url"})
   })
-
 
 
 

@@ -5,7 +5,7 @@ function category(req, res) {
   // //console.log(typeof req.query.category)
   //res.send(req.query.category)
   if (req.query.category == 'all') {
-    connection.query('SELECT * FROM category WHERE 1 ', (err, rows, fields) => {
+    connection.query('SELECT * FROM category ORDER BY updated_on DESC ', (err, rows, fields) => {
       if (err) {
         res.status(200).send(err)
       } else {
@@ -13,7 +13,7 @@ function category(req, res) {
       }
     })
   } else {
-    connection.query('SELECT * FROM category WHERE parent_id =' + req.query.category + ' ', (err, rows, fields) => {
+    connection.query('SELECT * FROM category WHERE parent_id =' + req.query.category + '  ORDER BY updated_on DESC', (err, rows, fields) => {
       if (err) {
         //console.log("/category_error" + err)
         res.status(200).send(err)
@@ -30,7 +30,8 @@ function add_category(req, res) {
   var newlevel = 1
   //console.log("add_category")
   //console.log("req.body")
-  var { parent_id, level, all_parent_id, new_category, image, category_type } = req.body
+var { parent_id, level, all_parent_id, new_category, image, category_type } = req.body
+if(parent_id !=''&& level!=''&& all_parent_id!=''&& new_category!='' &&  category_type!=''){
 
   if (req.file == undefined || req.file == '') {
     image = "no image"
@@ -45,18 +46,20 @@ function add_category(req, res) {
 //}
   connection.query('INSERT INTO `category`(`parent_id`,`all_parent_id`,`level`,`category_name`,`category_type`,`image`,`is_active`) VALUES (' + parent_id + ',"' + all_parent_id + '",' + newlevel + ',"' + new_category + '","' + category_type + '","' + image + '",' + 1 + ')', (err, rows, fields) => {
     if (err) {
-      //console.log("/add_category_error" + err)
+      console.log("/add_category_error" + err)
       res.status(200).send(err)
     } else {
-      //console.log("_____")
+      console.log("_____")
       res.status(201).send("Succesfully Add Category")
     }
   })
+}else{res.send({"response":"please fill all inputs"})}
 }
 
 function update_category(req, res) {
   //console.log("req.body")
   var { id, parent_id, level, all_parent_id, new_category,category_type } = req.body;
+if(id !=''&& parent_id!=''&& level!=''&& all_parent_id!='' &&  new_category!='' &&  category_type!=''){
   if (req.file == undefined || req.file == '') {
     // image = "no image"
     connection.query('UPDATE `category` SET `parent_id`="' + parent_id + '",`all_parent_id`="' + all_parent_id + '",`level`="' + level + '",`category_name`="' + new_category + '", `category_type`="'+category_type+'", `is_active`= "' + 1 + '" WHERE `id`= "' + id + '"', (err, rows, fields) => {
@@ -80,35 +83,46 @@ function update_category(req, res) {
       }
     })
   }
+}else{
+  res.send({"response":"please fill all inputs"})
+}
+
+
 }
 
 function delete_category(req, res) {
   //console.log("req.body")
   var { id, is_active, level } = req.body
-  if (is_active == '0') {
-    connection.query('UPDATE `category` SET `is_active`= "' + is_active + '" WHERE `id`= ' + id + ' AND `level`=' + level + '', (err, rows, fields) => {
-      if (err) {
-        //console.log(err)
-        res.status(200).send(err)
-      } else {
-        connection.query('UPDATE `category` SET `is_active`= "' + is_active + '" WHERE `parent_id`= ' + id + '', (err, rows, fields) => {
-          if (err) {
-            //console.log(err)
-            res.status(200).send(err)
-          } else {
-            res.status(202).send("deactivated category")
-            //console.log("deactivated category")
-          }
-        })
-      }
-    })
-  }
+  // if(id!=''&&is_active!=''&&level!=''){
+    if (is_active == '0') {
+      connection.query('UPDATE `category` SET `is_active`= "' + is_active + '" WHERE `id`= ' + id + ' AND `level`=' + level + '', (err, rows, fields) => {
+        if (err) {
+          //console.log(err)
+          res.status(200).send(err)
+        } else {
+          connection.query('UPDATE `category` SET `is_active`= "' + is_active + '" WHERE `parent_id`= ' + id + '', (err, rows, fields) => {
+            if (err) {
+              //console.log(err)
+              res.status(200).send(err)
+            } else {
+              res.status(202).send("deactivated category")
+              //console.log("deactivated category")
+            }
+          })
+        }
+      })
+    }else{
+      res.status(202).send("send is_active = 0")
 
+    }
+  // }else{
+  // res.send({"response":"please fill all inputs"})
+  // }
 }
 
 function search_category(req, res) {
 
-  //console.log("req.body")
+  console.log(req.body)
   var stringsearch = 'SELECT * FROM `category` WHERE '
   //var {category_name,category_type,level} = req.body
 var all_blank = true
@@ -124,15 +138,16 @@ if(objvalue[m]!=''){
   //console.log("null"+m)
 }
 }
-  //console.log(stringsearch)
+  console.log(stringsearch)
   var lastIndexOfSpace = stringsearch.lastIndexOf(' ');
   stringsearch = stringsearch.slice(0, lastIndexOfSpace);
 
 if(all_blank){
-  stringsearch = 'SELECT * FROM `category` WHERE 1 '
+  stringsearch = 'SELECT * FROM `category` '
 }
+  console.log(stringsearch)
 
-  connection.query('' + stringsearch + '', (err, rows, fields) => {
+  connection.query('' + stringsearch +' ORDER BY id DESC', (err, rows, fields) => {
     if (err) {
       //console.log("/category_error" + err)
       res.status(502).send(err)
