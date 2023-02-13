@@ -392,7 +392,7 @@ async function vendor_register(req, res) {
   // email=email.trim()
 
 
-  if(mobile.length==10){
+  // if(mobile.length==10){
     var document_name1 = JSON.stringify(document_name)
     //console.log(document_name1)
     var social_media_links_new = JSON.stringify(JSON.parse(social_media_links))
@@ -492,10 +492,10 @@ async function vendor_register(req, res) {
     else{
       res.status(200).send({"response":"please send vendor or admin token"})
     }
-  }else{
-    res.status(200).send({"message":"please Enter 10 digit number","status":false})
+  // }else{
+  //   res.status(200).send({"message":"please Enter 10 digit number","status":false})
 
-  }
+  // }
 
 }
 
