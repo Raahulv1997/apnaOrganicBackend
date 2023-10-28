@@ -86,7 +86,7 @@ function update_blog(req, res) {
       }
     })
   } else {
-    var image = "http://192.168.29.108:5000/catgory_images/" + req.file.filename;
+    var image = "http://192.168.29.108:8000/catgory_images/" + req.file.filename;
     //console.log(image)
     //console.log("pass+++++++")
     connection.query('UPDATE `blog` SET `image`="' + image + '",`title`="' + title + '",`description`="' + description + '",`category`="' + category + '",`product_tag`="' + product_tag + '",`publish_date`="' + publish_date + '",`updated_on`="'+blog_newdate+'" WHERE admin_id="'+admin_id+'" AND id="'+id+'"', (err, rows, fields) => {

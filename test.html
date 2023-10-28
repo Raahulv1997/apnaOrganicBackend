@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ <base target="_top">
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+ <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+ <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+ <link href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+ integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous" />
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+ integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
+ </script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+ integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+ crossorigin="anonymous" referrerpolicy="no-referrer" />
+ <!-- google font -->
+ <link rel="preconnect" href="https://fonts.googleapis.com" />
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+ <link
+ href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;0,700;1,300&family=Noto+Serif+Lao&display=swap"
+ rel="stylesheet" />
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" />
+
+
+ <link href="https://northern.tech/user/plugins/form/assets/form-styles.css" type="text/css" rel="stylesheet" />
+ <link href="https://northern.tech/user/themes/tonik/minified/css/all.css" type="text/css" rel="stylesheet" />
+
+
+ <?!= include('css'); ?>
+</head>
+
+<body>
+ <div class="body_svg">
+ <svg width="201" height="274" viewBox="0 0 201 274" fill="none" xmlns="http://www.w3.org/2000/svg">
+ <circle cx="83" cy="4" r="4" fill="#00B6F3" />
+ <circle cx="197" cy="4" r="4" fill="#00B6F3" />
+ <circle cx="45" cy="4" r="4" fill="#00B6F3" />
+ <circle cx="159" cy="4" r="4" fill="#00B6F3" />
+ <circle cx="7" cy="4" r="4" fill="#00B6F3" />
+ <circle cx="121" cy="4" r="4" fill="#00B6F3" />
+ <circle cx="83" cy="80" r="4" fill="#00B6F3" />
+ <circle cx="197" cy="80" r="4" fill="#00B6F3" />
+ <circle cx="45" cy="80" r="4" fill="#00B6F3" />
+ <circle cx="159" cy="80" r="4" fill="#00B6F3" />
+ <circle cx="7" cy="80" r="4" fill="#00B6F3" />
+ <circle cx="121" cy="80" r="4" fill="#00B6F3" />
+ <circle cx="83" cy="156" r="4" fill="#00B6F3" />
+ <circle cx="197" cy="156" r="4" fill="#00B6F3" />
+ <circle cx="45" cy="156" r="4" fill="#00B6F3" />
+ <circle cx="159" cy="156" r="4" fill="#00B6F3" />
+ <circle cx="7" cy="156" r="4" fill="#00B6F3" />
+ <circle cx="121" cy="156" r="4" fill="#00B6F3" />
+ <circle cx="83" cy="232" r="4" fill="#00B6F3" />
+ <circle cx="197" cy="232" r="4" fill="#00B6F3" />
+ <circle cx="45" cy="232" r="4" fill="#00B6F3" />
+ <circle cx="159" cy="232" r="4" fill="#00B6F3" />
+ <circle cx="7" cy="232" r="4" fill="#00B6F3" />
+ <circle cx="121" cy="232" r="4" fill="#00B6F3" />
+ <circle cx="83" cy="118" r="4" fill="#00B6F3" />
+ <circle cx="197" cy="118" r="4" fill="#00B6F3" />
+ <circle cx="45" cy="118" r="4" fill="#00B6F3" />
+ <circle cx="159" cy="118" r="4" fill="#00B6F3" />
+ <circle cx="7" cy="118" r="4" fill="#00B6F3" />
+ <circle cx="121" cy="118" r="4" fill="#00B6F3" />
+ <circle cx="83" cy="42" r="4" fill="#00B6F3" />
+ <circle cx="197" cy="42" r="4" fill="#00B6F3" />
+ <circle cx="45" cy="42" r="4" fill="#00B6F3" />
+ <circle cx="159" cy="42" r="4" fill="#00B6F3" />
+ <circle cx="7" cy="42" r="4" fill="#00B6F3" />
+ <circle cx="121" cy="42" r="4" fill="#00B6F3" />
+ <circle cx="83" cy="194" r="4" fill="#00B6F3" />
+ <circle cx="197" cy="194" r="4" fill="#00B6F3" />
+ <circle cx="45" cy="194" r="4" fill="#00B6F3" />
+ <circle cx="159" cy="194" r="4" fill="#00B6F3" />
+ <circle cx="7" cy="194" r="4" fill="#00B6F3" />
+ <circle cx="121" cy="194" r="4" fill="#00B6F3" />
+ <circle cx="83" cy="270" r="4" fill="#00B6F3" />
+ <circle cx="197" cy="270" r="4" fill="#00B6F3" />
+ <circle cx="45" cy="270" r="4" fill="#00B6F3" />
+ <circle cx="159" cy="270" r="4" fill="#00B6F3" />
+ <circle cx="7" cy="270" r="4" fill="#00B6F3" />
+ <circle cx="121" cy="270" r="4" fill="#00B6F3" />
+ </svg>
+ </div>
+ <?!= include('header'); ?>
+ </br>
+ <div class="container-fluid" style="text-align: center;">
+ <div id="email_div">
+ <h3>Please Enter Your Email</h3>
+ <input type="text" placeholder="Enter Email" id="email_input">
+ <button class="btn btn-info" onclick="submit_btn()">Submit</button>
+ </div>
+ </div>
+ </div>
+ <!-- <button class="btn btn-primary" onclick="feedback_give_open_function()" id="feedback_button" style="display:none">Feedback Give</button>
+ <button class="btn btn-info" onclick="feedback_response_open_function()" id="feedback_response_button" style="display:none">Feedback Response</button>
+ <button class="btn btn-primary" onclick="review_list()" id="review_list_button" style="display:none">review_list</button>
+ <button class="btn btn-info" onclick="review_give_list()" id="review_give_list_button" style="display:none">review_give_list</button>
+ <button class="btn btn-primary" onclick="response_recived_list()" id="response_recived_list_button" style="display:none">response_recived_list</button>
+ <button class="btn btn-info" onclick="response_give_list()" id="response_give_list_button" style="display:none">response_give_list</button>
+ <button class="btn btn-primary" onclick="dashboard()" id="dashboard_button" style="display:none">Dashboard</button> -->
+ <?!= include('dashboard'); ?>
+ <?!= include('new_response_list'); ?>
+ <?!= include('new_give_feedback_list'); ?>
+ <?!= include('response_recived_list'); ?>
+ <?!= include('response_give_list'); ?>
+ <?!= include('feedback_give'); ?>
+ <?!= include('response_feedback'); ?>
+
+
+</body>
+
+<script>
+ let emoji_svg_array = ['0','<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 512 512"><circle cx="256" cy="256" r="219.5" fill="#fdd402"/><path fill="#fbbf13" d="M96.5,256C96.5,144.9519,178.969,53.17993,286,38.54956A221.36948,221.36948,0,0,0,256,36.5C134.77344,36.5,36.5,134.77344,36.5,256S134.77344,475.5,256,475.5a221.36948,221.36948,0,0,0,30-2.04956C178.969,458.82007,96.5,367.0481,96.5,256Z"/><path fill="#74563a" d="M384.78993,374.25586a10.00957,10.00957,0,0,1-13.802,10.65688,295.84323,295.84323,0,0,0-49.798-16.11269h-.01A292.19168,292.19168,0,0,0,257.52,361.45h-1.5a293.0633,293.0633,0,0,0-65.18994,7.3501h-.02A296.31324,296.31324,0,0,0,141.01244,384.914a10.01005,10.01005,0,0,1-13.80392-10.6558A126.34261,126.34261,0,0,1,252.46,265.34H259.54A126.05433,126.05433,0,0,1,348.96,302.38c.7.7,1.39014,1.4,2.07007,2.12a125.71341,125.71341,0,0,1,33.7599,69.75586Z"/><path fill="#674b34" d="M170.49,358.26a126.36019,126.36019,0,0,1,105.509-91.85718A127.763,127.763,0,0,0,259.54,265.34H252.46A126.22982,126.22982,0,0,0,127.208,374.26206a10.012,10.012,0,0,0,13.81055,10.65329c7.495-3.18091,16.22125-6.515,26.06155-9.64057A126.96627,126.96627,0,0,1,170.49,358.26Z"/><path fill="#74563a" d="M374.32813 254.67041a7.46325 7.46325 0 0 1-3.71387-.98975l-46.66992-26.66894a7.49948 7.49948 0 0 1 0-13.02344l46.66992-26.66894a7.49974 7.49974 0 1 1 7.4414 13.02343L342.78125 220.5l35.27441 20.15723a7.50091 7.50091 0 0 1-3.72753 14.01318zM137.67188 254.67041a7.50091 7.50091 0 0 1-3.72754-14.01318L169.21875 220.5l-35.27441-20.15723a7.49974 7.49974 0 1 1 7.4414-13.02343l46.66992 26.66894a7.49948 7.49948 0 0 1 0 13.02344l-46.66992 26.66894A7.46057 7.46057 0 0 1 137.67188 254.67041zM150.67285 169.95313A72.45648 72.45648 0 0 1 121.126 163.5542a7.5 7.5 0 1 1 6.50781-13.51465c2.42285 1.167 24.28027 11.05566 45.4873-.7998a48.08362 48.08362 0 0 0 18.501-18.9458A7.50023 7.50023 0 0 1 204.77832 137.5a62.85588 62.85588 0 0 1-24.33984 24.834A60.352 60.352 0 0 1 150.67285 169.95313zM357.32715 169.95313a60.3485 60.3485 0 0 1-29.7666-7.61963A62.85557 62.85557 0 0 1 303.22168 137.5a7.50023 7.50023 0 0 1 13.15625-7.20605 48.08313 48.08313 0 0 0 18.5 18.94531c21.209 11.854 43.06738 1.96679 45.48828.80029A7.5 7.5 0 1 1 386.874 163.5542 72.46655 72.46655 0 0 1 357.32715 169.95313z"/><path fill="#fff" d="M351.03,304.5H160.97a126.03074,126.03074,0,0,1,91.49-39.16H259.54A126.05433,126.05433,0,0,1,348.96,302.38C349.65991,303.08,350.3501,303.78,351.03,304.5Z"/><path fill="#e5303e" d="M321.18994,368.80005h-.01A292.19168,292.19168,0,0,0,257.52,361.45h-1.5a293.0633,293.0633,0,0,0-65.18994,7.3501h-.02c3.2-19.25,31.16992-34.3,65.18994-34.3S317.99,349.55005,321.18994,368.80005Z"/><path fill="#b72732" d="M271,335.50659A111.41158,111.41158,0,0,0,256,334.5c-34.02,0-61.99,15.05005-65.18994,34.30005h.02a294.39317,294.39317,0,0,1,31.56933-5.40637C228.249,349.58923,247.10718,338.75537,271,335.50659Z"/><path fill="#e0e0e2" d="M276,266.3999A125.18155,125.18155,0,0,0,241.55005,276,126.62654,126.62654,0,0,0,200.97,304.5h-40a126.03074,126.03074,0,0,1,91.49-39.16H259.54c.7,0,1.38989.01,2.08984.02.69019.01,1.39014.02,2.08008.04992.48.01.95.03,1.43018.06006.38989.01.76977.03,1.1499.05q3.53979.18,7.02.55994c.42993.05.85986.09,1.28.15C275.06006,266.28,275.53,266.34,276,266.3999Z"/><path fill="#e0e0e2" d="M276,266.3999A125.18155,125.18155,0,0,0,241.55005,276,126.62654,126.62654,0,0,0,200.97,304.5h-40a126.03074,126.03074,0,0,1,91.49-39.16H259.54c.7,0,1.38989.01,2.08984.02.69019.01,1.39014.02,2.08008.04992.48.01.95.03,1.43018.06006.38989.01.76977.03,1.1499.05q3.53979.18,7.02.55994c.42993.05.85986.09,1.28.15C275.06006,266.28,275.53,266.34,276,266.3999Z"/></svg>','<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 512 512"><circle cx="256" cy="256" r="219.5" fill="#fdd402"/><path fill="#fbbf13" d="M96.5,256C96.5,144.95184,178.969,53.17993,286,38.5495A221.37921,221.37921,0,0,0,256,36.5C134.7735,36.5,36.5,134.7735,36.5,256S134.7735,475.5,256,475.5a221.37921,221.37921,0,0,0,30-2.0495C178.969,458.82007,96.5,367.04816,96.5,256Z"/><path fill="#74563a" d="M165.5 230A35.54028 35.54028 0 0 1 130 194.5a7.5 7.5 0 0 1 15 0 20.5 20.5 0 0 0 41 0 7.5 7.5 0 0 1 15 0A35.54028 35.54028 0 0 1 165.5 230zM346.5 230A35.54028 35.54028 0 0 1 311 194.5a7.5 7.5 0 0 1 15 0 20.5 20.5 0 0 0 41 0 7.5 7.5 0 0 1 15 0A35.54028 35.54028 0 0 1 346.5 230zM368.55664 388.00146a7.4972 7.4972 0 0 1-6.54541-3.82763 117.92174 117.92174 0 0 0-55.22266-50.1294A116.55966 116.55966 0 0 0 259.5 324.14014h-7a116.57358 116.57358 0 0 0-47.2959 9.90332 118.4576 118.4576 0 0 0-55.21435 50.1289 7.50013 7.50013 0 0 1-13.07911-7.34472 133.55143 133.55143 0 0 1 62.24854-56.51221A131.47793 131.47793 0 0 1 252.5 309.14014h7a132.16887 132.16887 0 0 1 93.69336 38.80664 132.92018 132.92018 0 0 1 21.895 28.87939 7.50238 7.50238 0 0 1-6.53174 11.17529z"/></svg>','<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 512 512"><circle cx="256" cy="256" r="219.5" fill="#fdd402"/><path fill="#fbbf13" d="M86.5,256C86.5,143.2287,171.5481,50.33716,281,37.9256A221.7541,221.7541,0,0,0,256,36.5C134.77344,36.5,36.5,134.7735,36.5,256S134.77344,475.5,256,475.5a221.7541,221.7541,0,0,0,25-1.4256C171.5481,461.66284,86.5,368.7713,86.5,256Z"/><path fill="#74563a" d="M226.21484 379.15088a132.73321 132.73321 0 0 1-35.84961-4.9082 7.49991 7.49991 0 0 1 4.05469-14.44141 118.45391 118.45391 0 0 0 74.48535-3.59522 116.58063 116.58063 0 0 0 40.44922-26.4414l4.94922-4.94971a7.50024 7.50024 0 0 1 10.60742 10.60645l-4.94922 4.9497a131.485 131.485 0 0 1-45.624 29.81641A133.04175 133.04175 0 0 1 226.21484 379.15088zM121.65527 224.42822a7.50216 7.50216 0 0 1-6.63672-10.98291c1.61817-3.08838 16.72559-30.291 48.3252-34.41064a62.86159 62.86159 0 0 1 34.34863 5.40576 7.49982 7.49982 0 1 1-6.25586 13.63281 47.2248 47.2248 0 0 0-26.15234-4.16455c-24.08887 3.14063-35.73145 24.11817-36.98047 26.49951A7.4982 7.4982 0 0 1 121.65527 224.42822z"/><circle cx="189.838" cy="202.174" r="19.5" fill="#74563a"/><path fill="#74563a" d="M302.65527,224.42822a7.50216,7.50216,0,0,1-6.63672-10.98291c1.61817-3.08838,16.72559-30.291,48.3252-34.41064a62.85883,62.85883,0,0,1,34.34863,5.40576,7.49982,7.49982,0,1,1-6.25586,13.63281,47.22345,47.22345,0,0,0-26.15234-4.16455c-24.08887,3.14063-35.73145,24.11817-36.98047,26.49951A7.4982,7.4982,0,0,1,302.65527,224.42822Z"/><circle cx="370.838" cy="202.174" r="19.5" fill="#74563a"/></svg>','<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 512 512"><circle cx="256" cy="256" r="219.5" fill="#fdd402"/><path fill="#fbbf13" d="M96.5,256C96.5,144.95184,178.969,53.17993,286,38.5495A221.37921,221.37921,0,0,0,256,36.5C134.77344,36.5,36.5,134.7735,36.5,256S134.77344,475.5,256,475.5a221.37921,221.37921,0,0,0,30-2.0495C178.969,458.82007,96.5,367.04816,96.5,256Z"/><circle cx="165.5" cy="194.5" r="28" fill="#74563a"/><path fill="#674b34" d="M157.5,194.5a28.00514,28.00514,0,0,1,18-26.15405,28,28,0,1,0,0,52.3081A28.00514,28.00514,0,0,1,157.5,194.5Z"/><circle cx="346.5" cy="194.5" r="28" fill="#74563a"/><path fill="#674b34" d="M338.5,194.5a28.00478,28.00478,0,0,1,18-26.15405,28,28,0,1,0,0,52.3081A28.00478,28.00478,0,0,1,338.5,194.5Z"/><path fill="#74563a" d="M350.5752,379.58643a7.50111,7.50111,0,0,1-6.80079-4.32959A118.3802,118.3802,0,0,0,305.09668,328.919a117.19109,117.19109,0,0,0-39.4541-18.20459,115.96118,115.96118,0,0,0-48.26563-1.78223l-6.89648,1.189a115.94082,115.94082,0,0,0-44.8916,17.83936,7.5001,7.5001,0,0,1-8.31836-12.48242,130.86558,130.86558,0,0,1,50.66113-20.13916l6.89649-1.189a131.79347,131.79347,0,0,1,98.9541,22.53955,133.40323,133.40323,0,0,1,43.584,52.22266,7.50428,7.50428,0,0,1-6.791,10.67432Z"/></svg>','<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 512 512"><circle cx="256" cy="256" r="219.5" fill="#fdd402"/><path fill="#fbbf13" d="M96.5,256C96.5,144.95184,178.969,53.17993,286,38.5495A221.37921,221.37921,0,0,0,256,36.5C134.77344,36.5,36.5,134.7735,36.5,256S134.77344,475.5,256,475.5a221.37921,221.37921,0,0,0,30-2.0495C178.969,458.82007,96.5,367.04816,96.5,256Z"/><circle cx="165.5" cy="194.5" r="28" fill="#74563a"/><path fill="#674b34" d="M157.5,194.5a28.00478,28.00478,0,0,1,18-26.15405,28,28,0,1,0,0,52.3081A28.00478,28.00478,0,0,1,157.5,194.5Z"/><circle cx="346.5" cy="194.5" r="28" fill="#74563a"/><path fill="#674b34" d="M338.5,194.5a28.0047,28.0047,0,0,1,18-26.154,28,28,0,1,0,0,52.308A28.0047,28.0047,0,0,1,338.5,194.5Z"/><path fill="#74563a" d="M259.5,406h-7a132.417,132.417,0,0,1-127.792-97.36572,7.49971,7.49971,0,1,1,14.46484-3.96875A117.41578,117.41578,0,0,0,252.5,391h7a117.58564,117.58564,0,0,0,113.32617-86.34229,7.50014,7.50014,0,0,1,14.4668,3.96485A132.43186,132.43186,0,0,1,259.5,406Z"/></svg>','<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 512 512"><path fill="#74563a" d="M377.59,334.59a122.44172,122.44172,0,0,1-8.99,19.96c-26.59,10.34-67.37,22.66-111.06,22.88H256.3c-44.56,0-85.96-12.42-112.9-22.88a123.29387,123.29387,0,0,1-8.99-19.96c.04.02.08.03.12.05,23.76,10.49,71.36,28.05,122.93,27.79,50.26-.26,96.76-17.52,120.01-27.79C377.51,334.62,377.55,334.61,377.59,334.59Z"/><circle cx="256" cy="256" r="219.5" fill="#fdd402"/><path fill="#fbbf13" d="M96.5,256C96.5,144.95184,178.969,53.17993,286,38.5495A221.37921,221.37921,0,0,0,256,36.5C134.7735,36.5,36.5,134.7735,36.5,256S134.7735,475.5,256,475.5a221.37921,221.37921,0,0,0,30-2.0495C178.969,458.82007,96.5,367.04816,96.5,256Z"/><path fill="#74563a" d="M193.5 202a7.50006 7.50006 0 0 1-7.5-7.5 20.5 20.5 0 0 0-41 0 7.5 7.5 0 0 1-15 0 35.5 35.5 0 0 1 71 0A7.50006 7.50006 0 0 1 193.5 202zM374.5 202a7.50006 7.50006 0 0 1-7.5-7.5 20.5 20.5 0 0 0-41 0 7.5 7.5 0 0 1-15 0 35.5 35.5 0 0 1 71 0A7.50006 7.50006 0 0 1 374.5 202z"/><path fill="#fff" d="M369.44525,300.39906a10.01636,10.01636,0,0,1,13.83081,10.6477A124.96775,124.96775,0,0,1,380.06,326.64q-1.11,4.03492-2.47,7.95a122.44172,122.44172,0,0,1-8.99,19.96A124.87049,124.87049,0,0,1,259.5,418.5h-7a125.11285,125.11285,0,0,1-118.09-83.91c-.91-2.61-1.73-5.25-2.47-7.94a124.94382,124.94382,0,0,1-3.21739-15.60377,10.016,10.016,0,0,1,13.8286-10.64822A291.21007,291.21007,0,0,0,256.02,323.5h1.48A291.06819,291.06819,0,0,0,369.44525,300.39906Z"/><path fill="#e0e0e2" d="M232.18,407.96a125.45623,125.45623,0,0,1-58.78-53.41,123.29387,123.29387,0,0,1-8.99-19.96c-.91-2.61-1.73-5.25-2.47-7.94a125.00819,125.00819,0,0,1-3.7688-20.16076c-5.68669-2.03247-10.91061-4.09766-15.64164-6.10273A10.01011,10.01011,0,0,0,128.722,311.04178,124.94231,124.94231,0,0,0,131.94,326.65c.74,2.69,1.56,5.33,2.47,7.94a123.29387,123.29387,0,0,0,8.99,19.96A124.84383,124.84383,0,0,0,252.5,418.5h7c3.878,0,7.71161-.187,11.49939-.53241A124.13167,124.13167,0,0,1,232.18,407.96Z"/><path fill="#e0e0e2" d="M181.36,366.97a367.55186,367.55186,0,0,1-37.96-12.42,123.29387,123.29387,0,0,1-8.99-19.96c.04.02.08.03.12.05a351.6652,351.6652,0,0,0,35.46,13.38c1.07,2.22,2.21,4.39,3.41,6.53A124.70711,124.70711,0,0,0,181.36,366.97Z"/><path fill="#74563a" d="M377.59,334.59a122.44172,122.44172,0,0,1-8.99,19.96c-26.59,10.34-67.37,22.66-111.06,22.88H256.3c-44.56,0-85.96-12.42-112.9-22.88a123.29387,123.29387,0,0,1-8.99-19.96c.04.02.08.03.12.05,23.76,10.49,71.36,28.05,122.93,27.79,50.26-.26,96.76-17.52,120.01-27.79C377.51,334.62,377.55,334.61,377.59,334.59Z"/><path fill="#674b34" d="M181.36,366.97a367.55186,367.55186,0,0,1-37.96-12.42,123.29387,123.29387,0,0,1-8.99-19.96c.04.02.08.03.12.05a351.6652,351.6652,0,0,0,35.46,13.38c1.07,2.22,2.21,4.39,3.41,6.53A124.70711,124.70711,0,0,0,181.36,366.97Z"/></svg>','<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 512 512" viewBox="0 0 512 512"><circle cx="256" cy="256" r="219.5" fill="#fdd402"/><path fill="#fbbf13" d="M96.5,256C96.5,145,179,53.2,286,38.5c-9.9-1.4-20-2-30-2C134.8,36.5,36.5,134.8,36.5,256 S134.8,475.5,256,475.5c10,0,20.1-0.7,30-2C179,458.8,96.5,367,96.5,256z"/><path fill="#74563a" d="M374.3 214.7c-1.3 0-2.6-.3-3.7-1L323.9 187c-3.6-2.1-4.8-6.6-2.8-10.2.7-1.2 1.6-2.1 2.8-2.8l46.7-26.7c3.6-2.1 8.2-.8 10.2 2.8 2.1 3.6.8 8.2-2.8 10.2 0 0 0 0 0 0l-35.3 20.2 35.3 20.2c3.6 2.1 4.8 6.6 2.8 10.2C379.5 213.2 377 214.7 374.3 214.7L374.3 214.7zM137.7 214.7c-4.1 0-7.5-3.4-7.5-7.5 0-2.7 1.4-5.2 3.8-6.5l35.3-20.2-35.3-20.2c-3.6-2-4.9-6.6-2.8-10.2 2-3.6 6.6-4.9 10.2-2.8 0 0 0 0 0 0l46.7 26.7c3.6 2.1 4.8 6.6 2.8 10.2-.7 1.2-1.6 2.1-2.8 2.8l-46.7 26.7C140.3 214.3 139 214.7 137.7 214.7z"/><path fill="none" d="M320.8,399.5c-3.5,2-7.2,3.8-10.9,5.5c-15.9,7-33,10.6-50.3,10.5h-7c-17.3,0-34.5-3.6-50.3-10.5 c-3.7-1.6-7.4-3.5-10.9-5.5c14.2-11.5,37.9-19,64.7-19S306.6,388,320.8,399.5z"/><path fill="#74563a" d="M329,329l-70,12l-127.-17.4c14.9,54.3,64.3,91.9,120.6,91.9h7c1,0,2,0,3,0c0.7,0,1.4,0,2.1-0.1 c0.3,0,0.5,0,0.8,0c0.9,0,1.7-0.1,2.6-0.2c0.1,0,0.1,0,0.2,0c0.9-0.1,1.7-0.1,2.6-0.2c0.1,0,0.1,0,0.2,0l0,0 c51.8-4.8,95.2-41.2,109.1-91.3L329,329z"/><path fill="#674b34" d="M271,415c-3.8,0.3-7.6,0.5-11.5,0.5h-7c-56.3,0-105.7-37.6-120.6-91.9c-0.3-1.1-0.6-2.1-0.8-3.2 c-0.4-1.6-0.8-3.2-1.1-4.8c-0.1-0.5-0.2-1.1-0.3-1.6c-0.1-0.3-0.1-0.6-0.2-1c-0.1-0.5-0.2-1-0.3-1.5c-0.1-0.7-0.2-1.4-0.3-2.1 c-0.1-0.6-0.2-1.2-0.3-1.8c0,0,0,0,0-0.1c-0.6-5.5,3.4-10.4,8.9-11c1.7-0.2,3.4,0.1,5,0.7c4.7,2,9.9,4.1,15.6,6.1 c1.2,11.6,4,23,8.4,33.9c12.3,30.2,35.8,54.5,65.6,67.6C244.5,410.4,257.6,413.8,271,415z"/><path fill="#e5303e" d="M309.8,405c-12.3,5.4-25.4,8.8-38.8,10l0,0c-0.1,0-0.1,0-0.2,0c-0.9,0.1-1.7,0.1-2.6,0.2c-0.1,0-0.1,0-0.2,0 c-0.9,0.1-1.7,0.1-2.6,0.2c-0.3,0-0.5,0-0.8,0c-0.7,0-1.4,0.1-2.1,0.1c-1,0-2,0-3,0h-7c-17.3,0-34.5-3.6-50.3-10.5 c-0.9-0.4-1.9-0.8-2.8-1.3c-0.9-0.4-1.8-0.9-2.8-1.3c-1.8-0.9-3.6-1.9-5.4-2.9c4.8-3.8,10.1-6.9,15.7-9.4c13.4-6,30.5-9.6,49-9.6 c26.8,0,50.5,7.5,64.7,19C317.2,401.5,313.6,403.3,309.8,405z"/><path fill="#fff" d="M369.4,297.4c5.1-2.2,11,0.2,13.1,5.3c0.7,1.7,1,3.5,0.7,5.3c-0.7,5.3-1.8,10.5-3.2,15.6l0,0 c-78.5,37.1-169.6,37.1-248.1,0h0c-1.4-5.1-2.5-10.3-3.2-15.6c-0.8-5.5,3-10.6,8.5-11.3c1.8-0.3,3.7,0,5.3,0.7 c35.9,15.2,74.5,23.1,113.5,23.1h1.5C296,320.3,334,312.4,369.4,297.4z"/><path fill="#e0e0e2" d="M166.6,337.4c-1.7-0.5-3.3-1.1-4.9-1.6c-0.1,0-0.2-0.1-0.3-0.1c-0.8-0.3-1.7-0.6-2.5-0.9 c-0.9-0.3-1.9-0.7-2.8-1c-1.5-0.5-2.9-1.1-4.3-1.6c-1.1-0.4-2.1-0.8-3.1-1.2c-0.9-0.4-1.8-0.7-2.6-1c-0.1,0-0.1,0-0.2-0.1 c-0.9-0.4-1.9-0.8-2.8-1.1c-1.8-0.8-3.6-1.5-5.3-2.3c-0.4-0.2-0.8-0.4-1.3-0.6c-1.7-0.7-3.2-1.5-4.7-2.2h0c-0.3-1.2-0.6-2.4-0.9-3.6 c-0.1-0.2-0.1-0.5-0.2-0.7c-0.3-1.2-0.6-2.4-0.8-3.7c-0.2-0.8-0.3-1.5-0.4-2.3c-0.1-0.6-0.2-1.2-0.3-1.8c-0.1-0.7-0.2-1.4-0.3-2.1 c-0.1-0.6-0.2-1.2-0.3-1.8v-0.1c-0.6-5.5,3.4-10.4,8.9-11c1.7-0.2,3.4,0.1,5,0.7c0.4,0.2,0.8,0.3,1.2,0.5c0.4,0.2,0.8,0.3,1.2,0.5 c1.7,0.7,3.5,1.4,5.4,2.2c0.5,0.2,1.1,0.4,1.6,0.6c0.2,0.1,0.5,0.2,0.7,0.3c0.3,0.1,0.6,0.2,0.9,0.4c0.1,0,0.1,0,0.2,0.1 c0.4,0.1,0.8,0.3,1.2,0.4c0.3,0.1,0.5,0.2,0.8,0.3c0.8,0.3,1.6,0.6,2.3,0.9c0.7,6.8,2,13.6,3.8,20.2 C163.2,328.3,164.8,332.9,166.6,337.4z"/><path fill="#b72732" d="M271,415c-3.8,0.3-7.6,0.5-11.5,0.5h-7c-17.3,0-34.5-3.6-50.3-10.5c-0.9-0.4-1.9-0.8-2.8-1.3 c-0.9-0.4-1.8-0.9-2.8-1.3c-1.8-0.9-3.6-1.9-5.4-2.9c4.8-3.8,10.1-6.9,15.7-9.4C225.5,404.2,247.7,412.9,271,415z"/></svg>', '<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 512 512"><circle cx="256" cy="256" r="219.5" fill="#fdd402"/><path fill="#fbbf13" d="M96.5,256C96.5,144.95184,178.969,53.17993,286,38.5495A221.37921,221.37921,0,0,0,256,36.5C134.77344,36.5,36.5,134.7735,36.5,256S134.77344,475.5,256,475.5a221.37921,221.37921,0,0,0,30-2.0495C178.969,458.82007,96.5,367.04816,96.5,256Z"/><path fill="#74563a" d="M193.5 202a7.50006 7.50006 0 0 1-7.5-7.5 20.5 20.5 0 0 0-41 0 7.5 7.5 0 0 1-15 0 35.5 35.5 0 0 1 71 0A7.50006 7.50006 0 0 1 193.5 202zM374.5 202a7.50006 7.50006 0 0 1-7.5-7.5 20.5 20.5 0 0 0-41 0 7.5 7.5 0 0 1-15 0 35.5 35.5 0 0 1 71 0A7.50006 7.50006 0 0 1 374.5 202z"/><path fill="none" d="M384.5,290.5a125.12511,125.12511,0,0,1-63.75,108.99q-5.31006,3-10.93994,5.47A124.4802,124.4802,0,0,1,259.5,415.5h-7a124.52787,124.52787,0,0,1-50.32007-10.54q-5.61-2.47485-10.91992-5.46a124.77521,124.77521,0,0,1-63.76-109,291.23534,291.23534,0,0,0,128.52,30h1.48A291.16558,291.16558,0,0,0,384.5,290.5Z"/><path fill="none" d="M384.5 290.5a125.37631 125.37631 0 0 1-4.44 33.14l-.01.01a290.161 290.161 0 0 1-248.1 0h-.01a125.3945 125.3945 0 0 1-4.44-33.15 291.23618 291.23618 0 0 0 128.52 30h1.48A291.16582 291.16582 0 0 0 384.5 290.5zM320.75 399.49q-5.31006 3-10.93994 5.47A124.4802 124.4802 0 0 1 259.5 415.5h-7a124.52787 124.52787 0 0 1-50.32007-10.54q-5.61-2.47485-10.91992-5.46c14.18994-11.48 37.89-19 64.74-19S306.55005 388.02 320.75 399.49z"/><path fill="#74563a" d="M329.00059,316.3l-70,12-127.06-17.35a124.91764,124.91764,0,0,0,120.56,91.85h7q1.52408,0,3.03772-.03986c.70844-.01684,1.41352-.04675,2.119-.07538.25165-.01056.50427-.01764.75562-.02972.86731-.04034,1.73132-.09253,2.59393-.15051.07465-.00507.14941-.00952.22406-.01471q1.29345-.08917,2.57928-.20471c.0633-.00562.12708-.00947.19037-.01514l-.01184-.00134A125.08615,125.08615,0,0,0,380.06059,310.94Z"/><path fill="#674b34" d="M271.00059,402.27c-3.79.34-7.62.53-11.5.53h-7a124.91761,124.91761,0,0,1-120.56-91.85c-.29-1.07-.57-2.15-.83-3.24-.4-1.58-.76-3.18-1.08-4.78-.11-.54-.22-1.08-.32-1.62-.06-.31-.12-.63-.17-.95-.1-.5-.19-1.01-.27-1.51-.12-.69-.23-1.37-.33-2.06-.09-.59-.18-1.17-.26-1.76,0-.02-.01-.05,0-.07a10.01046,10.01046,0,0,1,13.87-10.26c4.73,2,9.94,4.06,15.62,6.09a124.09063,124.09063,0,0,0,8.4,33.86,125.47319,125.47319,0,0,0,65.61,67.61A124.21459,124.21459,0,0,0,271.00059,402.27Z"/><path fill="#e5303e" d="M309.81059,392.26a124.0975,124.0975,0,0,1-38.82184,10.00867l.01184.00134c-.06329.00567-.12707.00952-.19037.01514q-1.286.11535-2.57928.20471c-.07465.00519-.14941.00964-.22406.01471-.86261.058-1.72662.11017-2.59393.15051-.25135.01208-.504.01916-.75562.02972-.7055.02863-1.41058.05854-2.119.07538q-1.5141.038-3.03772.03986h-7a124.52707,124.52707,0,0,1-50.32-10.54c-.94-.41-1.86-.84-2.78-1.27-.93006-.44-1.84-.88-2.75-1.34-1.82-.91-3.61005-1.87-5.38-2.86a70.87156,70.87156,0,0,1,15.68-9.39c13.45-6.01,30.5-9.6,49.05-9.6,26.84,0,50.54,7.52,64.73,18.99Q315.42062,389.775,309.81059,392.26Z"/><path fill="#fff" d="M369.44585,284.699a10.01637,10.01637,0,0,1,13.83081,10.6477A124.9701,124.9701,0,0,1,380.06059,310.94l-.01.01a290.16107,290.16107,0,0,1-248.1,0h-.01a124.942,124.942,0,0,1-3.2174-15.60377A10.016,10.016,0,0,1,142.55181,284.698,291.21,291.21,0,0,0,256.02061,307.8h1.48A291.06851,291.06851,0,0,0,369.44585,284.699Z"/><path fill="#e0e0e2" d="M166.5706,324.65q-2.505-.81-4.9-1.63c-.08-.03-.16-.06-.25-.09-.84-.29-1.66-.58-2.48-.87-.95-.33-1.89-.67005-2.81-1.01-1.48-.53-2.92-1.07-4.32-1.61-1.05-.4-2.07-.8-3.07-1.2-.88-.35-1.75-.7-2.6-1.05-.06-.02-.12-.04-.17005-.06006-.93994-.38995-1.85-.76995-2.75-1.15-1.84-.77-3.61-1.54-5.29-2.29-.42-.18-.84-.37-1.25-.56006-1.66-.74-3.23-1.47-4.73-2.18h-.01c-.32-1.19-.64-2.38995-.92-3.6-.07-.24-.12-.49-.18-.73q-.43506-1.83006-.81-3.69c-.16-.76-.31006-1.52-.44-2.29-.12006-.59-.22-1.19-.32-1.79-.12-.69-.23-1.37-.33-2.06-.09-.59-.18-1.17-.26-1.76v-.07a10.01046,10.01046,0,0,1,13.87-10.26c.39.17005.79.34,1.2.5.4.17005.8.34,1.21.51,1.74.72,3.53,1.44,5.39,2.16.54.21,1.08.42,1.63.63.24.1.48.19.72.28.31.11.62.23.93.35.07.03.15.05.22.08.39.14.77.29,1.17.43q.40494.15006.81.3c.77.29,1.55.57,2.34.85a124.13321,124.13321,0,0,0,3.77,20.16A122.511,122.511,0,0,0,166.5706,324.65Z"/></svg>','<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><circle cx="255.5" cy="256.5" r="256.5" fill="#ecb13a"/><circle cx="249.7" cy="244.5" r="243" fill="#ffde4f"/><path fill="#645033" d="M393.9 245.4c12.4-.1 22.3 10.4 21.2 22.8-8.6 94.1-75.5 167.6-157.5 168.5s-150.4-71.2-161-165.1c-1.4-12.3 8.3-23.1 20.7-23.2l276.6-3z"/><circle cx="145.9" cy="164.2" r="34.5" fill="#645033"/><circle cx="368.2" cy="164.6" r="34.5" fill="#645033"/><path fill="#fff" d="m255.7 269-141.5 1.5c1.7 17.1 6.3 33.6 13.5 48.6l1.5 3.1 127.1-1.4 127.1-1.4 1.4-3.1c6.8-15.1 11.1-31.8 12.4-48.9L255.7 269z"/><path fill="#ef4f43" d="M325.2 375.5c-42.5-28.9-94.7-28.3-136.6 1.5l-10.9 7.8 11.1 7.5c42.5 28.9 94.7 28.3 136.6-1.5l10.9-7.8-11.1-7.5z"/></svg>','<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 512 512"><circle cx="256" cy="256" r="219.5" fill="#fdd402"/><path fill="#fbbf13" d="M96.5,256C96.5,144.95184,178.969,53.17993,286,38.5495A221.37921,221.37921,0,0,0,256,36.5C134.77344,36.5,36.5,134.7735,36.5,256S134.77344,475.5,256,475.5a221.37921,221.37921,0,0,0,30-2.0495C178.969,458.82007,96.5,367.04816,96.5,256Z"/><path fill="#74563a" d="M345.24052,332.47612a5.00558,5.00558,0,0,1,7.00967,5.04412A93.93106,93.93106,0,0,1,258.632,423h-5.264a93.859,93.859,0,0,1-93.61864-85.47955,5.00558,5.00558,0,0,1,7.00932-5.04413A219.03625,219.03625,0,0,0,256.015,351.56h1.113A218.94088,218.94088,0,0,0,345.24052,332.47612Z"/><path fill="#674b34" d="M245.52734,415.07385A93.73827,93.73827,0,0,1,190.181,341.37323a219.35755,219.35755,0,0,1-23.40024-8.8884,5.00812,5.00812,0,0,0-7.03157,5.03351A93.92109,93.92109,0,0,0,253.368,423h5.264a94.90741,94.90741,0,0,0,12.36719-.80652A93.25455,93.25455,0,0,1,245.52734,415.07385Z"/><path fill="#e5303e" d="M296.46509 415.06641v.00744A93.60723 93.60723 0 0 1 258.632 423h-5.264a93.64367 93.64367 0 0 1-37.84067-7.92615C216.69308 413.34448 230.40585 393.75623 255.5 393.5 281.213 393.23755 295.41644 413.51172 296.46509 415.06641zM153.12783 154.07164v0a3.28836 3.28836 0 0 1-3.948 2.45764h0A39.06837 39.06837 0 0 0 102.27448 185.728l0 .00011a39.06832 39.06832 0 0 0 29.19868 46.90528l3.20285.74518 64.41627 14.98732a12 12 0 0 0 14.40716-8.96849l14.98733-64.41627.74518-3.20285A39.06838 39.06838 0 0 0 200.03322 124.873l-.00011 0A39.06831 39.06831 0 0 0 153.12783 154.07164zM363.12916 154.07164v0a3.28836 3.28836 0 0 0 3.948 2.45764h0A39.06837 39.06837 0 0 1 413.98251 185.728l0 .00011a39.06832 39.06832 0 0 1-29.19868 46.90528l-3.20285.74518-64.41627 14.98732a12 12 0 0 1-14.40716-8.96849l-14.98732-64.41627-.74519-3.20285A39.06838 39.06838 0 0 1 316.22377 124.873l.00011 0A39.06831 39.06831 0 0 1 363.12916 154.07164z"/><path fill="#b72732" d="M287.77026 174.98114l.88611 3.80865a39.02306 39.02306 0 0 1 27.56745-23.9168l.00006-.00007a39.06832 39.06832 0 0 1 46.90527 29.19874h.00006a3.28828 3.28828 0 0 0 3.94794 2.45764h.00006a39.07225 39.07225 0 0 1 44.92139 23.0462 38.8778 38.8778 0 0 0 1.98394-23.84741V185.728a39.06839 39.06839 0 0 0-46.90533-29.19873h-.00006a3.28828 3.28828 0 0 1-3.94794-2.45764h-.00006a39.06832 39.06832 0 0 0-46.90527-29.19874l-.00006.00007a39.06833 39.06833 0 0 0-29.19873 46.90527zM122.27441 205.72809V205.728a39.06852 39.06852 0 0 1 46.9054-29.19873h.00012a3.28825 3.28825 0 0 0 3.94788-2.45764h.00012a39.06823 39.06823 0 0 1 46.90521-29.19874l.00012.00007a39.244 39.244 0 0 1 6.90149 2.30523A39.00721 39.00721 0 0 0 200.03326 124.873l-.00012-.00007a39.06819 39.06819 0 0 0-46.90521 29.19874h-.00012a3.28825 3.28825 0 0 1-3.94788 2.45764h-.00012a39.06852 39.06852 0 0 0-46.9054 29.19873v.00006a39.07284 39.07284 0 0 0 22.29725 44.6A38.89333 38.89333 0 0 1 122.27441 205.72809zM271 422.19c-.63.09-1.27.16-1.91.23-.32.04-.64.07-.96.1-.66.07-1.33.13-2 .18-.83.07-1.65.12-2.49.17-.62.03-1.25.06-1.88.08-.31.01-.62.02-.93.02-.73.02-1.47.03-2.2.03h-5.26a93.61192 93.61192 0 0 1-37.84-7.93 52.04815 52.04815 0 0 1 10.92-11.27A93.406 93.406 0 0 0 271 422.19z"/><path fill="#b72732" d="M271,422.19c-.63.09-1.27.16-1.91.23-.32.04-.64.07-.96.1-.66.07-1.33.13-2,.18-.83.07-1.65.12-2.49.17-.62.03-1.25.06-1.88.08-.31.01-.62.02-.93.02-.73.02-1.47.03-2.2.03h-5.26a93.61192,93.61192,0,0,1-37.84-7.93,52.04815,52.04815,0,0,1,10.92-11.27A93.406,93.406,0,0,0,271,422.19Z"/></svg>'];
+
+
+ let getEmployeeGiveArray=[];
+ let getEmployeeReciveArray=[];
+ let getEmployeeGiveArrayResponse=[];
+ let getEmployeeReciveArrayResponse=[];
+ let avarageRatings=[];
+ let total = 0;
+ let count = 0;
+ let avarageAccuracy=[];
+
+// $(document).ready(function () {
+// $('#example').DataTable();
+// });
+
+ function feedback_give_open_function(){
+$(".feedback_give_container").css("display","")
+ }
+
+ function feedback_response_open_function(){
+ $(".feedback_response_container").css("display","")
+
+ }
+
+ function submit_btn(){
+ let email_input=$("#email_input").val();
+ console.log(email_input);
+ google.script.run.withSuccessHandler(getEmployeeGiveFeedbackData).getEmployeeGiveFeedback(email_input);
+ google.script.run.withSuccessHandler(getEmployeeReciveFeedbackData).getEmployeeReciveFeedback(email_input);
+
+ }
+function reload_newData(){
+ getEmployeeGiveArray=[];
+ getEmployeeReciveArray=[];
+ getEmployeeGiveArrayResponse=[];
+ getEmployeeReciveArrayResponse=[];
+ let email_input_value=$("#email_input").val();
+ console.log(email_input_value);
+ google.script.run.withSuccessHandler(getEmployeeGiveFeedbackData).getEmployeeGiveFeedback(email_input_value);
+ google.script.run.withSuccessHandler(getEmployeeReciveFeedbackData).getEmployeeReciveFeedback(email_input_value); 
+}
+
+ function getEmployeeGiveFeedbackData(data){
+ console.log(data[0])
+ console.log(data[1])
+ getEmployeeGiveArray.push(data[0])
+ getEmployeeGiveArrayResponse.push(data[1])
+//how many people did you review
+ let employeeGiveFeedbackTotal=data[0].length;
+ console.log(employeeGiveFeedbackTotal);
+ $("#give_total_feedback").text(employeeGiveFeedbackTotal) 
+//how many people gave you review
+ let feedbackTotalRecived=data[1].length;
+ // console.log(feedbackTotalRecived)
+ $("#recive_total_feedback").text(feedbackTotalRecived);
+//Avarage Ratings
+ data[1].forEach((item,index)=>{
+ // console.log(item[4]);
+ avarageRatings.push(item[4]);
+ });
+ avarageRatings.forEach(function(item, index) {
+ total += item;
+ count++;
+ });
+ let total_avrage_ratings=parseFloat(total / count).toFixed(2);
+ $("#total_avarage_rating").text(total_avrage_ratings);
+
+ // console.log(total_avrage_ratings);
+ $("#review_list_button").css("display","");
+ $("#review_give_list_button").css("display","");
+ $("#feedback_button").css("display","");
+ $("#feedback_response_button").css("display","");
+ }
+
+let like_count=0;
+let dislike_count=0;
+let accuracy_total=0;
+let accuracy_count=0;
+
+function getEmployeeReciveFeedbackData(data){
+ // console.log(data[0]);
+ // console.log(data[1]);
+ getEmployeeReciveArray.push(data[0]);
+ getEmployeeReciveArrayResponse.push(data[1]);
+
+//how many people did you review response
+ let employeeReciveFeedbackTotal=data[0].length;
+ console.log(employeeReciveFeedbackTotal);
+
+//how many people gave you review response
+ let employeeReciveProvideFeedbackTotal=data[1].length;
+ console.log(employeeReciveProvideFeedbackTotal);
+
+//how many people liked and disliked
+ data[1].forEach((item,index)=>{
+ console.log(item[7]);
+ avarageAccuracy.push(item[7])
+ if(item.includes("LIKE")){
+ like_count++
+ }
+ if(item.includes("DISLIKE")){
+ dislike_count++
+ }
+ })
+ console.log("________________________________");
+ console.log("______________like_count__________________"+like_count);
+ $("#total_likes").text(like_count);
+ console.log("____________dislike_count____________________"+dislike_count);
+ $("#total_dislike").text(dislike_count);
+ avarageAccuracy.forEach(function(item, index) {
+ accuracy_total += item;
+ accuracy_count++;
+ });
+ let total_avrage_accuracy=parseFloat(accuracy_total / accuracy_count).toFixed(2);
+ console.log(total_avrage_accuracy)
+ $("#accuracy_avarage").text(total_avrage_accuracy);
+ $("#response_recived_list_button").css("display","")
+ $("#response_give_list_button").css("display","")
+ $("#dashboard_button").css("display","");
+ $("#email_div").css("display","none");
+ $(".dashboard_navbar").css("display","");
+
+ }
+
+function dashboard(){
+ console.log("dashboard call")
+ $(".dashboard_navbar").css("display","");
+ $("#table_content").css("display","none")
+ $("#table_2_content").css("display","none");
+ $("#table_3_content").css("display","none");
+ $("#table_4_content").css("display","none");
+}
+
+
+
+let response_button_array=[];
+function response_button(){
+ console.log("click button");
+ $("#res_form_message_div").html("");
+ let email=$("#email_input").val();
+ let reciver_email=$("#email_provide_response_user").val();
+ let person_reviewed=$("input[type='radio'][name='yes_and_no']:checked").val();
+ let person_react=$("input[type='radio'][name='person_reacted_radio']:checked").val();
+ let additional_comment=$("#response_textarea_input").val();
+ let accuracy=$("input[type='radio'][name='accuracy']:checked").val();
+ let likeDislike=$("input[type='radio'][name='like_dislike']:checked").val();
+ let date = new Date();
+ let new_date= date.toLocaleString();
+
+ if(email!="" && reciver_email!="" && person_reviewed!="" && person_reviewed!=undefined && person_react !="" && person_react !=undefined && additional_comment!="" && accuracy!="" && accuracy!=undefined && likeDislike!="" && likeDislike!=undefined && new_date !=""){
+ response_button_array.push(new_date); 
+ response_button_array.push(reciver_email);
+ response_button_array.push(person_reviewed);
+ response_button_array.push(person_react);
+ response_button_array.push(additional_comment);
+ response_button_array.push(email);
+ response_button_array.push(likeDislike);
+ response_button_array.push(accuracy);
+
+ google.script.run.withSuccessHandler(employeeResponse).employeeResponse(response_button_array);
+ }else{
+ console.log("Please fill all input");
+ $("#res_form_message_div").html("Please fill all input");
+ }
+
+
+}
+
+function employeeResponse(response){
+ console.log(response);
+ reload_newData()
+}
+
+
+let feedback_give_button_array=[];
+function feedback_give_button(){
+ $("#message_div").html("");
+ console.log("click button");
+ let email=$("#email_input").val();
+ let email_provide_feedback_user=$("#email_provide_feedback_user").val();
+ let radio_button=$("input[type='radio'][name='inlineRadioOptions']:checked").val();
+ let textarea_input=$("#textarea_input").val();
+ let new_dates = new Date();
+ let date_local= new_dates.toLocaleString();
+ console.log(radio_button)
+ if(email!="" && email_provide_feedback_user !="" && radio_button !='' && radio_button != undefined && textarea_input !="" && date_local !=""){
+
+ feedback_give_button_array.push(date_local)
+ feedback_give_button_array.push(email)
+ feedback_give_button_array.push(email_provide_feedback_user)
+ feedback_give_button_array.push(textarea_input)
+ feedback_give_button_array.push(radio_button)
+
+ google.script.run.withSuccessHandler(feedbackResponse).feedbackResponse(feedback_give_button_array);
+ 
+ }else{
+ console.log("Please fill all input");
+ $("#message_div").html("Please fill all input");
+ }
+}
+
+function feedbackResponse(result){
+ console.log(result)
+ reload_newData()
+}
+
+
+function review_list(){
+  open_old_box=''
+ console.log("getEmployeeGiveArrayResponse");
+ console.log(getEmployeeGiveArrayResponse);
+ $("#response_list").html("");
+ $("#table_content").css("display","")
+ $(".dashboard_navbar").css("display","none");
+ $("#table_2_content").css("display","none");
+ $("#table_3_content").css("display","none");
+ $("#table_4_content").css("display","none");
+
+ getEmployeeGiveArrayResponse[0].forEach((item,index)=>{
+// $("#response_list").append(`<tr><td>`+item[0]+`</td><td>`+item[1]+`</td><td>`+item[2]+`</td><td>`+item[3]+`</td><td>`+item[4]+`</td></tr>`);
+let full_string_3 = item[3];
+if(full_string_3.length > 180){full_string_3 = full_string_3.substring(0,180)+`<a class='' style='color:#205ad2' onclick='view_more_btn_(${index})'>Read More..</a>`;}
+
+ let emoji_svg_string = emoji_svg_array[item[4]];
+
+$("#response_list").append(`<tr><td><div class="recevied_main_box mt-5 aos-inits" data-aos="fade-up"> <div class="recevied_email_box z-1 aos-inits" data-aos="fade-up"><i class="fa-solid fa-envelope"></i><span>`+item[1]+`</span></div><div class="triangle-topright"></div><div class="reaction_emoji aos-inits z-1" data-aos="fade-up">`+emoji_svg_string +`</div><div class="feedback_start d-flex aos-inits z-1" data-aos="fade-up"> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star unfill"></i> <i class="fa-solid fa-star unfill"></i> </div> <div class="message_bg_icon z-1"> <i class="fa-solid fa-message"></i> </div> <input id="full_para_`+index+`" type="hidden" value="`+item[3]+`"> <div id="div_p_content_`+index+`" class="recevied_text aos-inits" data-aos="fade-up"> <p id="box_p_content_`+index+`"> `+full_string_3+`</p> </div> </div></td></tr>`);
+ });
+ $('#response_give').DataTable();
+}
+
+
+let open_old_box=''
+function view_more_btn_(r_no,p_content){
+console.log("view_more_btn_------click------ "+r_no)
+console.log("view_more_btn_-----old-click------ "+open_old_box)
+
+ if(open_old_box!='' || open_old_box=='0' ){
+   console.log("if__old__id__blank__true")
+   view_less_btn_(open_old_box)
+ }else{
+      console.log("if__old__id__blank__false")
+ }
+  
+  open_old_box = r_no
+  $("#box_p_content_"+r_no).remove()
+  $("#div_p_content_"+r_no).append("<p id='box_p_content_"+r_no+"'>"+$("#full_para_"+r_no).val()+"<a class='' style='color:#205ad2' onclick='view_less_btn_("+r_no+")'> Read Less</a>"+"</p>")
+
+}
+function view_less_btn_(r_no){
+  console.log("view_less_btn___________________"+r_no)
+  
+let old_select_para = $("#full_para_"+r_no).val()
+if(old_select_para.length > 180){old_select_para =old_select_para.substring(0,180)+`<a class='' style='color:#205ad2' onclick='view_more_btn_(${r_no})'> Read More..</a>`;}
+
+    $("#box_p_content_"+r_no).remove()
+  $("#div_p_content_"+r_no).append("<p id='box_p_content_"+r_no+"'>"+old_select_para+"</p>")
+}
+
+
+
+
+function review_give_list(){
+  open_old_box=''
+ console.log("getEmployeeGiveArray---------------------------------------chk");
+ console.log(getEmployeeGiveArray);
+ $("#feedback_list").html("");
+ $("#table_content").css("display","none")
+ $(".dashboard_navbar").css("display","none");
+ $("#table_2_content").css("display","");
+ $("#table_3_content").css("display","none");
+ $("#table_4_content").css("display","none");
+ getEmployeeGiveArray[0].forEach((item,index)=>{
+ // $("#feedback_list").append(`<tr><td>`+item[0]+`</td><td>`+item[1]+`</td><td>`+item[2]+`</td><td>`+item[3]+`</td><td>`+item[4]+`</td></tr>`);
+let full_string_3 = item[3]
+if(full_string_3.length > 180){full_string_3 = full_string_3.substring(0,180)+`<a class='' style='color:#205ad2' onclick='view_more_btn_(${index})'>Read More..</a>`;}
+
+ let emoji_string = emoji_svg_array[item[4]]
+ console.log(full_string_3)
+ $("#feedback_list").append(`<tr><td> <div class="recevied_main_box mt-5 aos-inits" data-aos="fade-up"> <div class="recevied_email_box z-1 aos-inits" data-aos="fade-up"> <i class="fa-solid fa-envelope"></i> <span>`+item[1]+`</span> </div> <div class="triangle-topright"></div> <div class="reaction_emoji aos-inits z-1" data-aos="fade-up">`+emoji_string+`</div> <div class="feedback_start d-flex aos-inits z-1 " data-aos="fade-up"> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star unfill"></i> <i class="fa-solid fa-star unfill"></i> </div> <div class="message_bg_icon z-1 "> <i class="fa-solid fa-message"></i> </div> <input id="full_para_`+index+`" type="hidden" value="`+item[3]+`"><div id="div_p_content_`+index+`"  class="recevied_text aos-inits" data-aos="fade-up"> <p id="box_p_content_`+index+`>`+full_string_3+`</p> </div> </div></td></tr>`);
+ });
+ $('#review_give_list').DataTable();
+
+}
+
+
+function response_recived_list(){
+ console.log("getEmployeeReciveArrayResponse");
+ console.log(getEmployeeReciveArrayResponse);
+ $("#response_recived_list").html("");
+ $("#table_content").css("display","none")
+ $(".dashboard_navbar").css("display","none");
+ $("#table_2_content").css("display","none");
+ $("#table_3_content").css("display","");
+ $("#table_4_content").css("display","none");
+
+ getEmployeeReciveArrayResponse[0].forEach((item,index)=>{
+ $("#response_recived_list").append(`<tr><td>`+item[0]+`</td><td>`+item[1]+`</td><td>`+item[2]+`</td><td>`+item[3]+`</td><td>`+item[4]+`</td><td>`+item[5]+`</td><td>`+item[6]+`</td><td>`+item[7]+`</td></tr>`);
+ });
+ $('#response_recived').DataTable();
+}
+
+
+function response_give_list(){
+ console.log("getEmployeeReciveArray");
+ console.log(getEmployeeReciveArray);
+ $("#response_give_list").html("");
+ $("#table_content").css("display","none")
+ $(".dashboard_navbar").css("display","none");
+ $("#table_2_content").css("display","none");
+ $("#table_3_content").css("display","none");
+ $("#table_4_content").css("display","");
+
+ getEmployeeReciveArray[0].forEach((item,index)=>{
+ $("#response_give_list").append(`<tr><td>`+item[0]+`</td><td>`+item[1]+`</td><td>`+item[2]+`</td><td>`+item[3]+`</td><td>`+item[4]+`</td><td>`+item[5]+`</td><td>`+item[6]+`</td><td>`+item[7]+`</td></tr>`);
+ });
+ $('#resp_give').DataTable();
+
+}
+
+
+</script>
+
+</html>

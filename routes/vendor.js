@@ -16,7 +16,7 @@ function vendors(req, res) {
   //res.send(req.query.category)
   console.log(req.user)
   if (req.body.vendor_id == 'all' && req.scrt == 'y9a2d3a2v8') {
-    connection.query('SELECT * FROM vendor WHERE 1  ORDER BY updated_on DESC', (err, rows, fields) => {
+    connection.query('SELECT * FROM vendor WHERE 1 ', (err, rows, fields) => {
       if (err) {
         res.status(200).send(err)
       } else {
@@ -24,7 +24,7 @@ function vendors(req, res) {
       }
     })
   } else {
-    connection.query('SELECT * FROM vendor WHERE id ='+req.user+' ORDER BY updated_on DESC', (err, rows, fields) => {
+    connection.query('SELECT * FROM vendor WHERE id ='+req.user+'', (err, rows, fields) => {
       if (err) {
         //console.log("/vendors_error" + err)
         res.status(200).send(err)
@@ -390,7 +390,7 @@ async function vendor_register(req, res) {
 
   var { owner_name, shop_name, mobile, email, shop_address, gstn, geolocation, store_type, status, document_name, availability, social_media_links } = req.body;
   // email=email.trim()
-
+console.log(mobile)
 
   // if(mobile.length==10){
     var document_name1 = JSON.stringify(document_name)
@@ -430,7 +430,7 @@ async function vendor_register(req, res) {
                 res.status(200).send(err)
               } else {
                   if(rows==''){
-                    connection.query("INSERT INTO `vendor`(`email`,`password`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `document_name`, `availability`,`social_media_links`) VALUES ('" + email + "','"+password_salt_+"','" + owner_name + "','" + shop_name + "','" + mobile + "','" + shop_address + "','" + gstn + "','" + geolocation + "','" + store_type + "','" + image + "','" + status + "','" + document_name1 + "','" + availability + "','" + social_media_links_new + "')", async (err, rows, fields) => {
+                    connection.query("INSERT INTO `vendor`(`email`,`password`,`owner_name`, `shop_name`, `mobile`, `shop_address`, `gstn`, `geolocation`, `store_type`, `shop_logo`, `status`, `document_name`, `availability`,`social_media_links`) VALUES ('" + email + "','"+password_salt_+"','" + owner_name + "','" + shop_name + "','"+mobile+"','" + shop_address + "','" + gstn + "','" + geolocation + "','" + store_type + "','" + image + "','" + status + "','" + document_name1 + "','" + availability + "','" + social_media_links_new + "')", async (err, rows, fields) => {
                       if (err) {
                         //console.log("error" + err)
                         res.status(200).send(err)
@@ -562,7 +562,7 @@ function vendor_update(req, res) {
     //console.log("req.body")
     var newdate = new Date();
     var vendor_newdate = newdate.getFullYear() + "-" + (newdate.getMonth() + 1) + "-" + newdate.getDate();
-    if(mobile.length==10){
+    // if(mobile.length==10){
 
     var document_name1 = JSON.stringify(document_name)
     var social_media_links_new = JSON.stringify(JSON.parse(social_media_links))
@@ -572,7 +572,7 @@ function vendor_update(req, res) {
     
     if (req.file == undefined || req.file == '') {
       // image="no image"
-      connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "',`updated_on`='"+vendor_newdate+"'  WHERE id='" +req.admin_vendor_com_id+ "'", async (err, rows, fields) => {
+      connection.query("UPDATE `vendor` SET `owner_name`='" + owner_name + "',`shop_name`='" + shop_name + "',`mobile`='" + mobile + "',`shop_address`='" + shop_address + "',`gstn`='" + gstn + "',`geolocation`='" + geolocation + "',`store_type`='" + store_type + "',`status`='" + status + "',`document_name`= '" + document_name1 + "',`availability`='" + availability + "',`social_media_links`='" + social_media_links_new + "',`updated_on`='"+vendor_newdate+"'  WHERE id='"+req.admin_vendor_com_id+ "'", async (err, rows, fields) => {
         if (err) {
           //console.log("error" + err)
           res.status(500).send(err)
@@ -606,10 +606,10 @@ function vendor_update(req, res) {
   else{ 
     res.status(200).send({"response":"please send vendor or admin token"})
   }
-}else{
-  res.status(200).send({"message":"please Enter 10 digit number","status":false})
+// }else{
+//   res.status(200).send({"message":"please Enter 10 digit number","status":false})
 
-}
+// }
 }
 
 function vendor_status_change(req, res) {
